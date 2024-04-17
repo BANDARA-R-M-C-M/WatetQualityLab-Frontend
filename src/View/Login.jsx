@@ -1,14 +1,18 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import {useNavigate} from 'react-router-dom';
+import axios from "axios";
+import base_url from '../Util/base_url.js';
+import { useAuth } from "../Context/useAuth";
 
-function Login(){
+const Login = () =>{
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
-        const [validate, setValidate] = useState(false);
+
+        const { loginUser } = useAuth();
       
-        const handleLogin = (e) => {
+        const handleLogin = async (e) => {
           e.preventDefault();
-          // Here you can add your login logic, such as authentication with backend
-          console.log('Logging in with username:', username, 'and password:', password);
+          loginUser(username, password);
     };
 
     return(
@@ -22,7 +26,7 @@ function Login(){
                     <input
                     type="text"
                     id="username"
-                    className="mt-1 p-2 block w-full h-8 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    className="mt-1 p-2 block w-full h-8 rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
@@ -33,7 +37,7 @@ function Login(){
                     <input
                     type="password"
                     id="password"
-                    className="mt-1 p-2 block w-full h-8 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    className="mt-1 p-2 block w-full h-8 rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -53,3 +57,4 @@ function Login(){
 }
 
 export default Login
+

@@ -1,82 +1,35 @@
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
+import {Link, Outlet, useLocation} from 'react-router-dom';
+import {Fragment, useState} from 'react'
+import {Dialog, Menu, Transition} from '@headlessui/react'
 import {
   PlusIcon,
   Bars3Icon,
   BellIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import MLT from '../Admin/MLT.jsx'
-import PHI from '../Admin/PHI.jsx'
-import MOHSupervisor from '../Admin/MOHSupervisor.jsx'
-import MOHArea from '../Admin/MOHAreas.jsx'
-import PHIArea from '../Admin/phiareas.jsx'
-import Laboratory from '../Admin/Laboratories.jsx'
-import AdminDashboard from '../Admin/AdminDashboard.jsx'
+import {ChevronDownIcon} from '@heroicons/react/20/solid'
+import { useAuth } from "../Context/useAuth";
 
-const userNavigation = [
-  { name: 'Your profile', href: '#' },
-  { name: 'Sign out', href: '#' },
-]
+function Phisidebar() {
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-function Sidebar(props) {
-
-  const sidebarProps = props.sidebarProps;
-  const userName = props.username
-
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  const location = useLocation()
+  const userName = localStorage.getItem('user');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+  const{ logout } = useAuth();
 
     return (
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
-            {/* <Transition.Child
-              as={Fragment}
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-gray-900/80" />
-            </Transition.Child> */}
 
             <div className="fixed inset-0 flex">
-              {/* <Transition.Child
-                as={Fragment}
-                enter="transition ease-in-out duration-300 transform"
-                enterFrom="-translate-x-full"
-                enterTo="translate-x-0"
-                leave="transition ease-in-out duration-300 transform"
-                leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full"
-              > */}
                 <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
-                  {/* <Transition.Child
-                    as={Fragment}
-                    enter="ease-in-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in-out duration-300"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  > */}
                     <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
                       <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
                         <span className="sr-only">Close sidebar</span>
                         <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
                       </button>
                     </div>
-                  {/* </Transition.Child> */}
                   {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                     <div className="flex h-16 shrink-0 items-center">
@@ -88,33 +41,15 @@ function Sidebar(props) {
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                        <li>
-                          <ul role="list" className="-mx-2 space-y-1">
-                            {sidebarProps.map((item) => (
-                              <li key={item.name}>
-                                <Link
-                                  to={item.to}
-                                  className={classNames(
-                                    location.pathname === item.to
-                                      ? 'bg-gray-800 text-white'
-                                      : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                  )}
-                                >
-                                  <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                                  {item.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                        <li className="mt-auto">
+                        <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
+                        <Link to='/phi/dashboard' className={location.pathname === '/phi/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
+                        <Link to='/phi/samples' className={location.pathname === '/phi/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Samples</Link>
+                        <Link to='/phi/history' className={location.pathname === '/phi/history' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>History</Link>
                         </li>
                       </ul>
                     </nav>
                   </div>
                 </Dialog.Panel>
-              {/* </Transition.Child> */}
             </div>
           </Dialog>
         </Transition.Root>
@@ -132,29 +67,10 @@ function Sidebar(props) {
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                  <li>
-                    <ul role="list" className="-mx-2 space-y-1">
-                      {sidebarProps.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            to={item.to}
-                            className={classNames(
-                              location.pathname === item.to
-                                ? 'bg-gray-800 text-white'
-                                : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                              'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                            )}
-                          >
-                            <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                <li>
-                </li>
-                <li className="mt-auto">
+                <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
+                  <Link to='/phi/dashboard' className={location.pathname === '/phi/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
+                  <Link to='/phi/samples' className={location.pathname === '/phi/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Samples</Link>
+                  <Link to='/phi/history' className={location.pathname === '/phi/history' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>History</Link>
                 </li>
               </ul>
             </nav>
@@ -211,33 +127,14 @@ function Sidebar(props) {
                       <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
                     </span>
                   </Menu.Button>
-                  {/* <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  > */}
                     <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                      {userNavigation.map((item) => (
-                        <Menu.Item key={item.name}>
-                          {
-                            <Link
-                              to={item.to}
-                              className={
-                                // active ? 'bg-gray-50' : '',
-                                'block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50'
-                              }
-                            >
-                              {item.name}
-                            </Link>
-                          }
-                        </Menu.Item>
-                      ))}
+                      <Menu.Item>
+                        <Link to='/profile' className='block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50'>Your Profile</Link>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <div onClick={logout} className='block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50'>Sign Out</div>
+                      </Menu.Item>
                     </Menu.Items>
-                  {/* </Transition> */}
                 </Menu>
               </div>
             </div>
@@ -245,6 +142,7 @@ function Sidebar(props) {
 
           <main className="py-10">
             <div className="px-4 sm:px-6 lg:px-8">
+              <Outlet/>
             </div>
           </main>
         </div>
@@ -252,4 +150,4 @@ function Sidebar(props) {
 );
 }
 
-export default Sidebar
+export default Phisidebar
