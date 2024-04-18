@@ -12,15 +12,15 @@ import { useAuth } from "../Context/useAuth";
 
 function Mltsidebar() {
 
-  const userName = localStorage.getItem('user')
-
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
 
   const [showInventory, setShowInventory] = useState(false);
   const [showQuality, setShowQuality] = useState(false);
 
-  const{ logout } = useAuth();
+  const{ logout, user } = useAuth();
+
+  const userName = user.userName;
 
     return (
       <div>

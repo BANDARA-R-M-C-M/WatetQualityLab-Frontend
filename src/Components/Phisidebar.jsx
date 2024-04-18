@@ -11,11 +11,11 @@ import {ChevronDownIcon} from '@heroicons/react/20/solid'
 import { useAuth } from "../Context/useAuth";
 
 function Phisidebar() {
-
-  const userName = localStorage.getItem('user');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const{ logout } = useAuth();
+  const{ logout, user } = useAuth();
+
+  const userName = user.userName;
 
     return (
       <div>

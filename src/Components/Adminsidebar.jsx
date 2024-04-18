@@ -12,10 +12,11 @@ import { useAuth } from "../Context/useAuth";
 
 function Adminsidebar() {
 
-  const userName = localStorage.getItem('user');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const{ logout } = useAuth();
+  const{ logout, user } = useAuth();
+
+  const userName = user.userName;
 
     return (
       <div>

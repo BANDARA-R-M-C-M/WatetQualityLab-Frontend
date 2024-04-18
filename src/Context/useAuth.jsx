@@ -1,8 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
-// import { UserProfile } from "../Models/User";
 import { useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../Service/AuthServices";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 const UserContext = createContext();
@@ -17,7 +16,7 @@ export const UserProvider = ({ children }) => {
     const user = localStorage.getItem("user");
     const token = localStorage.getItem("token");
     if (user && token) {
-      setUser(user);
+      setUser(JSON.parse(user));
       setToken(token);
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     }
@@ -29,19 +28,23 @@ export const UserProvider = ({ children }) => {
       const res = await registerAPI(email, username, password);
       if (res) {
         localStorage.setItem("token", res?.data.token);
+
         const userObj = {
           userName: res?.data.userName,
           email: res?.data.email,
         };
+        
         localStorage.setItem("user", JSON.stringify(userObj));
+
         setToken(res?.data.token);
         setUser(userObj);
-        // toast.success("Login Success!");
+        toast.success("Login Success!");
+
         console.log("Register Success!");
-        navigate("/phi/dashboard");
+        navigate("/admin/dashboard");
       }
     } catch (error) {
-    //   toast.warning("Server error occurred");
+      toast.warning("Server error occurred");
     console.log("Server error occurred" + error);
     }
   };
@@ -50,31 +53,38 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await loginAPI(username, password);
       if (res) {
+
+        const userObj = {
+          userName: res?.data.username,
+          userRole: res?.data.role,
+        };
+
         localStorage.setItem("token", res?.data.token);
-        localStorage.setItem("user", res?.data.username);
-        localStorage.setItem("role", res?.data.role);
+        localStorage.setItem("user", JSON.stringify(userObj));
+
         setToken(res?.data.token);
-        setUser(res?.data.username);
-        // toast.success("Login Success!");
+        setUser(userObj);
+        
+        toast.success("Login Success!");
+
         console.log("Login Success!")
-        if(res?.data.role === "Admin"){
+        if(userObj.userRole === "Admin"){
           navigate("/admin/dashboard");
-        } else if(res?.data.role === "PHI"){
+        } else if(userObj.userRole === "Phi"){
           navigate("/phi/dashboard");
-        } else if(res?.data.role === "Mlt"){
+        } else if(userObj.userRole === "Mlt"){
           navigate("/mlt/dashboard");
-        } else if(res?.data.role === "MOH_Supervisor"){
-          navigate("/moh/dashboard");
+        } else if(userObj.userRole === "MohSupervisor"){
+          navigate("/moh-supervisor/dashboard");
         }
       }
+      
     } catch (error) {
-    //   toast.warning("Server error occurred");
+
+      toast.warning("Server error occurred");
+      
     console.log("Server error occurred" + error);
     }
-  };
-
-  const userRole = () => {
-    return localStorage.getItem("role");
   };
 
   const isLoggedIn = () => {
@@ -90,7 +100,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ loginUser, user, token, logout, isLoggedIn, registerUser, userRole }}
+      value={{ loginUser, user, token, logout, isLoggedIn, registerUser }}
     >
       {isReady ? children : null}
     </UserContext.Provider>

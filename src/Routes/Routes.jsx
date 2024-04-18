@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import Adminsidebar from "../Components/Adminsidebar.jsx"
 import Phisidebar from "../Components/Phisidebar.jsx";
@@ -29,14 +29,13 @@ import HistoryM from '../Pages/MOHSupervisor/History.jsx';
 import Mohsidebar from "../Components/Mohsidebar.jsx";
 
 export const router = createBrowserRouter([
-    {
+      {
       path: '/',
       element: <App />,
       children: [
         {path: "/", element: <Login/>},
-        {path: "/mlt", element: <ProtectedRoute children={<MLT/>}/>},
         {path: "/admin", 
-          element: <ProtectedRoute children={<Adminsidebar/>}/>,
+          element: <ProtectedRoute children={<Adminsidebar />}/>,
             children: [
               {path: "dashboard", element: <AdminDashboard/>},
               {path: "mlts", element: <MLT/>},
@@ -48,19 +47,7 @@ export const router = createBrowserRouter([
             ]
         },
         {path: "mlt",
-            element: <ProtectedRoute children={<Mltsidebar/>}/>,
-              children: [
-                {path: "dashboard", element: <MLTDashboard/>},
-                {path: "samples", element: <Samples/>},
-                {path: "inventory-general", element: <GeneralInventory/>},
-                {path: "inventory-surgical", element: <SurgicalInventory/>},
-                {path: "quality-instrumental", element: <InstrumentalQuality/>},
-                {path: "quality-media", element: <MediaQuality/>},
-                {path: "reports", element: <Reports/>}
-              ]
-        },
-        {path: "mlt",
-            element: <ProtectedRoute children={<Mltsidebar/>}/>,
+            element: <ProtectedRoute children={<Mltsidebar />}/>,
               children: [
                 {path: "dashboard", element: <MLTDashboard/>},
                 {path: "samples", element: <Samples/>},
@@ -72,7 +59,7 @@ export const router = createBrowserRouter([
               ]
         },
         {path: "phi",
-            element: <ProtectedRoute children={<Phisidebar/>}/>,
+            element: <ProtectedRoute children={<Phisidebar />}/>,
               children: [
                 {path: "dashboard", element: <PHIDashboard/>},
                 {path: "samples", element: <SamplesP/>},
@@ -80,7 +67,7 @@ export const router = createBrowserRouter([
               ]
         },
         {path: "moh-supervisor",
-            element: <ProtectedRoute children={<Mohsidebar/>}/>,
+            element: <ProtectedRoute children={<Mohsidebar />}/>,
               children: [
                 {path: "dashboard", element: <MOHDashboard/>},
                 {path: "reports", element: <ReportM/>},
