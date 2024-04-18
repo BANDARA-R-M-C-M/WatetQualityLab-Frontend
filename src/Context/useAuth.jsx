@@ -65,7 +65,7 @@ export const UserProvider = ({ children }) => {
         setToken(res?.data.token);
         setUser(userObj);
         
-        toast.success("Login Success!");
+        toast.success("Welcome " + userObj.userName);
 
         console.log("Login Success!")
         if(userObj.userRole === "Admin"){
