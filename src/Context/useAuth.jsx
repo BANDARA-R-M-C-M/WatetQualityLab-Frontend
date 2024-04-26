@@ -56,6 +56,7 @@ export const UserProvider = ({ children }) => {
 
         const userObj = {
           userName: res?.data.username,
+          userId: res?.data.userId,
           userRole: res?.data.role,
         };
 
