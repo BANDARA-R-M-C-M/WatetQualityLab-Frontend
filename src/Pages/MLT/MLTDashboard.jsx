@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { sampleAPI, updateStatus } from "../../Service/MLTService";
+import { getNewSamples, updateStatus } from "../../Service/MLTService";
 
 function MLTDashboard() {
     const [samples, setSamples] = useState([]);
@@ -9,7 +9,7 @@ function MLTDashboard() {
     useEffect(() => {
         const fetchSamples = async () => {
             try {
-                const response = await sampleAPI(user.userId);
+                const response = await getNewSamples(user.userId);
                 if (response) {
                     const pendingSamples = response.data.filter(sample => sample.acceptance === 'Pending');
                     setSamples(pendingSamples);
@@ -43,6 +43,7 @@ function MLTDashboard() {
     };
 
     return (
+        <>
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
                 <div className="flex items-center justify-between">
@@ -131,6 +132,7 @@ function MLTDashboard() {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { sampleAPI, updateStatus } from "../../Service/MLTService";
+import { getNewSamples } from "../../Service/MLTService";
+import { useNavigate } from 'react-router-dom';
 
 function Samples() {
 
     const [samples, setSamples] = useState([]);
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSamples = async () => {
             try {
-                const response = await sampleAPI(user.userId);
+                const response = await getNewSamples(user.userId);
                 if (response) {
                     const pendingSamples = response.data.filter(sample => sample.acceptance === 'Accepted');
                     setSamples(pendingSamples);
@@ -22,6 +24,10 @@ function Samples() {
 
         fetchSamples();
     }, []);
+
+    const generateReport = (sampleId, labId) => {
+        navigate(`/mlt/report-form?sampleId=${sampleId}&labId=${labId}`);
+    };
 
     return (
         <div className="bg-white rounded-md w-full">
@@ -99,7 +105,8 @@ function Samples() {
                                     </td>
                                     <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
                                         <button
-                                            className="relative inline-block px-3 py-1 font-semibold text-white bg-black rounded-full">Generate Report</button>
+                                            onClick={() => generateReport(sample.sampleId, sample.labID)}
+                                            className="relative inline-block px-3 py-1 font-semibold text-white bg-black rounded-full">Add Sample</button>
                                     </td>
                                 </tr>
                             ))}
