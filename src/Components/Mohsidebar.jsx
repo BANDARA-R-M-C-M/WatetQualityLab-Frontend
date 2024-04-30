@@ -94,7 +94,7 @@ function Mohsidebar() {
 
               <div className="relative flex flex-1 items-center">Welcome! {userName}</div>
 
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <button
                     type="button"
@@ -103,7 +103,7 @@ function Mohsidebar() {
                     Add New
                   </button>
                 </div>
-              </div>
+              </div> */}
               
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">

@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { getNewSamples } from "../../Service/MLTService";
+import { getNewSamples, submitReport } from "../../Service/MLTService";
 import { useNavigate } from 'react-router-dom';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 function Samples() {
 
     const [samples, setSamples] = useState([]);
+    const [reportRefId, setReportRefId] = useState('');
+    const [presumptiveColiformCount, setPresumptiveColiformCount] = useState('');
+    const [issuedDate, setIssuedDate] = useState('');
+    const [ecoliCount, setEcoliCount] = useState('');
+    const [appearanceOfSample, setAppearanceOfSample] = useState('');
+    const [pcresults, setPCResults] = useState('');
+    const [ecresults, setECResults] = useState('');
+    const [remarks, setRemarks] = useState('');
+    const [sampleId, setSampleId] = useState('');
+    const [labId, setLabId] = useState('');
+    const [showForm, setShowForm] = useState(false);
     const { user } = useAuth();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSamples = async () => {
@@ -25,8 +38,23 @@ function Samples() {
         fetchSamples();
     }, []);
 
-    const generateReport = (sampleId, labId) => {
-        navigate(`/mlt/report-form?sampleId=${sampleId}&labId=${labId}`);
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (await submitReport(reportRefId, presumptiveColiformCount, issuedDate, ecoliCount, appearanceOfSample, pcresults, ecresults, remarks, sampleId, labId)) {
+            alert('Report created successfully');
+        } else {
+            alert('Failed to create report');
+        }
+
+        setReportRefId('');
+        setPresumptiveColiformCount('');
+        setIssuedDate('');
+        setEcoliCount('');
+        setAppearanceOfSample('');
+        setPCResults('');
+        setECResults('');
+        setRemarks('');
     };
 
     return (
@@ -86,7 +114,7 @@ function Samples() {
                                         <p className="text-gray-900 whitespace-no-wrap">{sample.dateOfCollection}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{sample.phi_Area}</p>
+                                        <p className="text-gray-900 whitespace-no-wrap">{sample.phiAreaName}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{sample.catagoryOfSource}</p>
@@ -105,8 +133,117 @@ function Samples() {
                                     </td>
                                     <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
                                         <button
-                                            onClick={() => generateReport(sample.sampleId, sample.labID)}
-                                            className="relative inline-block px-3 py-1 font-semibold text-white bg-black rounded-full">Add Sample</button>
+                                            onClick={() => { setShowForm(true), setSampleId(sample.sampleId), setLabId(sample.labID) }}
+                                            className="relative inline-block px-3 py-1 font-semibold text-white bg-black rounded-full"
+                                        >
+                                            Report
+                                        </button>
+
+                                        {showForm && (
+                                            <div className="fixed inset-0 flex items-center justify-center z-50">
+                                                <div className="bg-white rounded-lg p-6 w-96 max-w-full shadow-lg">
+                                                    <div className="flex justify-between items-center border-b-2 border-gray-200 pb-4">
+                                                        <h2 className="text-2xl font-semibold">Report</h2>
+                                                        <button onClick={() => setShowForm(false)} className="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <form onSubmit={handleSubmit} >
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="reportRefId" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Report Ref ID
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="reportRefId" id="reportRefId" type="text" placeholder="Report Ref ID"
+                                                                value={reportRefId} onChange={(e) => setReportRefId(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Presumptive Coliform Count
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="presumptiveColiformCount" id="presumptiveColiformCount" type="text" placeholder="Presumptive Coliform Count"
+                                                                value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="issuedDate" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Issued Date
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="issuedDate" id="issuedDate" type="date"
+                                                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Ecoli Count
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="ecoliCount" id="ecoliCount" type="text" placeholder="Ecoli Count"
+                                                                value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Appearance Of Sample
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
+                                                                value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Presumptive Coliform Count
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="results" id="results" type="text" placeholder="Results"
+                                                                value={pcresults} onChange={(e) => setPCResults(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                E coli Count
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="results" id="results" type="text" placeholder="Results"
+                                                                value={ecresults} onChange={(e) => setECResults(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Remarks
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="remarks" id="remarks" type="text" placeholder="Remarks"
+                                                                value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="flex ">
+                                                            <button type="submit"
+                                                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                                                Submit
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {/* </div> */}
                                     </td>
                                 </tr>
                             ))}

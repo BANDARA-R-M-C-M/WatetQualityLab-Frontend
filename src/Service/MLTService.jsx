@@ -17,7 +17,7 @@ export const getNewSamples = async (mltId) => {
   }
 };
 
-export const submitReport = async (ReportRefId, PresumptiveColiformCount, IssuedDate, EcoliCount, AppearanceOfSample, Results, Remarks, SampleId, LabId) => {
+export const submitReport = async (ReportRefId, PresumptiveColiformCount, IssuedDate, EcoliCount, AppearanceOfSample, PCResults, ECResults, Remarks, SampleId, LabId) => {
   try {
     await axios.post(`${base_url}/WCReport/AddWCReport`, {
       reportRefId: ReportRefId,
@@ -25,7 +25,8 @@ export const submitReport = async (ReportRefId, PresumptiveColiformCount, Issued
       issuedDate: IssuedDate,
       ecoliCount: EcoliCount,
       appearanceOfSample: AppearanceOfSample,
-      results: Results,
+      pcResults: PCResults,
+      ecResults: ECResults,
       remarks: Remarks,
       sampleId: SampleId,
       labId: LabId

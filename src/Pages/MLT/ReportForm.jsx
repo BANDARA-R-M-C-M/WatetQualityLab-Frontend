@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { submitReport } from '../../Service/MLTService';
+import { useLocation } from 'react-router-dom';
 
 function ReportForm() {
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
 
     const [reportRefId, setReportRefId] = useState('');
     const [presumptiveColiformCount, setPresumptiveColiformCount] = useState('');
@@ -13,13 +17,18 @@ function ReportForm() {
     const [sampleId, setSampleId] = useState('');
     const [labId, setLabId] = useState('');
 
+    useEffect(() => {
+        setSampleId(searchParams.get('sampleId'));
+        setLabId(searchParams.get('labId'));
+    }, []);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if(await submitReport(reportRefId, presumptiveColiformCount, issuedDate, ecoliCount, appearanceOfSample, results, remarks, sampleId, labId)){
-            alert('Sample added successfully');
+            alert('Report created successfully');
         } else {
-            alert('Failed to add sample');
+            alert('Failed to create report');
         }
         
         setReportRefId('');
