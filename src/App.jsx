@@ -9,7 +9,7 @@ function App() {
         <>
             <UserProvider>
             <Outlet/>
-            <ToastContainer />
+            <ToastContainer/>
             </UserProvider>
     </>
     );

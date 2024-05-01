@@ -17,7 +17,7 @@ export const getNewSamples = async (mltId) => {
   }
 };
 
-export const submitReport = async (ReportRefId, PresumptiveColiformCount, IssuedDate, EcoliCount, AppearanceOfSample, PCResults, ECResults, Remarks, SampleId, LabId) => {
+export const submitReport = async (ReportRefId, PresumptiveColiformCount, IssuedDate, EcoliCount, AppearanceOfSample, PCResults, ECResults, Remarks, MltId, SampleId, LabId) => {
   try {
     await axios.post(`${base_url}/WCReport/AddWCReport`, {
       reportRefId: ReportRefId,
@@ -28,6 +28,7 @@ export const submitReport = async (ReportRefId, PresumptiveColiformCount, Issued
       pcResults: PCResults,
       ecResults: ECResults,
       remarks: Remarks,
+      mltId: MltId,
       sampleId: SampleId,
       labId: LabId
     });
@@ -37,11 +38,12 @@ export const submitReport = async (ReportRefId, PresumptiveColiformCount, Issued
   }
 }
 
-export const updateStatus = async (sampleId, Status) => {
+export const updateStatus = async (sampleId, Status, Comment) => {
   try {
     await axios.put(`${base_url}/WCReport/updateSampleStatus`, {
       sampleId: sampleId,
-      status: Status
+      status: Status,
+      comment: Comment
     });
     return true;
   } catch (error) {

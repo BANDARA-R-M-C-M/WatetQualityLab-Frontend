@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getPHIs, submitSample } from '../../Service/PHIService';
+import { submitSample } from '../../Service/PHIService';
+import { useAuth } from '../../Context/useAuth';
 
 function PHIDashboard() {
 
@@ -11,35 +12,37 @@ function PHIDashboard() {
     const [collectingSource, setCollectingSource] = useState('');
     const [stateOfChlorination, setStateOfChlorination] = useState('');
 
-    useEffect(() => {
-        const fetchPhiAreas = async () => {
-            try {
-                const response = await getPHIs();
-                setPhiAreaOptions(response.data);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching Phi_Areas:', error);
-            }
-        };
+    const { user } = useAuth();
 
-        fetchPhiAreas();
-    }, []);
+    // useEffect(() => {
+    //     const fetchPhiAreas = async () => {
+    //         try {
+    //             const response = await getPHIs();
+    //             setPhiAreaOptions(response.data);
+    //             console.log(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching Phi_Areas:', error);
+    //         }
+    //     };
+
+    //     fetchPhiAreas();
+    // }, []);
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
+        // event.preventDefault();
 
-        if(await submitSample(sampleId, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, selectedPhiArea.phiAreaID, selectedPhiArea.phiArea_name)){
-            alert('Sample added successfully');
-        } else {
-            alert('Failed to add sample');
-        }
+        // if(await submitSample(sampleId, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, user.userId, selectedPhiArea.phiAreaID, selectedPhiArea.phiArea_name)){
+        //     alert('Sample added successfully');
+        // } else {
+        //     alert('Failed to add sample');
+        // }
         
-        setSampleId('');
-        setDateOfCollection('');
-        setCatagoryOfSource('');
-        setCollectingSource('');
-        setStateOfChlorination('');
-        setSelectedPhiArea('');
+        // setSampleId('');
+        // setDateOfCollection('');
+        // setCatagoryOfSource('');
+        // setCollectingSource('');
+        // setStateOfChlorination('');
+        // setSelectedPhiArea('');
     };
 
     return (
@@ -68,7 +71,7 @@ function PHIDashboard() {
                             value={dateOfCollection} onChange={(e) => setDateOfCollection(e.target.value)} required />
                     </div>
 
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <label htmlFor="phiArea" className="block text-gray-700 text-sm font-bold mb-2">
                             Phi Area
                         </label>
@@ -83,7 +86,7 @@ function PHIDashboard() {
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    </div> */}
 
                     <div className="mb-4">
                         <label htmlFor="catagoryOfSource" className="block text-gray-700 text-sm font-bold mb-2">

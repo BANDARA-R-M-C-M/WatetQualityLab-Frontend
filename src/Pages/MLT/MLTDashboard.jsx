@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { getNewSamples, updateStatus } from "../../Service/MLTService";
+import { Button, Modal } from 'flowbite-react';
 
 function MLTDashboard() {
     const [samples, setSamples] = useState([]);
+    const [comment, setComment] = useState('');
+    const [rejectedId, setRejectedId] = useState('');
+    const [openModal, setOpenModal] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -24,7 +28,7 @@ function MLTDashboard() {
 
     const handleAccept = async (sampleId) => {
         try {
-            await updateStatus(sampleId, 'Accepted');
+            await updateStatus(sampleId, 'Accepted', comment);
             const updatedSamples = samples.filter(sample => sample.sampleId !== sampleId);
         setSamples(updatedSamples);
         } catch (error) {
@@ -32,11 +36,22 @@ function MLTDashboard() {
         }
     };
 
-    const handleReject = async (sampleId) => {
+    // const handleReject = async (sampleId) => {
+    //     try {
+    //         await updateStatus(sampleId, 'Rejected', );
+    //         const updatedSamples = samples.filter(sample => sample.sampleId !== sampleId);
+    //         setSamples(updatedSamples);
+    //     } catch (error) {
+    //         console.error('Error rejecting sample:', error);
+    //     }
+    // };
+
+    const handleReject = async () => {
         try {
-            await updateStatus(sampleId, 'Rejected');
-            const updatedSamples = samples.filter(sample => sample.sampleId !== sampleId);
+            await updateStatus(rejectedId, 'Rejected', comment);
+            const updatedSamples = samples.filter(sample => sample.sampleId !== rejectedId);
             setSamples(updatedSamples);
+            setOpenModal(false);
         } catch (error) {
             console.error('Error rejecting sample:', error);
         }
@@ -118,12 +133,33 @@ function MLTDashboard() {
                                         </span>
                                     </td>
                                     <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
-                                        <button onClick = {() => handleAccept(sample.sampleId)}
-                                        className="relative inline-block px-3 py-1 font-semibold bg-green-200 rounded-full">accept</button>
+                                        <Button onClick = {() => handleAccept(sample.sampleId)}
+                                        color="success">accept</Button>
                                     </td>
                                     <td className="px-3 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <button onClick={() => handleReject(sample.sampleId)}
-                                        className="relative inline-block px-3 py-1 font-semibold bg-red-200 rounded-full">reject</button>
+                                        <Button onClick={() => (setOpenModal(true), setRejectedId(sample.sampleId))}
+                                        color="failure">reject</Button>
+
+                                        <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                                            <div className="p-4">
+                                            <Modal.Header>Add Comment</Modal.Header>
+                                                <Modal.Body>
+                                                    <form onSubmit={handleReject}>
+                                                    <div className="mb-4">
+                                                            <label htmlFor="rejectedReason" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Reason for Rejection
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="rejectedReason" id="rejectedReason" type="text" placeholder="Reason for Rejection"
+                                                                value={comment} onChange={(e) => setComment(e.target.value)} required />
+                                                        </div>
+
+                                                        <Button type='submit' color='failure'>Reject</Button>
+                                                    </form>
+                                                </Modal.Body>
+                                            </div>
+                                        </Modal>
                                     </td>
                                 </tr>
                             ))}

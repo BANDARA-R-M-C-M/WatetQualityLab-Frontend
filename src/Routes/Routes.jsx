@@ -52,7 +52,6 @@ export const router = createBrowserRouter([
               children: [
                 {path: "dashboard", element: <MLTDashboard/>},
                 {path: "samples", element: <Samples/>},
-                {path: "report-form", element: <ReportForm/>},
                 {path: "inventory-general", element: <GeneralInventory/>},
                 {path: "inventory-surgical", element: <SurgicalInventory/>},
                 {path: "quality-instrumental", element: <InstrumentalQuality/>},

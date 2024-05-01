@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { getNewSamples, submitReport } from "../../Service/MLTService";
-import { useNavigate } from 'react-router-dom';
-import Modal from 'react-modal';
-
-Modal.setAppElement('#root');
+import { Button, Modal } from "flowbite-react";
 
 function Samples() {
 
@@ -19,7 +16,7 @@ function Samples() {
     const [remarks, setRemarks] = useState('');
     const [sampleId, setSampleId] = useState('');
     const [labId, setLabId] = useState('');
-    const [showForm, setShowForm] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -41,7 +38,7 @@ function Samples() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await submitReport(reportRefId, presumptiveColiformCount, issuedDate, ecoliCount, appearanceOfSample, pcresults, ecresults, remarks, sampleId, labId)) {
+        if (await submitReport(reportRefId, presumptiveColiformCount, issuedDate, ecoliCount, appearanceOfSample, pcresults, ecresults, remarks, user.userId, sampleId, labId)) {
             alert('Report created successfully');
         } else {
             alert('Failed to create report');
@@ -55,6 +52,8 @@ function Samples() {
         setPCResults('');
         setECResults('');
         setRemarks('');
+
+        setOpenModal(false);
     };
 
     return (
@@ -131,119 +130,102 @@ function Samples() {
                                             <span className="relative">{sample.acceptance}</span>
                                         </span>
                                     </td>
+                                    
                                     <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
-                                        <button
-                                            onClick={() => { setShowForm(true), setSampleId(sample.sampleId), setLabId(sample.labID) }}
-                                            className="relative inline-block px-3 py-1 font-semibold text-white bg-black rounded-full"
+                                        <Button
+                                            onClick={() => { setOpenModal(true), setSampleId(sample.sampleId), setLabId(sample.labID) }}
                                         >
                                             Report
-                                        </button>
+                                        </Button>
 
-                                        {showForm && (
-                                            <div className="fixed inset-0 flex items-center justify-center z-50">
-                                                <div className="bg-white rounded-lg p-6 w-96 max-w-full shadow-lg">
-                                                    <div className="flex justify-between items-center border-b-2 border-gray-200 pb-4">
-                                                        <h2 className="text-2xl font-semibold">Report</h2>
-                                                        <button onClick={() => setShowForm(false)} className="text-gray-500 hover:text-gray-700 focus:outline-none">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
-                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                            </svg>
-                                                        </button>
+                                        <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                                            <Modal.Header>Report</Modal.Header>
+                                            <Modal.Body>
+                                                <form onSubmit={handleSubmit} >
+                                                    <div className="mb-4">
+                                                        <label htmlFor="reportRefId" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            Report Ref ID
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="reportRefId" id="reportRefId" type="text" placeholder="Report Ref ID"
+                                                            value={reportRefId} onChange={(e) => setReportRefId(e.target.value)} required />
                                                     </div>
-                                                    <form onSubmit={handleSubmit} >
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="reportRefId" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                Report Ref ID
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="reportRefId" id="reportRefId" type="text" placeholder="Report Ref ID"
-                                                                value={reportRefId} onChange={(e) => setReportRefId(e.target.value)} required />
-                                                        </div>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            Presumptive Coliform Count
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="presumptiveColiformCount" id="presumptiveColiformCount" type="text" placeholder="Presumptive Coliform Count"
+                                                            value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
+                                                    </div>
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                Presumptive Coliform Count
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="presumptiveColiformCount" id="presumptiveColiformCount" type="text" placeholder="Presumptive Coliform Count"
-                                                                value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
-                                                        </div>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="issuedDate" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            Issued Date
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="issuedDate" id="issuedDate" type="date"
+                                                            value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
+                                                    </div>
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="issuedDate" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                Issued Date
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="issuedDate" id="issuedDate" type="date"
-                                                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
-                                                        </div>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            Ecoli Count
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="ecoliCount" id="ecoliCount" type="text" placeholder="Ecoli Count"
+                                                            value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
+                                                    </div>
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                Ecoli Count
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="ecoliCount" id="ecoliCount" type="text" placeholder="Ecoli Count"
-                                                                value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
-                                                        </div>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            Appearance Of Sample
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
+                                                            value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
+                                                    </div>
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                Appearance Of Sample
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
-                                                                value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
-                                                        </div>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            Presumptive Coliform Count
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="results" id="results" type="text" placeholder="Results"
+                                                            value={pcresults} onChange={(e) => setPCResults(e.target.value)} required />
+                                                    </div>
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                Presumptive Coliform Count
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="results" id="results" type="text" placeholder="Results"
-                                                                value={pcresults} onChange={(e) => setPCResults(e.target.value)} required />
-                                                        </div>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            E coli Count
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="results" id="results" type="text" placeholder="Results"
+                                                            value={ecresults} onChange={(e) => setECResults(e.target.value)} required />
+                                                    </div>
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                E coli Count
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="results" id="results" type="text" placeholder="Results"
-                                                                value={ecresults} onChange={(e) => setECResults(e.target.value)} required />
-                                                        </div>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
+                                                            Remarks
+                                                        </label>
+                                                        <input
+                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                            name="remarks" id="remarks" type="text" placeholder="Remarks"
+                                                            value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
+                                                    </div>
 
-                                                        <div className="mb-4">
-                                                            <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                Remarks
-                                                            </label>
-                                                            <input
-                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                name="remarks" id="remarks" type="text" placeholder="Remarks"
-                                                                value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
-                                                        </div>
-
-                                                        <div className="flex ">
-                                                            <button type="submit"
-                                                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                                                                Submit
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {/* </div> */}
+                                                    <Button type="submit">Submit</Button>
+                                                </form>
+                                            </Modal.Body>
+                                        </Modal>
                                     </td>
                                 </tr>
                             ))}
