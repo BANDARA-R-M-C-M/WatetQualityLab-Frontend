@@ -3,7 +3,7 @@ import base_url from "../Util/base_url";
 
 export const getNewSamples = async (mltId) => {
   try {
-    const data = await axios.get(`${base_url}/WCReport/newsamples`, {
+    const response = await axios.get(`${base_url}/WCReport/newsamples`, {
         // headers: {
         //     Authorization: `Bearer ${token}`
         // },
@@ -11,7 +11,7 @@ export const getNewSamples = async (mltId) => {
             mltId: mltId
         },
     });
-    return data;
+    return response;
   } catch (error) {
     console.log(error);
   }

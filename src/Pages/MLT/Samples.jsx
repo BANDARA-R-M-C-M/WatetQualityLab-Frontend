@@ -17,6 +17,7 @@ function Samples() {
     const [sampleId, setSampleId] = useState('');
     const [labId, setLabId] = useState('');
     const [openModal, setOpenModal] = useState(false);
+
     const { user } = useAuth();
 
     useEffect(() => {
@@ -33,7 +34,7 @@ function Samples() {
         };
 
         fetchSamples();
-    }, []);
+    }, [openModal]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -97,6 +98,9 @@ function Samples() {
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Acceptance
                                 </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Report Availability
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,13 +134,18 @@ function Samples() {
                                             <span className="relative">{sample.acceptance}</span>
                                         </span>
                                     </td>
-                                    
                                     <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
-                                        <Button
-                                            onClick={() => { setOpenModal(true), setSampleId(sample.sampleId), setLabId(sample.labID) }}
-                                        >
-                                            Report
-                                        </Button>
+                                        <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                            <span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                                            {sample.reportAvailable ? 
+                                            <span className="relative">Has report</span> : 
+                                            <span className="relative">Hasn't report</span>}
+                                        </span>
+                                    </td>
+                                    <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
+                                        {sample.reportAvailable ? 
+                                        <Button disabled>Report</Button> :
+                                        <Button onClick={() => {setOpenModal(true), setSampleId(sample.sampleId), setLabId(sample.labID)}}>Report</Button>}
 
                                         <Modal show={openModal} onClose={() => setOpenModal(false)}>
                                             <Modal.Header>Report</Modal.Header>

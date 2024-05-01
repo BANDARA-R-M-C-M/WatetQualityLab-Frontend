@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal } from "flowbite-react";
-import { getPHIDetails, submitSample } from '../../Service/PHIService';
+import { getPHIDetails, submitSample, getAddedSamples, updateWCSample, deleteWCSample } from '../../Service/PHIService';
 import { useAuth } from '../../Context/useAuth';
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { set } from 'react-hook-form';
 
 function Samples() {
 
+    const [samples, setSamples] = useState([]);
     const [sampleId, setSampleId] = useState('');
     const [dateOfCollection, setDateOfCollection] = useState('');
     const [phiAreaId, setPhiAreaId] = useState('');
@@ -12,9 +15,29 @@ function Samples() {
     const [catagoryOfSource, setCatagoryOfSource] = useState('');
     const [collectingSource, setCollectingSource] = useState('');
     const [stateOfChlorination, setStateOfChlorination] = useState('');
-    const [openModal, setOpenModal] = useState(false);
+    const [updatedId, setUpdatedId] = useState('');
+    const [deletedId, setDeletedId] = useState('');
+    const [openNewModal, setOpenNewModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const { user } = useAuth();
+
+    useEffect(() => {
+        const fetchAddedSamples = async () => {
+            try {
+                const response = await getAddedSamples(user.userId);
+                if (response) {
+                    const pendingSamples = response.data.filter(sample => sample.acceptance === 'Pending');
+                    setSamples(pendingSamples);
+                }
+            } catch (error) {
+                console.error('Error fetching added samples:', error);
+            }
+        };
+
+        fetchAddedSamples();
+    }, [openNewModal, openEditModal, openDeleteModal]);
 
     useEffect(() => {
         getPHIDetails(user.userId).then((response) => {
@@ -38,7 +61,37 @@ function Samples() {
         setCollectingSource('');
         setStateOfChlorination('');
 
-        setOpenModal(false);
+        setOpenNewModal(false);
+    };
+
+    const handleUpdate = async (event) => {
+        event.preventDefault();
+
+        if (await updateWCSample(updatedId, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination)) {
+            alert('Sample updated successfully');
+        } else {
+            alert('Failed to update sample');
+        }
+
+        setSampleId('');
+        setDateOfCollection('');
+        setCatagoryOfSource('');
+        setCollectingSource('');
+        setStateOfChlorination('');
+
+        setOpenEditModal(false);
+    };
+
+    const handleDelete = async (deletedId) => {
+        try {
+            await deleteWCSample(deletedId);
+            alert('Sample deleted successfully');
+        } catch (error) {
+            console.error('Error deleting sample:', error);
+            alert('Failed to delete sample');
+        }
+
+        setOpenDeleteModal(false);
     };
 
     return (
@@ -56,10 +109,10 @@ function Samples() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => { setOpenModal(true) }}
+                            onClick={() => { setOpenNewModal(true) }}
                         >Add Sample
                         </Button>
-                        <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                        <Modal show={openNewModal} onClose={() => setOpenNewModal(false)}>
                             <Modal.Header>Add Sample</Modal.Header>
                             <Modal.Body>
                                 <form onSubmit={handleSubmit}>
@@ -82,23 +135,6 @@ function Samples() {
                                             name="dateOfCollection" id="dateOfCollection" type="date" placeholder="Date of Collection"
                                             value={dateOfCollection} onChange={(e) => setDateOfCollection(e.target.value)} required />
                                     </div>
-
-                                    {/* <div className="mb-4">
-                                        <label htmlFor="phiArea" className="block text-gray-700 text-sm font-bold mb-2">
-                                            Phi Area
-                                        </label>
-                                        <select
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            name="phiArea" id="phiArea"
-                                            onChange={(e) => setSelectedPhiArea(phiAreaOptions.find(phiArea => phiArea.phiAreaID === e.target.value))} required >
-                                            <option value="">Select Phi Area</option>
-                                            {phiAreaOptions.map((phiArea) => (
-                                                <option key={phiArea.phiAreaID} value={phiArea.phiAreaID}>
-                                                    {phiArea.phiArea_name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div> */}
 
                                     <div className="mb-4">
                                         <label htmlFor="catagoryOfSource" className="block text-gray-700 text-sm font-bold mb-2">
@@ -140,7 +176,154 @@ function Samples() {
                 </div>
                 <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                     <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                        <table className="min-w-full leading-normal">
+                            <thead>
+                                <tr>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Sample Id
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Date of Collection
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        PHI Area
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Category of Source
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Collecting Source
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        State of Chlorination
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Acceptance
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {samples.map((sample, index) => (
+                                    <tr key={index}>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{sample.sampleId}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{sample.dateOfCollection}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{sample.phiAreaName}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{sample.catagoryOfSource}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{sample.collectingSource}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{sample.stateOfChlorination}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                                <span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                                                <span className="relative">{sample.acceptance}</span>
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <Button
+                                                onClick={() => { setOpenEditModal(true), setUpdatedId(sample.sampleId) }}
+                                            >Edit
+                                            </Button>
+                                            <Modal show={openEditModal} onClose={() => setOpenEditModal(false)}>
+                                                <Modal.Header>Edit Sample</Modal.Header>
+                                                <Modal.Body>
+                                                    <form onSubmit={handleUpdate}>
+                                                        <div className="mb-4">
+                                                            <label htmlFor="sampleId" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Sample ID
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="sampleId" id="sampleId" type="text" placeholder="Sample ID"
+                                                                value={sampleId} onChange={(e) => setSampleId(e.target.value)} required />
+                                                        </div>
 
+                                                        <div className="mb-4">
+                                                            <label htmlFor="dateOfCollection" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Date of Collection
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="dateOfCollection" id="dateOfCollection" type="date" placeholder="Date of Collection"
+                                                                value={dateOfCollection} onChange={(e) => setDateOfCollection(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="catagoryOfSource" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Category of Source
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="catagoryOfSource" id="catagoryOfSource" type="text" placeholder="Category of Source"
+                                                                value={catagoryOfSource} onChange={(e) => setCatagoryOfSource(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="collectingSource" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                Collecting Source
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="collectingSource" id="collectingSource" type="text" placeholder="Collecting Source"
+                                                                value={collectingSource} onChange={(e) => setCollectingSource(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <label htmlFor="stateOfChlorination" className="block text-gray-700 text-sm font-bold mb-2">
+                                                                State of Chlorination
+                                                            </label>
+                                                            <input
+                                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                                name="stateOfChlorination" id="stateOfChlorination" type="text" placeholder="State of Chlorination"
+                                                                value={stateOfChlorination} onChange={(e) => setStateOfChlorination(e.target.value)} required />
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between">
+                                                            <Button type="submit">Submit</Button>
+                                                        </div>
+                                                    </form>
+                                                </Modal.Body>
+                                            </Modal>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <Button
+                                                onClick={() => { setOpenDeleteModal(true), setDeletedId(sample.sampleId) }}
+                                            >Delete
+                                            </Button>
+                                            <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup>
+                                                <Modal.Header />
+                                                <Modal.Body>
+                                                    <div className="text-center">
+                                                        <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                                                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                                            Are you sure you want to delete this sample?
+                                                        </h3>
+                                                        <div className="flex justify-center gap-4">
+                                                            <Button color="failure" onClick={() => handleDelete(deletedId)}>
+                                                                Yes, I'm sure
+                                                            </Button>
+                                                            <Button color="gray" onClick={() => setOpenDeleteModal(false)}>
+                                                                No, cancel
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </Modal.Body>
+                                            </Modal>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

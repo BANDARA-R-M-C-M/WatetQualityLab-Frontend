@@ -3,7 +3,7 @@ import base_url from "../Util/base_url";
 
 export const getNewReports = async (mohId) => {
   try {
-    const data = await axios.get(`${base_url}/WCReport/newreports`, {
+    const response = await axios.get(`${base_url}/WCReport/newreports`, {
         // headers: {
         //     Authorization: `Bearer ${token}`
         // },
@@ -11,7 +11,7 @@ export const getNewReports = async (mohId) => {
             mohId: mohId
         },
     });
-    return data;
+    return response;
   } catch (error) {
     console.log(error);
   }
