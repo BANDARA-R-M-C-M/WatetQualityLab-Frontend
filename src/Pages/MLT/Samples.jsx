@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { getNewSamples, submitReport } from "../../Service/MLTService";
+import { getNewSamples, submitReport, previewReport } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
 
 function Samples() {
 
     const [samples, setSamples] = useState([]);
-    const [reportRefId, setReportRefId] = useState('');
+    const [myRefNo, setMyRefNo] = useState('');
     const [presumptiveColiformCount, setPresumptiveColiformCount] = useState('');
     const [issuedDate, setIssuedDate] = useState('');
     const [ecoliCount, setEcoliCount] = useState('');
     const [appearanceOfSample, setAppearanceOfSample] = useState('');
-    const [pcresults, setPCResults] = useState('');
-    const [ecresults, setECResults] = useState('');
     const [remarks, setRemarks] = useState('');
     const [sampleId, setSampleId] = useState('');
     const [labId, setLabId] = useState('');
+    const [stateOfChlorination, setStateOfChlorination] = useState('');
+    const [collectingSource, setCollectingSource] = useState('');
+    const [DateOfCollection, setDateOfCollection] = useState('');
+    const [analyzedDate, setAnalyzedDate] = useState('');
+    const [labName, setLabName] = useState('');
+    const [labLocation, setLabLocation] = useState('');
+    const [labTelephone, setLabTelephone] = useState('');
     const [openModal, setOpenModal] = useState(false);
+    const [previewModalOpen, setPreviewModalOpen] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState('');
 
     const { user } = useAuth();
 
@@ -39,22 +46,36 @@ function Samples() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await submitReport(reportRefId, presumptiveColiformCount, issuedDate, ecoliCount, appearanceOfSample, pcresults, ecresults, remarks, user.userId, sampleId, labId)) {
+        if (await submitReport(myRefNo, presumptiveColiformCount, analyzedDate, ecoliCount, appearanceOfSample, remarks, user.userId, sampleId, labId)) {
             alert('Report created successfully');
         } else {
             alert('Failed to create report');
         }
 
-        setReportRefId('');
+        setMyRefNo('');
         setPresumptiveColiformCount('');
         setIssuedDate('');
         setEcoliCount('');
         setAppearanceOfSample('');
-        setPCResults('');
-        setECResults('');
         setRemarks('');
 
         setOpenModal(false);
+    };
+
+    const handlePreview = async () => {
+        try {
+            const response = await previewReport(sampleId, stateOfChlorination, collectingSource, DateOfCollection, analyzedDate, reportRefId, issuedDate,
+                presumptiveColiformCount, ecoliCount, appearanceOfSample, remarks, labName, labLocation, labTelephone);
+            if (response) {
+                const pdfData = new Blob([response.data], { type: 'application/pdf' });
+                const url = URL.createObjectURL(pdfData);
+
+                setPreviewUrl(url);
+                setPreviewModalOpen(true);
+            }
+        } catch (error) {
+            console.log('Error fetching data:', error);
+        }
     };
 
     return (
@@ -84,7 +105,7 @@ function Samples() {
                                     Date of Collection
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Phi_Area
+                                    PHI Area
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Catagory of Source
@@ -101,17 +122,16 @@ function Samples() {
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Report Availability
                                 </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {samples.map((sample, index) => (
                                 <tr key={index}>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <div className="flex items-center">
-                                            <div className="ml-3">
-                                                <p className="text-gray-900 whitespace-no-wrap">{sample.sampleId}</p>
-                                            </div>
-                                        </div>
+                                        <p className="text-gray-900 whitespace-no-wrap">{sample.sampleId}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{sample.dateOfCollection}</p>
@@ -134,107 +154,20 @@ function Samples() {
                                             <span className="relative">{sample.acceptance}</span>
                                         </span>
                                     </td>
-                                    <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
+                                    <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm">
                                         <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                             <span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                                            {sample.reportAvailable ? 
-                                            <span className="relative">Has report</span> : 
-                                            <span className="relative">Hasn't report</span>}
+                                            {sample.reportAvailable ?
+                                                <span className="relative">Has report</span> :
+                                                <span className="relative">Hasn't report</span>}
                                         </span>
                                     </td>
-                                    <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
-                                        {sample.reportAvailable ? 
-                                        <Button disabled>Report</Button> :
-                                        <Button onClick={() => {setOpenModal(true), setSampleId(sample.sampleId), setLabId(sample.labID)}}>Report</Button>}
-
-                                        <Modal show={openModal} onClose={() => setOpenModal(false)}>
-                                            <Modal.Header>Report</Modal.Header>
-                                            <Modal.Body>
-                                                <form onSubmit={handleSubmit} >
-                                                    <div className="mb-4">
-                                                        <label htmlFor="reportRefId" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            Report Ref ID
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="reportRefId" id="reportRefId" type="text" placeholder="Report Ref ID"
-                                                            value={reportRefId} onChange={(e) => setReportRefId(e.target.value)} required />
-                                                    </div>
-
-                                                    <div className="mb-4">
-                                                        <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            Presumptive Coliform Count
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="presumptiveColiformCount" id="presumptiveColiformCount" type="text" placeholder="Presumptive Coliform Count"
-                                                            value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
-                                                    </div>
-
-                                                    <div className="mb-4">
-                                                        <label htmlFor="issuedDate" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            Issued Date
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="issuedDate" id="issuedDate" type="date"
-                                                            value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
-                                                    </div>
-
-                                                    <div className="mb-4">
-                                                        <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            Ecoli Count
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="ecoliCount" id="ecoliCount" type="text" placeholder="Ecoli Count"
-                                                            value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
-                                                    </div>
-
-                                                    <div className="mb-4">
-                                                        <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            Appearance Of Sample
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
-                                                            value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
-                                                    </div>
-
-                                                    <div className="mb-4">
-                                                        <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            Presumptive Coliform Count
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="results" id="results" type="text" placeholder="Results"
-                                                            value={pcresults} onChange={(e) => setPCResults(e.target.value)} required />
-                                                    </div>
-
-                                                    <div className="mb-4">
-                                                        <label htmlFor="results" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            E coli Count
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="results" id="results" type="text" placeholder="Results"
-                                                            value={ecresults} onChange={(e) => setECResults(e.target.value)} required />
-                                                    </div>
-
-                                                    <div className="mb-4">
-                                                        <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
-                                                            Remarks
-                                                        </label>
-                                                        <input
-                                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                            name="remarks" id="remarks" type="text" placeholder="Remarks"
-                                                            value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
-                                                    </div>
-
-                                                    <Button type="submit">Submit</Button>
-                                                </form>
-                                            </Modal.Body>
-                                        </Modal>
+                                    <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {sample.reportAvailable ?
+                                            <Button disabled>Report</Button> :
+                                            <Button onClick={() => { setOpenModal(true), setSampleId(sample.sampleId), setLabId(sample.labID) }}>
+                                                Report
+                                            </Button>}
                                     </td>
                                 </tr>
                             ))}
@@ -242,6 +175,87 @@ function Samples() {
                     </table>
                 </div>
             </div>
+
+
+            <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                <Modal.Header>Report</Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleSubmit} >
+                        <div className="mb-4">
+                            <label htmlFor="myRefNo" className="block text-gray-700 text-sm font-bold mb-2">
+                                My Ref No
+                            </label>
+                            <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="myRefNo" id="myRefNo" type="text" placeholder="My Ref No"
+                                value={myRefNo} onChange={(e) => setMyRefNo(e.target.value)} required />
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                Presumptive Coliform Count
+                            </label>
+                            <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="presumptiveColiformCount" id="presumptiveColiformCount" type="text" placeholder="Presumptive Coliform Count"
+                                value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                Ecoli Count
+                            </label>
+                            <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="ecoliCount" id="ecoliCount" type="text" placeholder="Ecoli Count"
+                                value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="analyzedDate" className="block text-gray-700 text-sm font-bold mb-2">
+                                Analyzed Date
+                            </label>
+                            <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="analyzedDate" id="analyzedDate" type="date"
+                                value={analyzedDate} onChange={(e) => setAnalyzedDate(e.target.value)} required />
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
+                                Appearance Of Sample
+                            </label>
+                            <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
+                                value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
+                                Remarks
+                            </label>
+                            <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="remarks" id="remarks" type="text" placeholder="Remarks"
+                                value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
+                        </div>
+
+                        <div className="flex mb-4 justify-evenly">
+                            <Button type="submit" size="xl">Submit</Button>
+                            <Button onClick={handlePreview} size="xl">Preview</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
+
+
+            <Modal show={previewModalOpen} onClose={() => setPreviewModalOpen(false)}>
+                <Modal.Header>Preview</Modal.Header>
+                <Modal.Body>
+                    <iframe src={previewUrl} type="application/pdf" width="100%" height="870px" />
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }

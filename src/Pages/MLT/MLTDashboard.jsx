@@ -75,7 +75,7 @@ function MLTDashboard() {
                                         Date of Collection
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Phi_Area
+                                        PHI Area
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Catagory of Source
@@ -88,6 +88,10 @@ function MLTDashboard() {
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Acceptance
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
                                 </tr>
                             </thead>
@@ -105,7 +109,7 @@ function MLTDashboard() {
                                             <p className="text-gray-900 whitespace-no-wrap">{sample.dateOfCollection}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{sample.phi_Area}</p>
+                                            <p className="text-gray-900 whitespace-no-wrap">{sample.phiAreaName}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{sample.catagoryOfSource}</p>
@@ -127,29 +131,8 @@ function MLTDashboard() {
                                                 color="success">accept</Button>
                                         </td>
                                         <td className="px-3 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button onClick={() => {setOpenModal(true), setRejectedId(sample.sampleId)}}
+                                            <Button onClick={() => { setOpenModal(true), setRejectedId(sample.sampleId) }}
                                                 color="failure">reject</Button>
-
-                                            <Modal show={openModal} onClose={() => setOpenModal(false)}>
-                                                <div className="p-4">
-                                                    <Modal.Header>Add Comment</Modal.Header>
-                                                    <Modal.Body>
-                                                        <form onSubmit={handleReject}>
-                                                            <div className="mb-4">
-                                                                <label htmlFor="rejectedReason" className="block text-gray-700 text-sm font-bold mb-2">
-                                                                    Reason for Rejection
-                                                                </label>
-                                                                <input
-                                                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                                    name="rejectedReason" id="rejectedReason" type="text" placeholder="Reason for Rejection"
-                                                                    value={comment} onChange={(e) => setComment(e.target.value)} required />
-                                                            </div>
-
-                                                            <Button type='submit' color='failure'>Reject</Button>
-                                                        </form>
-                                                    </Modal.Body>
-                                                </div>
-                                            </Modal>
                                         </td>
                                     </tr>
                                 ))}
@@ -158,6 +141,27 @@ function MLTDashboard() {
                     </div>
                 </div>
             </div>
+
+            <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                <div className="p-4">
+                    <Modal.Header>Add Comment</Modal.Header>
+                    <Modal.Body>
+                        <form onSubmit={handleReject}>
+                            <div className="mb-4">
+                                <label htmlFor="rejectedReason" className="block text-gray-700 text-sm font-bold mb-2">
+                                    Reason for Rejection
+                                </label>
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    name="rejectedReason" id="rejectedReason" type="text" placeholder="Reason for Rejection"
+                                    value={comment} onChange={(e) => setComment(e.target.value)} required />
+                            </div>
+
+                            <Button type='submit' color='failure'>Reject</Button>
+                        </form>
+                    </Modal.Body>
+                </div>
+            </Modal>
         </>
     );
 }

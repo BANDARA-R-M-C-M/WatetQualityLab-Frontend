@@ -27,10 +27,10 @@ export const getAddedSamples = async (phiId) => {
     }
 }
 
-export const submitSample = async (sampleId, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, phiId, phiAreaID, phiAreaName) => {
+export const submitSample = async (yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, phiId, phiAreaID, phiAreaName) => {
     try {
         await axios.post(`${base_url}/WCReport/AddWCSample`, {
-            sampleId: sampleId,
+            yourRefNo: yourRefNo,
             stateOfChlorination: stateOfChlorination,
             dateOfCollection: dateOfCollection,
             catagoryOfSource: catagoryOfSource,
@@ -45,10 +45,10 @@ export const submitSample = async (sampleId, dateOfCollection, catagoryOfSource,
     }
 };
 
-export const updateWCSample = async (sampleId, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, phiId, phiAreaID, phiAreaName) => {
+export const updateWCSample = async (sampleId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination) => {
     try {
         await axios.put(`${base_url}/WCReport/updateWCSample/${sampleId}`, {
-            sampleId: sampleId,
+            yourRefNo: yourRefNo,
             stateOfChlorination: stateOfChlorination,
             dateOfCollection: dateOfCollection,
             catagoryOfSource: catagoryOfSource,
