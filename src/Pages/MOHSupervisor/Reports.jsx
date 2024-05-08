@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { getNewReports } from "../../Service/MOHService";
-import { Button } from "flowbite-react";
+import { Button, Modal } from "flowbite-react";
 
 function Reports() {
 
     const [reports, setReports] = useState([]);
+    const [reportUrl, setReportUrl] = useState('');
+    const [openPreviewModal, setOpenPreviewModal] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -61,8 +63,6 @@ function Reports() {
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
-                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -84,10 +84,10 @@ function Reports() {
                                             <p className="text-gray-900 whitespace-no-wrap">{report.remarks}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button onClick={() => previewSample(sample.sampleId)}>Preview</Button>
-                                        </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button onClick={() => downloadSample(sample.sampleId)}>Download</Button>
+                                            <Button onClick={() => {
+                                                setOpenPreviewModal(true);
+                                                setReportUrl(report.reportUrl);
+                                            }}>Preview</Button>
                                         </td>
                                     </tr>
                                 ))}
@@ -97,6 +97,12 @@ function Reports() {
                 </div>
             </div>
 
+            <Modal show={openPreviewModal} onClose={() => setOpenPreviewModal(false)}>
+                <Modal.Header>Report Preview</Modal.Header>
+                <Modal.Body>
+                    <embed src={reportUrl} type="application/pdf" width={100 + '%'} height={500 + 'px'} />
+                </Modal.Body>
+            </Modal>
         </>
     );
 }

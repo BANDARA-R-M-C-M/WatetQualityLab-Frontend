@@ -3,7 +3,7 @@ import base_url from "../Util/base_url";
 
 export const getNewSamples = async (mltId) => {
   try {
-    const response = await axios.get(`${base_url}/WCReport/newsamples`, {
+    const response = await axios.get(`${base_url}/WCSample/newsamples`, {
       // headers: {
       //     Authorization: `Bearer ${token}`
       // },
@@ -49,37 +49,21 @@ export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDa
   }
 }
 
-export const previewReport = async (sampleId, StateOfChlorination, CollectingSource, DateOfCollection, AnalyzedDate, ReportRefId, IssuedDate,
-  PresumptiveColiformCount, EcoliCount, AppearanceOfSample, Results, LabName, LabLocation, LabTelephone) => {
+export const generateReport = async (ReportRefId) => {
   try {
-    const response = await axios.post(`${base_url}/WCReport/generatePdf`, {
-      sampleId: sampleId,
-      stateOfChlorination: StateOfChlorination,
-      collectingSource: CollectingSource,
-      dateOfCollection: DateOfCollection,
-      analyzedDate: AnalyzedDate,
-      reportRefId: ReportRefId,
-      issuedDate: IssuedDate,
-      presumptiveColiformCount: PresumptiveColiformCount,
-      ecoliCount: EcoliCount,
-      appearanceOfSample: AppearanceOfSample,
-      results: Results,
-      labName: LabName,
-      labLocation: LabLocation,
-      labTelephone: LabTelephone
-    }, {
-      responseType: 'blob'
-    }
-    );
-    return response;
+    await axios.post(`${base_url}/Report/uploadPDF`, {
+      params: {
+        reportRefId: ReportRefId
+      }
+    });
   } catch (error) {
     console.log(error);
   }
-};
+}
 
 export const updateStatus = async (sampleId, Status, Comment) => {
   try {
-    await axios.put(`${base_url}/WCReport/updateSampleStatus`, {
+    await axios.put(`${base_url}/WCSample/updateSampleStatus`, {
       sampleId: sampleId,
       status: Status,
       comment: Comment
@@ -97,7 +81,7 @@ export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, P
       appearanceOfSample: AppearanceOfSample,
       presumptiveColiformCount: PresumptiveColiformCount,
       ecoliCount: EcoliCount,
-      results: Results
+      remarks: Results
     });
     return true;
   } catch (error) {

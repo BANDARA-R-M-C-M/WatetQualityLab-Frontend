@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { getNewSamples, submitReport, previewReport } from "../../Service/MLTService";
+import { getNewSamples, submitReport } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
 
 function Samples() {
@@ -60,22 +60,6 @@ function Samples() {
         setRemarks('');
 
         setOpenModal(false);
-    };
-
-    const handlePreview = async () => {
-        try {
-            const response = await previewReport(sampleId, stateOfChlorination, collectingSource, DateOfCollection, analyzedDate, reportRefId, issuedDate,
-                presumptiveColiformCount, ecoliCount, appearanceOfSample, remarks, labName, labLocation, labTelephone);
-            if (response) {
-                const pdfData = new Blob([response.data], { type: 'application/pdf' });
-                const url = URL.createObjectURL(pdfData);
-
-                setPreviewUrl(url);
-                setPreviewModalOpen(true);
-            }
-        } catch (error) {
-            console.log('Error fetching data:', error);
-        }
     };
 
     return (
@@ -243,7 +227,7 @@ function Samples() {
 
                         <div className="flex mb-4 justify-evenly">
                             <Button type="submit" size="xl">Submit</Button>
-                            <Button onClick={handlePreview} size="xl">Preview</Button>
+                            
                         </div>
                     </form>
                 </Modal.Body>

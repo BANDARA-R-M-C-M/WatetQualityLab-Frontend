@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getPHIDetails, submitSample, getAddedSamples, updateWCSample, deleteWCSample } from '../../Service/PHIService';
 import { useAuth } from '../../Context/useAuth';
-import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 function Samples() {
 
@@ -141,6 +141,10 @@ function Samples() {
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Acceptance
                                     </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,13 +179,21 @@ function Samples() {
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
-                                                onClick={() => { setOpenEditModal(true), setUpdatedId(sample.sampleId) }}
+                                                onClick={() => {
+                                                    setOpenEditModal(true);
+                                                    setUpdatedId(sample.sampleId);
+                                                    setYourRefNo(sample.yourRefNo);
+                                                    setDateOfCollection(sample.dateOfCollection);
+                                                    setCatagoryOfSource(sample.catagoryOfSource);
+                                                    setCollectingSource(sample.collectingSource);
+                                                    setStateOfChlorination(sample.stateOfChlorination);
+                                                }}
                                             >Edit
                                             </Button>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
-                                                onClick={() => { setOpenDeleteModal(true), setDeletedId(sample.sampleId) }}
+                                                onClick={() => { setOpenDeleteModal(true); setDeletedId(sample.sampleId); }}
                                             >Delete
                                             </Button>
                                         </td>
@@ -274,7 +286,7 @@ function Samples() {
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 name="dateOfCollection" id="dateOfCollection" type="date" placeholder="Date of Collection"
-                                value={dateOfCollection} onChange={(e) => setDateOfCollection(e.target.value)} required />
+                                value={dateOfCollection} onChange={(e) => setDateOfCollection(e.target.value)}  />
                         </div>
 
                         <div className="mb-4">

@@ -16,7 +16,7 @@ export const getPHIDetails = async (phiId) => {
 
 export const getAddedSamples = async (phiId) => {
     try {
-        const response = await axios.get(`${base_url}/WCReport/getAddedSamples`, {
+        const response = await axios.get(`${base_url}/WCSample/getAddedSamples`, {
             params: {
                 phiId: phiId
             }
@@ -29,7 +29,7 @@ export const getAddedSamples = async (phiId) => {
 
 export const submitSample = async (yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, phiId, phiAreaID, phiAreaName) => {
     try {
-        await axios.post(`${base_url}/WCReport/AddWCSample`, {
+        await axios.post(`${base_url}/WCSample/AddWCSample`, {
             yourRefNo: yourRefNo,
             stateOfChlorination: stateOfChlorination,
             dateOfCollection: dateOfCollection,
@@ -47,7 +47,7 @@ export const submitSample = async (yourRefNo, dateOfCollection, catagoryOfSource
 
 export const updateWCSample = async (sampleId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination) => {
     try {
-        await axios.put(`${base_url}/WCReport/updateWCSample/${sampleId}`, {
+        await axios.put(`${base_url}/WCSample/updateWCSample/${sampleId}`, {
             yourRefNo: yourRefNo,
             stateOfChlorination: stateOfChlorination,
             dateOfCollection: dateOfCollection,
@@ -62,7 +62,7 @@ export const updateWCSample = async (sampleId, yourRefNo, dateOfCollection, cata
 
 export const deleteWCSample = async (sampleId) => {
     try {
-        await axios.delete(`${base_url}/WCReport/deleteWCSample/${sampleId}`);
+        await axios.delete(`${base_url}/WCSample/deleteWCSample/${sampleId}`);
         return true;
     } catch (error) {
         console.log(error);

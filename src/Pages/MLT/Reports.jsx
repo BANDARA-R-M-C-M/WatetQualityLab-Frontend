@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { updateWCReport, previewReport, getAddedReports, deleteWCReport } from "../../Service/MLTService";
+import { updateWCReport, getAddedReports, deleteWCReport } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
@@ -12,8 +12,10 @@ function WCReports() {
     const [ecoliCount, setEcoliCount] = useState('');
     const [appearanceOfSample, setAppearanceOfSample] = useState('');
     const [remarks, setRemarks] = useState('');
+    const [reportUrl, setReportUrl] = useState('');
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
+    const [openPreviewModal, setOpenPreviewModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
@@ -93,6 +95,9 @@ function WCReports() {
                                     Report Id
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    My Ref No
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Issued Date
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -128,6 +133,9 @@ function WCReports() {
                                         <p className="text-gray-900 whitespace-no-wrap">{report.reportRefId}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p className="text-gray-900 whitespace-no-wrap">{report.myRefNo}</p>
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{report.issuedDate}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -146,13 +154,27 @@ function WCReports() {
                                         <p className="text-gray-900 whitespace-no-wrap">{report.remarks}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <Button onClick={() => setOpenPreviewModal(true)}>Preview</Button>
+                                        <Button onClick={() => {
+                                            setOpenPreviewModal(true);
+                                            setReportUrl(report.reportUrl);
+                                        }}>Preview</Button>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <Button onClick={() => { setOpenEditModal(true), setUpdatedId(report.reportRefId) }}>Edit</Button>
+                                        <Button onClick={() => {
+                                            setOpenEditModal(true);
+                                            setUpdatedId(report.reportRefId);
+                                            setMyRefNo(report.myRefNo);
+                                            setPresumptiveColiformCount(report.presumptiveColiformCount);
+                                            setEcoliCount(report.ecoliCount);
+                                            setAppearanceOfSample(report.appearanceOfSample);
+                                            setRemarks(report.remarks);
+                                        }}>Edit</Button>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <Button onClick={() => { setOpenDeleteModal(true), setDeletedId(report.reportRefId) }}>Delete</Button>
+                                        <Button onClick={() => {
+                                            setOpenDeleteModal(true);
+                                            setDeletedId(report.reportRefId);
+                                        }}>Delete</Button>
                                     </td>
                                 </tr>
                             ))}
@@ -160,6 +182,13 @@ function WCReports() {
                     </table>
                 </div>
             </div>
+
+            <Modal show={openPreviewModal} onClose={() => setOpenPreviewModal(false)}>
+                <Modal.Header>Report Preview</Modal.Header>
+                <Modal.Body>
+                    <embed src={reportUrl} type="application/pdf" width={100+'%'} height={500+'px'} />
+                </Modal.Body>
+            </Modal>
 
             <Modal show={openEditModal} onClose={() => setOpenEditModal(false)}>
                 <Modal.Header>Edit Report</Modal.Header>
