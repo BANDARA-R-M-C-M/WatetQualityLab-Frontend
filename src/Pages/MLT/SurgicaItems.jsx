@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { getSurgicalInventoryItems, getSurgicalCatagories, addSurgicalInventoryItem, updateSurgicalInventoryItem, deleteSurgicalInventoryItem } from '../../Service/SurgicalInventoryService';
+import { getSurgicalInventoryItems, getSurgicalCatagories, addSurgicalInventoryItem, issueItem, updateSurgicalInventoryItem, deleteSurgicalInventoryItem } from '../../Service/SurgicalInventoryService';
 import { useAuth } from '../../Context/useAuth';
 import { set } from 'react-hook-form';
 
@@ -15,11 +15,15 @@ function SurgicalItems() {
     const [itemName, setItemName] = useState('');
     const [issuedDate, setIssuedDate] = useState('');
     const [issuedBy, setIssuedBy] = useState('');
-    const [quantity, setQuantity] = useState('');
+    const [issuingId, setIssuingId] = useState('');
+    const [issuingQuantity, setIssuingQuantity] = useState('');
+    const [issuingRemarks, setIssuingRemarks] = useState('');
+    const [quantity, setQuantity] = useState();
     const [remarks, setRemarks] = useState('');
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
     const [openNewModal, setOpenNewModal] = useState(false);
+    const [openIssueModal, setOpenIssueModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
@@ -39,7 +43,7 @@ function SurgicalItems() {
             }
         };
         fetchSurgicalItems();
-    }, [openNewModal, openEditModal, openDeleteModal]);
+    }, [openNewModal, openIssueModal, openEditModal, openDeleteModal]);
 
     useEffect(() => {
         getSurgicalCatagories(user.userId).then((response) => {
@@ -64,6 +68,19 @@ function SurgicalItems() {
         setSurgicalCategoryID('');
 
         setOpenNewModal(false);
+    };
+
+    const handleIssue = async (event) => {
+        event.preventDefault();
+        if (await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks)) {
+            alert('Item Issued Successfully')
+        } else {
+            alert('Failed to Issue Item')
+        }
+        setIssuingQuantity('');
+        setIssuingRemarks('');
+
+        setOpenIssueModal(false);
     };
 
     const handleUpdate = async (event) => {
@@ -147,6 +164,8 @@ function SurgicalItems() {
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -172,6 +191,15 @@ function SurgicalItems() {
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.remarks}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <Button
+                                                onClick={() => {
+                                                    setOpenIssueModal(true);
+                                                    setIssuingId(item.surgicalInventoryID);
+                                                }}
+                                            >Issue
+                                            </Button>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
@@ -233,6 +261,27 @@ function SurgicalItems() {
                             <label htmlFor="remarks" className="block text-sm font-medium text-gray-700">Remarks</label>
                             <input type="text" name="remarks" id="remarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                                 value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <Button type="submit" size="xl">Submit</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={openIssueModal} onClose={() => setOpenIssueModal(false)}>
+                <Modal.Header>Issue Item</Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleIssue}>
+                        <div className="mb-4">
+                            <label htmlFor="issuingQuantity" className="block text-sm font-medium text-gray-700">Issuing Quantity</label>
+                            <input type="text" name="issuingQuantity" id="issuingQuantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                value={issuingQuantity} onChange={(e) => setIssuingQuantity(e.target.value)} />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="issuingRemarks" className="block text-sm font-medium text-gray-700">Issuing Remarks</label>
+                            <input type="text" name="issuingRemarks" id="issuingRemarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                value={issuingRemarks} onChange={(e) => setIssuingRemarks(e.target.value)} />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>

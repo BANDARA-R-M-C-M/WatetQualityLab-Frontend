@@ -61,6 +61,21 @@ export const addSurgicalCategory = async (categoryName, labId) => {
     }
 }
 
+export const issueItem = async (itemId, quantity, issuedByLab, remarks) => {
+    try {
+        await axios.post(`${base_url}/SurgicalInventory/IssueItem`, {
+            itemId: itemId,
+            quantity: quantity,
+            issuedBy: issuedByLab,
+            remarks: remarks
+        });
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
 export const updateSurgicalInventoryItem = async (itemId, itemName, issuedDate, issuedBy, quantity, remarks, surgicalCategoryID) => {
     try {
         await axios.put(`${base_url}/SurgicalInventory/UpdateSurgicalInventoryItem/${itemId}`, {
