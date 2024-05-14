@@ -3,7 +3,7 @@ import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getMOHSupervisors, getMOHAreas, assignMOHSupervisortoMOHAreas, deleteUser } from "../../Service/AdminService";
 
-function MOHSupervisor(){
+function MOHSupervisor() {
 
     const [mohSupservisors, setMohSupevisors] = useState([]);
     const [mohAreas, setMohAreas] = useState([]);
@@ -58,8 +58,8 @@ function MOHSupervisor(){
 
     const handleAssign = async (e) => {
         e.preventDefault();
-        
-        if(await assignMOHSupervisortoMOHAreas(assignId, mohAreaId)){
+
+        if (await assignMOHSupervisortoMOHAreas(assignId, mohAreaId)) {
             alert('MOH Supervisor assigned successfully');
         } else {
             alert('Failed to assign MOH Supervisor');
@@ -80,7 +80,7 @@ function MOHSupervisor(){
         setOpenDeleteModal(false);
     }
 
-    return(
+    return (
         <>
             <div className="bg-white rounded-md w-full">
                 <div>
@@ -95,7 +95,7 @@ function MOHSupervisor(){
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => {setOpenNewModal(true)}}
+                            onClick={() => { setOpenNewModal(true) }}
                         >Add MOH Supervisor
                         </Button>
                     </div>
@@ -147,13 +147,19 @@ function MOHSupervisor(){
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
-                                                onClick={() => {setOpenAssignModal(true), setAssignId(mohSupservisor.id)}}
+                                                onClick={() => {
+                                                    setOpenAssignModal(true);
+                                                    setAssignId(mohSupservisor.id)
+                                                }}
                                             >Assign
                                             </Button>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
-                                                onClick={() => {setOpenDeleteModal(true), setDeletedId(mohSupservisor.id)}}
+                                                onClick={() => {
+                                                    setOpenDeleteModal(true);
+                                                    setDeletedId(mohSupservisor.id)
+                                                }}
                                             >Delete
                                             </Button>
                                         </td>
@@ -163,7 +169,7 @@ function MOHSupervisor(){
                         </table>
                     </div>
                 </div>
-            </div>         
+            </div>
 
             <Modal show={openAssignModal} onClose={() => setOpenAssignModal(false)}>
                 <Modal.Header>Assign MOH Supservisor to MOH Area</Modal.Header>

@@ -149,7 +149,11 @@ function Samples() {
                                     <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm">
                                         {sample.reportAvailable ?
                                             <Button disabled>Report</Button> :
-                                            <Button onClick={() => { setOpenModal(true), setSampleId(sample.sampleId), setLabId(sample.labID) }}>
+                                            <Button onClick={() => {
+                                                setOpenModal(true);
+                                                setSampleId(sample.sampleId);
+                                                setLabId(sample.labID)
+                                            }}>
                                                 Report
                                             </Button>}
                                     </td>
@@ -227,7 +231,7 @@ function Samples() {
 
                         <div className="flex mb-4 justify-evenly">
                             <Button type="submit" size="xl">Submit</Button>
-                            
+
                         </div>
                     </form>
                 </Modal.Body>
