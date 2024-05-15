@@ -1,6 +1,19 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
+export const getGeneralItemDetails = async (itemId) => {
+    try {
+        const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryItem`, {
+            params: {
+                itemId: itemId
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getGeneralInventoryItems = async (mltId, categoryId) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryItems`, {
@@ -28,13 +41,12 @@ export const getGeneralCatagories = async (mltId) => {
     }
 }
 
-export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, quantity, remarks, generalCategoryID, labId) => {
+export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, remarks, generalCategoryID, labId) => {
     try {
         await axios.post(`${base_url}/GeneralInventory/AddGeneralInventoryItem`, {
             itemName: itemName,
             issuedDate: issuedDate,
             issuedBy: issuedBy,
-            quantity: quantity,
             remarks: remarks,
             generalCategoryID: generalCategoryID,
             labId: labId

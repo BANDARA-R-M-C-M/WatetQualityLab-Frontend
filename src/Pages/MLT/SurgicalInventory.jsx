@@ -123,7 +123,11 @@ function SurgicalInventory() {
                                             <p className="text-gray-900 whitespace-no-wrap">{surgicalCatagory.categoryName}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Link to={`${surgicalCatagory.surgicalCategoryID}`}>View Items</Link>
+                                            <Link to={`${surgicalCatagory.surgicalCategoryID}`}>
+                                                <Button>
+                                                    View Items
+                                                </Button>
+                                            </Link>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button

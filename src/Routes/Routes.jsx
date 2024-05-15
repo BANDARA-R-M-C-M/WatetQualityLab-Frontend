@@ -5,6 +5,8 @@ import Phisidebar from "../Components/Phisidebar.jsx";
 import Mltsidebar from '../Components/Mltsidebar.jsx';
 import GeneralItems from "../Pages/MLT/GeneralItems.jsx";
 import SurgicalItems from "../Pages/MLT/SurgicaItems.jsx";
+import GeneralItem from "../Pages/MLT/GeneralItem.jsx";
+import SurgicalItem from "../Pages/MLT/SurgicalItem.jsx";
 import AdminDashboard from "../Pages/Admin/AdminDashboard"
 import MLT from "../Pages/Admin/MLT"
 import PHI from "../Pages/Admin/PHI";
@@ -55,8 +57,10 @@ export const router = createBrowserRouter([
                 {path: "samples", element: <Samples/>},
                 {path: "inventory-general", element: <GeneralInventory/>},
                 {path: "inventory-general/:categoryId", element: <GeneralItems/>},
+                {path: "inventory-general/:categoryId/:itemId", element: <GeneralItem/>},
                 {path: "inventory-surgical", element: <SurgicalInventory/>},
                 {path: "inventory-surgical/:categoryId", element: <SurgicalItems/>},
+                {path: "inventory-surgical/:categoryId/:itemId", element: <SurgicalItem/>},
                 {path: "quality-instrumental", element: <InstrumentalQuality/>},
                 {path: "quality-media", element: <MediaQuality/>},
                 {path: "reports", element: <Reports/>}

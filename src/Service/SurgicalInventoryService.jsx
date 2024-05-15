@@ -1,6 +1,19 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
+export const getSurgicalItemDetails = async (itemId) => {
+    try {
+        const response = await axios.get(`${base_url}/SurgicalInventory/GetSurgicalInventoryItem`, {
+            params: {
+                itemId: itemId
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getSurgicalInventoryItems = async (mltId, categoryId) => {
     try {
         const response = await axios.get(`${base_url}/SurgicalInventory/GetSurgicalInventoryItems`, {

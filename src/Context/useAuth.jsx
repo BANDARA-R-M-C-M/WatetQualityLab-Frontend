@@ -66,10 +66,14 @@ export const UserProvider = ({ children }) => {
         setToken(res?.data.token);
         setUser(userObj);
         
+        const redirectPath = sessionStorage.getItem("redirectPath");
+
         toast.success("Welcome " + userObj.userName);
 
-        console.log("Login Success!")
-        if(userObj.userRole === "Admin"){
+        if (redirectPath) {
+          sessionStorage.removeItem("redirectPath");
+          navigate(`${redirectPath}`);
+        } else if(userObj.userRole === "Admin"){
           navigate("/admin/dashboard");
         } else if(userObj.userRole === "Phi"){
           navigate("/phi/dashboard");
