@@ -1,6 +1,20 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
+export const getGeneralInventoryQR = async (itemId) => {
+    try {
+        const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryQR`, {
+            responseType: 'blob',
+            params: {
+                itemId: itemId
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getGeneralItemDetails = async (itemId) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryItem`, {

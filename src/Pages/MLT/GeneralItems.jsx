@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { getGeneralInventoryItems, getGeneralCatagories, addGeneralInventoryItem, updateGeneralInventoryItem, deleteGeneralInventoryItem } from '../../Service/GeneralInventoryService';
+import { getGeneralInventoryItems, getGeneralCatagories, getGeneralInventoryQR, addGeneralInventoryItem, updateGeneralInventoryItem, deleteGeneralInventoryItem } from '../../Service/GeneralInventoryService';
 import { useAuth } from '../../Context/useAuth';
 
 function GeneralItems() {
@@ -15,9 +15,11 @@ function GeneralItems() {
     const [issuedDate, setIssuedDate] = useState('');
     const [issuedBy, setIssuedBy] = useState('');
     const [remarks, setRemarks] = useState('');
+    const [QRurl, setQRurl] = useState('');
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
     const [openNewModal, setOpenNewModal] = useState(false);
+    const [openPreviewModal, setOpenPreviewModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
@@ -44,6 +46,13 @@ function GeneralItems() {
             setGeneralCatagories(response.data);
         });
     }, []);
+
+    const handlePreview = async (itemId) => {
+        const response = await getGeneralInventoryQR(itemId);
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        setQRurl(pdfUrl);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -108,7 +117,13 @@ function GeneralItems() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => { setOpenNewModal(true) }}
+                            onClick={() => { setOpenNewModal(true);
+                                setItemName('');
+                                setIssuedDate('');
+                                setIssuedBy('');
+                                setRemarks('');
+                                setGeneralCategoryID('');
+                             }}
                         >Add Item
                         </Button>
                     </div>
@@ -140,6 +155,8 @@ function GeneralItems() {
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -162,6 +179,12 @@ function GeneralItems() {
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.remarks}</p>
+                                        </td>
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <Button onClick={() => {
+                                                setOpenPreviewModal(true);
+                                                handlePreview(item.generalInventoryID);
+                                            }}>Preview</Button>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
@@ -222,6 +245,13 @@ function GeneralItems() {
                             <Button type="submit" size="xl">Submit</Button>
                         </div>
                     </form>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={openPreviewModal} onClose={() => setOpenPreviewModal(false)}>
+                <Modal.Header>QR Preview</Modal.Header>
+                <Modal.Body>
+                    <iframe src={QRurl} type="application/pdf" width={100 + '%'} height={500 + 'px'} />
                 </Modal.Body>
             </Modal>
 

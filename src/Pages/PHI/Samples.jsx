@@ -107,7 +107,13 @@ function Samples() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => {setOpenNewModal(true)}}
+                            onClick={() => {setOpenNewModal(true);
+                                setYourRefNo('');
+                                setDateOfCollection('');
+                                setCatagoryOfSource('');
+                                setCollectingSource('');
+                                setStateOfChlorination('');
+                            }}
                         >Add Sample
                         </Button>
                     </div>

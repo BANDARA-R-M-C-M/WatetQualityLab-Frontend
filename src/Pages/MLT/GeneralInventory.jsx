@@ -89,7 +89,9 @@ function GeneralInventory() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button className="mr-1"
-                            onClick={() => { setOpenModal(true) }}
+                            onClick={() => { setOpenModal(true);
+                                setCategoryName('');
+                             }}
                         >Add General Catagory
                         </Button>
                     </div>

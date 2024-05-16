@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { getSurgicalInventoryItems, getSurgicalCatagories, addSurgicalInventoryItem, issueItem, updateSurgicalInventoryItem, deleteSurgicalInventoryItem } from '../../Service/SurgicalInventoryService';
+import { getSurgicalInventoryItems, getSurgicalCatagories, getSurgicalInventoryQR, addSurgicalInventoryItem, issueItem, updateSurgicalInventoryItem, deleteSurgicalInventoryItem } from '../../Service/SurgicalInventoryService';
 import { useAuth } from '../../Context/useAuth';
 
 function SurgicalItems() {
@@ -51,6 +51,13 @@ function SurgicalItems() {
             setSurgicalCatagories(response.data);
         });
     }, []);
+
+    const handlePreview = async (itemId) => {
+        const response = await getSurgicalInventoryQR(itemId);
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        setQRurl(pdfUrl);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -130,7 +137,13 @@ function SurgicalItems() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => { setOpenNewModal(true) }}
+                            onClick={() => { setOpenNewModal(true);
+                                setItemName('');
+                                setIssuedDate('');
+                                setIssuedBy('');
+                                setQuantity('');
+                                setRemarks('');
+                             }}
                         >Add Item
                         </Button>
                     </div>
@@ -196,20 +209,20 @@ function SurgicalItems() {
                                             <p className="text-gray-900 whitespace-no-wrap">{item.remarks}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <Button
-                                                    onClick={() => {
-                                                        setOpenIssueModal(true);
-                                                        setIssuingId(item.surgicalInventoryID);
-                                                    }}
-                                                >Issue
-                                                </Button>
+                                            <Button
+                                                onClick={() => {
+                                                    setOpenIssueModal(true);
+                                                    setIssuingId(item.surgicalInventoryID);
+                                                }}
+                                            >Issue
+                                            </Button>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <Button onClick={() => {
-                                            setOpenPreviewModal(true);
-                                            setQRurl(item.itemQR);
-                                        }}>Preview</Button>
-                                    </td>
+                                            <Button onClick={() => {
+                                                setOpenPreviewModal(true);
+                                                handlePreview(item.surgicalInventoryID);
+                                            }}>Preview</Button>
+                                        </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
                                                 onClick={() => {
@@ -302,8 +315,7 @@ function SurgicalItems() {
             <Modal show={openPreviewModal} onClose={() => setOpenPreviewModal(false)}>
                 <Modal.Header>QR Preview</Modal.Header>
                 <Modal.Body>
-                    <embed src={QRurl} type="application/pdf" width={100+'%'} height={500+'px'} />
-                    {/* <img src={QRurl} alt="QR Code" className="max-w-full h-auto" /> */}
+                    <iframe src={QRurl} type="application/pdf" width={100 + '%'} height={500 + 'px'} />
                 </Modal.Body>
             </Modal>
 

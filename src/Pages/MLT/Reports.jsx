@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { updateWCReport, getAddedReports, deleteWCReport } from "../../Service/MLTService";
+import { updateWCReport, getAddedReports, getReportrPDF, deleteWCReport } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
@@ -35,6 +35,13 @@ function WCReports() {
 
         fetchReports();
     }, [openEditModal, openDeleteModal]);
+
+    const handlePreview = async (reportId) => {
+        const response = await getReportrPDF(reportId);
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        setReportUrl(pdfUrl);
+    };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
@@ -156,7 +163,7 @@ function WCReports() {
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <Button onClick={() => {
                                             setOpenPreviewModal(true);
-                                            setReportUrl(report.reportUrl);
+                                            handlePreview(report.reportRefId);
                                         }}>Preview</Button>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -186,7 +193,7 @@ function WCReports() {
             <Modal show={openPreviewModal} onClose={() => setOpenPreviewModal(false)}>
                 <Modal.Header>Report Preview</Modal.Header>
                 <Modal.Body>
-                    <embed src={reportUrl} type="application/pdf" width={100+'%'} height={500+'px'} />
+                    <embed src={reportUrl} type="application/pdf" width={100 + '%'} height={500 + 'px'} />
                 </Modal.Body>
             </Modal>
 

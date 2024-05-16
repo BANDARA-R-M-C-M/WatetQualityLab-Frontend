@@ -30,6 +30,20 @@ export const getAddedReports = async (mltId) => {
   }
 }
 
+export const getReportrPDF = async (reportId) => {
+  try {
+      const response = await axios.get(`${base_url}/WCReport/GetReportPDF`, {
+          responseType: 'blob',
+          params: {
+            reportId: reportId
+          }
+      });
+      return response;
+  } catch (error) {
+      console.log(error);
+  }
+}
+
 export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDate, EcoliCount, AppearanceOfSample, Remarks, MltId, SampleId, LabId) => {
   try {
     await axios.post(`${base_url}/WCReport/AddWCReport`, {
