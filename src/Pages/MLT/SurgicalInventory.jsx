@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
+import { MdEdit, MdDelete, MdViewList } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getSurgicalCatagories, addSurgicalCategory, updateSurgicalCategory, deleteSurgicalCategory } from '../../Service/SurgicalInventoryService';
 import { useAuth } from '../../Context/useAuth';
@@ -89,10 +91,13 @@ function SurgicalInventory() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button className="mr-1"
-                            onClick={() => { setOpenModal(true);
+                            onClick={() => {
+                                setOpenModal(true);
                                 setCategoryName('');
-                             }}
-                        >Add Surgical Catagory
+                            }}
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add Surgical Catagory
                         </Button>
                     </div>
                 </div>
@@ -127,27 +132,30 @@ function SurgicalInventory() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Link to={`${surgicalCatagory.surgicalCategoryID}`}>
                                                 <Button>
+                                                <MdViewList className="mr-2 h-5 w-5" />
                                                     View Items
                                                 </Button>
                                             </Link>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedCategoryId(surgicalCatagory.surgicalCategoryID);
                                                     setCategoryName(surgicalCatagory.categoryName);
                                                 }}
-                                            >Edit
+                                            >
+                                                <MdEdit size={25} />
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => {
                                                     setOpenDeleteModal(true);
                                                     setDeletedCategoryId(surgicalCatagory.surgicalCategoryID);
                                                 }}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal } from "flowbite-react";
+import { FaPlus } from "react-icons/fa6";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getPHIAreas, addPHIArea, getMOHAreas, updatePHIAreas, deletePHIArea } from "../../Service/AdminService";
 
@@ -97,7 +99,9 @@ function PHIAreas() {
                         </div>
                         <Button
                             onClick={() => { setOpenNewModal(true) }}
-                        >Add PHI Area
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add PHI Area
                         </Button>
                     </div>
                 </div>
@@ -118,6 +122,8 @@ function PHIAreas() {
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -132,21 +138,23 @@ function PHIAreas() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{phiArea.mohAreaId}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(phiArea.phiAreaId);
                                                     setPhiAreaName(phiArea.phiAreaName);
                                                     setMohAreaId(phiArea.mohAreaId);
                                                 }}
-                                            >Edit
+                                            >
+                                                <MdEdit size={25} />
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => { setOpenDeleteModal(true), setDeletedId(phiArea.phiAreaId) }}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>

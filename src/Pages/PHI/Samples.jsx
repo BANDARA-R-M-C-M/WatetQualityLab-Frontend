@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal } from "flowbite-react";
+import { FaPlus } from "react-icons/fa6";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getPHIDetails, submitSample, getAddedSamples, updateWCSample, deleteWCSample } from '../../Service/PHIService';
 import { useAuth } from '../../Context/useAuth';
@@ -107,14 +109,17 @@ function Samples() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => {setOpenNewModal(true);
+                            onClick={() => {
+                                setOpenNewModal(true);
                                 setYourRefNo('');
                                 setDateOfCollection('');
                                 setCatagoryOfSource('');
                                 setCollectingSource('');
                                 setStateOfChlorination('');
                             }}
-                        >Add Sample
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add Sample
                         </Button>
                     </div>
                 </div>
@@ -183,8 +188,8 @@ function Samples() {
                                                 <span className="relative">{sample.acceptance}</span>
                                             </span>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(sample.sampleId);
@@ -194,13 +199,15 @@ function Samples() {
                                                     setCollectingSource(sample.collectingSource);
                                                     setStateOfChlorination(sample.stateOfChlorination);
                                                 }}
-                                            >Edit
+                                            >
+                                                <MdEdit size={25}/>
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => { setOpenDeleteModal(true); setDeletedId(sample.sampleId); }}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25}/>
                                             </Button>
                                         </td>
                                     </tr>
@@ -292,7 +299,7 @@ function Samples() {
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 name="dateOfCollection" id="dateOfCollection" type="date" placeholder="Date of Collection"
-                                value={dateOfCollection} onChange={(e) => setDateOfCollection(e.target.value)}  />
+                                value={dateOfCollection} onChange={(e) => setDateOfCollection(e.target.value)} />
                         </div>
 
                         <div className="mb-4">

@@ -133,7 +133,10 @@ function MLTDashboard() {
                                                 color="success">accept</Button>
                                         </td>
                                         <td className="px-3 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button onClick={() => { setOpenModal(true), setRejectedId(sample.sampleId) }}
+                                            <Button onClick={() => {
+                                                setOpenModal(true);
+                                                setRejectedId(sample.sampleId)
+                                            }}
                                                 color="failure">reject</Button>
                                         </td>
                                     </tr>

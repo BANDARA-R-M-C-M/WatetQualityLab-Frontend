@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { updateWCReport, getAddedReports, getReportrPDF, deleteWCReport } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
+import { MdEdit, MdDelete } from "react-icons/md";
+import { TbReportAnalytics } from "react-icons/tb";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 function WCReports() {
@@ -164,10 +166,14 @@ function WCReports() {
                                         <Button onClick={() => {
                                             setOpenPreviewModal(true);
                                             handlePreview(report.reportRefId);
-                                        }}>Preview</Button>
+                                        }}>
+                                            <TbReportAnalytics className="mr-2 h-5 w-5"/>
+                                            View
+                                        </Button>
                                     </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <Button onClick={() => {
+                                    <td className="border-b border-gray-200 bg-white text-sm">
+                                        <Button size="xs"
+                                        onClick={() => {
                                             setOpenEditModal(true);
                                             setUpdatedId(report.reportRefId);
                                             setMyRefNo(report.myRefNo);
@@ -175,13 +181,18 @@ function WCReports() {
                                             setEcoliCount(report.ecoliCount);
                                             setAppearanceOfSample(report.appearanceOfSample);
                                             setRemarks(report.remarks);
-                                        }}>Edit</Button>
+                                        }}>
+                                            <MdEdit size={25}/>
+                                        </Button>
                                     </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <Button onClick={() => {
+                                    <td className="border-b border-gray-200 bg-white text-sm">
+                                        <Button size="xs" color="failure"
+                                        onClick={() => {
                                             setOpenDeleteModal(true);
                                             setDeletedId(report.reportRefId);
-                                        }}>Delete</Button>
+                                        }}>
+                                            <MdDelete size={25}/>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}

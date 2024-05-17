@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal } from "flowbite-react";
+import { FaPlus } from "react-icons/fa6";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getPHIs, getPHIAreas, assignPHItoPHIAreas, deleteUser } from "../../Service/AdminService";
 
@@ -96,7 +98,9 @@ function PHI(){
                         </div>
                         <Button
                             onClick={() => {setOpenNewModal(true)}}
-                        >Add PHI
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add PHI
                         </Button>
                     </div>
                 </div>
@@ -145,16 +149,19 @@ function PHI(){
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{phi.phiName}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button
                                                 onClick={() => {setOpenAssignModal(true), setAssignId(phi.id)}}
-                                            >Assign
+                                            >
+                                                <MdEdit className="mr-2 h-5 w-5" />
+                                                Assign
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => {setOpenDeleteModal(true), setDeletedId(phi.id)}}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>

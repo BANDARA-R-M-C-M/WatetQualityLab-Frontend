@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { getSurgicalInventoryItems, getSurgicalCatagories, getSurgicalInventoryQR, addSurgicalInventoryItem, issueItem, updateSurgicalInventoryItem, deleteSurgicalInventoryItem } from '../../Service/SurgicalInventoryService';
+import { FaPlus } from "react-icons/fa6";
+import { MdEdit, MdDelete, MdQrCode } from "react-icons/md";
+import { TbReport } from "react-icons/tb";
+import { getSurgicalInventoryItems, getSurgicalCatagories, getSurgicalInventoryQR, addSurgicalInventoryItem, addQuantity, issueItem, updateSurgicalInventoryItem, deleteSurgicalInventoryItem } from '../../Service/SurgicalInventoryService';
 import { useAuth } from '../../Context/useAuth';
 
 function SurgicalItems() {
@@ -25,6 +28,7 @@ function SurgicalItems() {
     const [openNewModal, setOpenNewModal] = useState(false);
     const [openIssueModal, setOpenIssueModal] = useState(false);
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
+    const [openAddModal, setOpenAddModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
@@ -44,7 +48,7 @@ function SurgicalItems() {
             }
         };
         fetchSurgicalItems();
-    }, [openNewModal, openIssueModal, openEditModal, openDeleteModal]);
+    }, [openNewModal, openAddModal, openIssueModal, openEditModal, openDeleteModal]);
 
     useEffect(() => {
         getSurgicalCatagories(user.userId).then((response) => {
@@ -89,6 +93,21 @@ function SurgicalItems() {
         setIssuingRemarks('');
 
         setOpenIssueModal(false);
+    };
+
+    const handleAdd = async (event) => {
+        event.preventDefault();
+
+        if (await addQuantity(updatedId, quantity)) {
+            alert('Item Added Successfully')
+        } else {
+            alert('Failed to Add Item')
+        }
+
+        setUpdatedId('');
+        setQuantity('');
+
+        setOpenAddModal(false);
     };
 
     const handleUpdate = async (event) => {
@@ -137,14 +156,17 @@ function SurgicalItems() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => { setOpenNewModal(true);
+                            onClick={() => {
+                                setOpenNewModal(true);
                                 setItemName('');
                                 setIssuedDate('');
                                 setIssuedBy('');
                                 setQuantity('');
                                 setRemarks('');
-                             }}
-                        >Add Item
+                            }}
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add Item
                         </Button>
                     </div>
                 </div>
@@ -182,6 +204,8 @@ function SurgicalItems() {
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -208,23 +232,37 @@ function SurgicalItems() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.remarks}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td className="px-3 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button
                                                 onClick={() => {
                                                     setOpenIssueModal(true);
                                                     setIssuingId(item.surgicalInventoryID);
                                                 }}
-                                            >Issue
+                                            >
+                                                <TbReport className="mr-2 h-5 w-5" />
+                                                Issue
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td className="px-3 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button onClick={() => {
-                                                setOpenPreviewModal(true);
-                                                handlePreview(item.surgicalInventoryID);
-                                            }}>Preview</Button>
+                                                setOpenAddModal(true);
+                                                setUpdatedId(item.surgicalInventoryID);
+                                            }}>
+                                                <FaPlus className="mr-2 h-5 w-5" />
+                                                Add
+                                            </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
+                                                onClick={() => {
+                                                    setOpenPreviewModal(true);
+                                                    handlePreview(item.surgicalInventoryID);
+                                                }}>
+                                                <MdQrCode size={25} />
+                                            </Button>
+                                        </td>
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(item.surgicalInventoryID);
@@ -235,16 +273,18 @@ function SurgicalItems() {
                                                     setRemarks(item.remarks);
                                                     setSurgicalCategoryID(item.surgicalCategoryID);
                                                 }}
-                                            >Edit
+                                            >
+                                                <MdEdit size={25} />
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => {
                                                     setOpenDeleteModal(true);
                                                     setDeletedId(item.surgicalInventoryID);
                                                 }}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>
@@ -316,6 +356,22 @@ function SurgicalItems() {
                 <Modal.Header>QR Preview</Modal.Header>
                 <Modal.Body>
                     <iframe src={QRurl} type="application/pdf" width={100 + '%'} height={500 + 'px'} />
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={openAddModal} onClose={() => setOpenAddModal(false)}>
+                <Modal.Header>Add Quantity</Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleAdd}>
+                        <div className="mb-4">
+                            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
+                            <input type="number" name="quantity" id="quantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <Button type="submit" size="xl">Submit</Button>
+                        </div>
+                    </form>
                 </Modal.Body>
             </Modal>
 

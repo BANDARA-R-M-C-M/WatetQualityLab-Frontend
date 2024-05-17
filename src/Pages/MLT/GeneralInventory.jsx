@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
+import { MdEdit, MdDelete, MdViewList } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getGeneralCatagories, addGeneralCategory, updateGeneralCategory, deleteGeneralCategory } from '../../Service/GeneralInventoryService';
 import { useAuth } from '../../Context/useAuth';
@@ -89,10 +91,13 @@ function GeneralInventory() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button className="mr-1"
-                            onClick={() => { setOpenModal(true);
+                            onClick={() => {
+                                setOpenModal(true);
                                 setCategoryName('');
-                             }}
-                        >Add General Catagory
+                            }}
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add General Catagory
                         </Button>
                     </div>
                 </div>
@@ -127,27 +132,30 @@ function GeneralInventory() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Link to={`${generalCatagory.generalCategoryID}`}>
                                                 <Button>
+                                                <MdViewList className="mr-2 h-5 w-5" />
                                                     View Items
                                                 </Button>
                                             </Link>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedCategoryId(generalCatagory.generalCategoryID);
                                                     setCategoryName(generalCatagory.categoryName);
                                                 }}
-                                            >Edit
+                                            >
+                                                <MdEdit size={25} />
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => {
                                                     setOpenDeleteModal(true);
                                                     setDeletedCategoryId(generalCatagory.generalCategoryID);
                                                 }}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>

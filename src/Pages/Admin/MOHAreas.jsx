@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal } from "flowbite-react";
+import { FaPlus } from "react-icons/fa6";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getMOHAreas, addMOHArea, getLabs, updateMOHAreas, deleteMOHArea } from "../../Service/AdminService";
-import { set } from 'react-hook-form';
 
 function MOHAreas() {
 
@@ -98,7 +99,9 @@ function MOHAreas() {
                         </div>
                         <Button
                             onClick={() => {setOpenNewModal(true)}}
-                        >Add MOH Area
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add MOH Area
                         </Button>
                     </div>
                 </div>
@@ -135,24 +138,26 @@ function MOHAreas() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{mohArea.labId}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(mohArea.mohAreaId);
                                                     setMohAreaName(mohArea.mohAreaName);
                                                     setLabId(mohArea.labId);
                                                 }}
-                                            >Edit
+                                            >
+                                                <MdEdit size={25} />
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => {
                                                     setOpenDeleteModal(true);
                                                     setDeletedId(mohArea.mohAreaId);
                                                 }}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>

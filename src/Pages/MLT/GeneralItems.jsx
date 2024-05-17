@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
+import { MdEdit, MdDelete, MdQrCode } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getGeneralInventoryItems, getGeneralCatagories, getGeneralInventoryQR, addGeneralInventoryItem, updateGeneralInventoryItem, deleteGeneralInventoryItem } from '../../Service/GeneralInventoryService';
 import { useAuth } from '../../Context/useAuth';
@@ -117,14 +119,17 @@ function GeneralItems() {
                             <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
                         </div>
                         <Button
-                            onClick={() => { setOpenNewModal(true);
+                            onClick={() => {
+                                setOpenNewModal(true);
                                 setItemName('');
                                 setIssuedDate('');
                                 setIssuedBy('');
                                 setRemarks('');
                                 setGeneralCategoryID('');
-                             }}
-                        >Add Item
+                            }}
+                        >
+                            <FaPlus className="mr-2 h-5 w-5" />
+                            Add Item
                         </Button>
                     </div>
                 </div>
@@ -180,14 +185,17 @@ function GeneralItems() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.remarks}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button onClick={() => {
-                                                setOpenPreviewModal(true);
-                                                handlePreview(item.generalInventoryID);
-                                            }}>Preview</Button>
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
+                                                onClick={() => {
+                                                    setOpenPreviewModal(true);
+                                                    handlePreview(item.generalInventoryID);
+                                                }}>
+                                                <MdQrCode size={25} />
+                                            </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs"
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(item.generalInventoryID);
@@ -197,16 +205,18 @@ function GeneralItems() {
                                                     setRemarks(item.remarks);
                                                     setGeneralCategoryID(item.generalCategoryID);
                                                 }}
-                                            >Edit
+                                            >
+                                                <MdEdit size={25} />
                                             </Button>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Button
+                                        <td className="border-b border-gray-200 bg-white text-sm">
+                                            <Button size="xs" color="failure"
                                                 onClick={() => {
                                                     setOpenDeleteModal(true);
                                                     setDeletedId(item.generalInventoryID);
                                                 }}
-                                            >Delete
+                                            >
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>

@@ -103,6 +103,18 @@ export const issueItem = async (itemId, quantity, issuedByLab, remarks) => {
     }
 }
 
+export const addQuantity = async (itemId, quantity) => {
+    try {
+        await axios.patch(`${base_url}/SurgicalInventory/AddQuantity/${itemId}`, {
+            quantity: quantity
+        });
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
 export const updateSurgicalInventoryItem = async (itemId, itemName, issuedDate, issuedBy, quantity, remarks, surgicalCategoryID) => {
     try {
         await axios.put(`${base_url}/SurgicalInventory/UpdateSurgicalInventoryItem/${itemId}`, {

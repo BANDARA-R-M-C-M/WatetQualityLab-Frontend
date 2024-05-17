@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
-import { getNewSamples, submitReport } from "../../Service/MLTService";
+import { getNewSamples, submitReport, updateStatus } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
 
 function Samples() {
@@ -62,6 +62,16 @@ function Samples() {
         setOpenModal(false);
     };
 
+    const handleRemove = async (removedId) => {
+        try {
+            await updateStatus(removedId, 'Pending', "");
+            const updatedSamples = samples.filter(sample => sample.sampleId !== removedId);
+            setSamples(updatedSamples);
+        } catch (error) {
+            console.error('Error remove sample:', error);
+        }
+    };
+
     return (
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
@@ -107,7 +117,8 @@ function Samples() {
                                     Report Availability
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 </th>
                             </tr>
                         </thead>
@@ -155,6 +166,17 @@ function Samples() {
                                                 setLabId(sample.labID)
                                             }}>
                                                 Report
+                                            </Button>}
+                                    </td>
+                                    <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {sample.reportAvailable ?
+                                            <Button color="failure" disabled>Remove</Button> :
+                                            <Button color="failure" onClick={() => {
+                                                // setOpenModal(true);
+                                                // setRemovedId(sample.sampleId);
+                                                handleRemove(sample.sampleId);
+                                            }}>
+                                                Remove
                                             </Button>}
                                     </td>
                                 </tr>
