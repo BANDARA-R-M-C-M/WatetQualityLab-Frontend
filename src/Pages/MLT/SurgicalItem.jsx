@@ -76,7 +76,7 @@ function SurgicalItem() {
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Category Name:</td>
-                                <td className="py-5 border-b border-gray-200">{surgicalItem.categoryName}</td>
+                                <td className="py-5 border-b border-gray-200">{surgicalItem.surgicalCategoryName}</td>
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Remarks :</td>

@@ -28,12 +28,17 @@ export const getSurgicalItemDetails = async (itemId) => {
     }
 }
 
-export const getSurgicalInventoryItems = async (mltId, categoryId) => {
+export const getSurgicalInventoryItems = async (mltId, categoryId, surgicalItemName, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/SurgicalInventory/GetSurgicalInventoryItems`, {
             params: {
-                mltId: mltId,
-                categoryId: categoryId
+                UserId: mltId,
+                CategoryId: categoryId,
+                SurgicalItemName: surgicalItemName,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
             }
         });
         return response;
@@ -43,11 +48,16 @@ export const getSurgicalInventoryItems = async (mltId, categoryId) => {
     }
 }
 
-export const getSurgicalCatagories = async (mltId) => {
+export const getSurgicalCatagories = async (mltId, surgicalCategoryName, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/SurgicalInventory/GetSurgicalCategories`, {
             params: {
-                mltId: mltId,
+                UserId: mltId,
+                SurgicalCategoryName: surgicalCategoryName,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
             }
         });
         return response;
@@ -75,10 +85,10 @@ export const addSurgicalInventoryItem = async (itemName, issuedDate, issuedBy, q
     }
 }
 
-export const addSurgicalCategory = async (categoryName, labId) => {
+export const addSurgicalCategory = async (surgicalCategoryName, labId) => {
     try {
         await axios.post(`${base_url}/SurgicalInventory/AddSurgicalCategory`, {
-            categoryName: categoryName,
+            surgicalCategoryName: surgicalCategoryName,
             labId: labId
         });
         return true;
@@ -132,10 +142,10 @@ export const updateSurgicalInventoryItem = async (itemId, itemName, issuedDate, 
     }
 }
 
-export const updateSurgicalCategory = async (categoryId, categoryName) => {
+export const updateSurgicalCategory = async (categoryId, surgicalCategoryName) => {
     try {
         await axios.put(`${base_url}/SurgicalInventory/UpdateSurgicalCategory/${categoryId}`, {
-            categoryName: categoryName
+            surgicalCategoryName: surgicalCategoryName
         });
         return true;
     }

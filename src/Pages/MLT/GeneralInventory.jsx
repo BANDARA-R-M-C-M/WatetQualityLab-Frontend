@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
-import { MdEdit, MdDelete, MdViewList } from "react-icons/md";
-import { FaPlus } from "react-icons/fa";
+import { MdEdit, MdDelete, MdViewList, MdClose } from "react-icons/md";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getGeneralCatagories, addGeneralCategory, updateGeneralCategory, deleteGeneralCategory } from '../../Service/GeneralInventoryService';
 import { useAuth } from '../../Context/useAuth';
+import { useDebounce } from '../../Util/useDebounce';
 
 function GeneralInventory() {
 
     const [generalCatagories, setGeneralCatagories] = useState([]);
     const [labId, setLabId] = useState('');
     const [categoryName, setCategoryName] = useState('');
+    const [searchByName, setSearchByName] = useState('');
+    const [sortBy, setSortBy] = useState('');
+    const [isAscending, setIsAscending] = useState(true);
     const [updatedCategoryId, setUpdatedCategoryId] = useState('');
     const [deletedCategoryId, setDeletedCategoryId] = useState('');
     const [openModal, setOpenModal] = useState(false);
@@ -19,12 +23,13 @@ function GeneralInventory() {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const { user } = useAuth();
+    const debouncedSearch = useDebounce(searchByName, 750);
 
     useEffect(() => {
         const fetchGeneralCategories = async () => {
             try {
-                const response = await getGeneralCatagories(user.userId);
-                if (response) {
+                const response = await getGeneralCatagories(user.userId, searchByName, null, null, sortBy, isAscending);
+                if (response) { 
                     setGeneralCatagories(response.data);
                     setLabId(response.data[0].labId);
                 }
@@ -33,7 +38,7 @@ function GeneralInventory() {
             }
         };
         fetchGeneralCategories();
-    }, [openModal, openEditModal, openDeleteModal]);
+    }, [openModal, openEditModal, openDeleteModal, debouncedSearch]);
 
     const handleAddCatagory = async (event) => {
         event.preventDefault();
@@ -81,14 +86,21 @@ function GeneralInventory() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd" />
-                            </svg>
-                            <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                        <div className="flex bg-gray-200 items-center p-2 rounded-md">
+                            <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
+                            <input
+                                className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
+                                type="text"
+                                placeholder="search..."
+                                value={searchByName}
+                                onChange={(e) => setSearchByName(e.target.value)}
+                            />
+                            {searchByName && (
+                                <MdClose
+                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                    onClick={() => setSearchByName('')}
+                                />
+                            )}
                         </div>
                         <Button className="mr-1"
                             onClick={() => {
@@ -127,12 +139,12 @@ function GeneralInventory() {
                                             <p className="text-gray-900 whitespace-no-wrap">{generalCatagory.generalCategoryID}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{generalCatagory.categoryName}</p>
+                                            <p className="text-gray-900 whitespace-no-wrap">{generalCatagory.generalCategoryName}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Link to={`${generalCatagory.generalCategoryID}`}>
                                                 <Button>
-                                                <MdViewList className="mr-2 h-5 w-5" />
+                                                    <MdViewList className="mr-2 h-5 w-5" />
                                                     View Items
                                                 </Button>
                                             </Link>
@@ -142,7 +154,7 @@ function GeneralInventory() {
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedCategoryId(generalCatagory.generalCategoryID);
-                                                    setCategoryName(generalCatagory.categoryName);
+                                                    setCategoryName(generalCatagory.generalCategoryName);
                                                 }}
                                             >
                                                 <MdEdit size={25} />

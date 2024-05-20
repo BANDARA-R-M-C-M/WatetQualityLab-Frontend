@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Modal } from "flowbite-react";
-import { MdEdit, MdDelete, MdQrCode } from "react-icons/md";
-import { FaPlus } from "react-icons/fa";
+import { MdEdit, MdDelete, MdClose, MdQrCode } from "react-icons/md";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getGeneralInventoryItems, getGeneralCatagories, getGeneralInventoryQR, addGeneralInventoryItem, updateGeneralInventoryItem, deleteGeneralInventoryItem } from '../../Service/GeneralInventoryService';
 import { useAuth } from '../../Context/useAuth';
+import { useDebounce } from '../../Util/useDebounce';
 
 function GeneralItems() {
 
@@ -18,6 +19,9 @@ function GeneralItems() {
     const [issuedBy, setIssuedBy] = useState('');
     const [remarks, setRemarks] = useState('');
     const [QRurl, setQRurl] = useState('');
+    const [searchByName, setSearchByName] = useState('');
+    const [sortBy, setSortBy] = useState('');
+    const [isAscending, setIsAscending] = useState(true);
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
     const [openNewModal, setOpenNewModal] = useState(false);
@@ -27,11 +31,12 @@ function GeneralItems() {
 
     const { user } = useAuth();
     const { categoryId } = useParams();
+    const debouncedSearch = useDebounce(searchByName, 750);
 
     useEffect(() => {
         const fetchGeneralItems = async () => {
             try {
-                const response = await getGeneralInventoryItems(user.userId, categoryId);
+                const response = await getGeneralInventoryItems(user.userId, categoryId, searchByName, null, null, sortBy, isAscending);
                 if (response) {
                     setItems(response.data);
                     setLabId(response.data[0].labId);
@@ -41,7 +46,7 @@ function GeneralItems() {
             }
         };
         fetchGeneralItems();
-    }, [openNewModal, openEditModal, openDeleteModal]);
+    }, [openNewModal, openEditModal, openDeleteModal, debouncedSearch]);
 
     useEffect(() => {
         getGeneralCatagories(user.userId).then((response) => {
@@ -109,14 +114,21 @@ function GeneralItems() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd" />
-                            </svg>
-                            <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                    <div className="flex bg-gray-200 items-center p-2 rounded-md">
+                            <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
+                            <input
+                                className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
+                                type="text"
+                                placeholder="search..."
+                                value={searchByName}
+                                onChange={(e) => setSearchByName(e.target.value)}
+                            />
+                            {searchByName && (
+                                <MdClose
+                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                    onClick={() => setSearchByName('')}
+                                />
+                            )}
                         </div>
                         <Button
                             onClick={() => {

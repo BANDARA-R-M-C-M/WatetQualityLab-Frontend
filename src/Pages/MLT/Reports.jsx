@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
+import { useDebounce } from '../../Util/useDebounce';
 import { updateWCReport, getAddedReports, getReportrPDF, deleteWCReport } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { MdEdit, MdDelete, MdClose } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
 import { TbReportAnalytics } from "react-icons/tb";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
@@ -15,6 +17,9 @@ function WCReports() {
     const [appearanceOfSample, setAppearanceOfSample] = useState('');
     const [remarks, setRemarks] = useState('');
     const [reportUrl, setReportUrl] = useState('');
+    const [searchById, setSearchById] = useState('');
+    const [sortBy, setSortBy] = useState('');
+    const [isAscending, setIsAscending] = useState(true);
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
@@ -22,11 +27,12 @@ function WCReports() {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const { user } = useAuth();
+    const debouncedSearch = useDebounce(searchById, 750);
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await getAddedReports(user.userId);
+                const response = await getAddedReports(user.userId, searchById, null, null, sortBy, isAscending);
                 if (response) {
                     setReports(response.data);
                 }
@@ -36,7 +42,7 @@ function WCReports() {
         };
 
         fetchReports();
-    }, [openEditModal, openDeleteModal]);
+    }, [openEditModal, openDeleteModal, debouncedSearch]);
 
     const handlePreview = async (reportId) => {
         const response = await getReportrPDF(reportId);
@@ -81,14 +87,21 @@ function WCReports() {
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
                 <div className="flex items-center justify-between">
-                    <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fillRule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                clipRule="evenodd" />
-                        </svg>
-                        <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                    <div className="flex bg-gray-200 items-center p-2 rounded-md">
+                        <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
+                        <input
+                            className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
+                            type="text"
+                            placeholder="search..."
+                            value={searchById}
+                            onChange={(e) => setSearchById(e.target.value)}
+                        />
+                        {searchById && (
+                            <MdClose
+                                className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                onClick={() => setSearchById('')}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
@@ -167,31 +180,31 @@ function WCReports() {
                                             setOpenPreviewModal(true);
                                             handlePreview(report.reportRefId);
                                         }}>
-                                            <TbReportAnalytics className="mr-2 h-5 w-5"/>
+                                            <TbReportAnalytics className="mr-2 h-5 w-5" />
                                             View
                                         </Button>
                                     </td>
                                     <td className="border-b border-gray-200 bg-white text-sm">
                                         <Button size="xs"
-                                        onClick={() => {
-                                            setOpenEditModal(true);
-                                            setUpdatedId(report.reportRefId);
-                                            setMyRefNo(report.myRefNo);
-                                            setPresumptiveColiformCount(report.presumptiveColiformCount);
-                                            setEcoliCount(report.ecoliCount);
-                                            setAppearanceOfSample(report.appearanceOfSample);
-                                            setRemarks(report.remarks);
-                                        }}>
-                                            <MdEdit size={25}/>
+                                            onClick={() => {
+                                                setOpenEditModal(true);
+                                                setUpdatedId(report.reportRefId);
+                                                setMyRefNo(report.myRefNo);
+                                                setPresumptiveColiformCount(report.presumptiveColiformCount);
+                                                setEcoliCount(report.ecoliCount);
+                                                setAppearanceOfSample(report.appearanceOfSample);
+                                                setRemarks(report.remarks);
+                                            }}>
+                                            <MdEdit size={25} />
                                         </Button>
                                     </td>
                                     <td className="border-b border-gray-200 bg-white text-sm">
                                         <Button size="xs" color="failure"
-                                        onClick={() => {
-                                            setOpenDeleteModal(true);
-                                            setDeletedId(report.reportRefId);
-                                        }}>
-                                            <MdDelete size={25}/>
+                                            onClick={() => {
+                                                setOpenDeleteModal(true);
+                                                setDeletedId(report.reportRefId);
+                                            }}>
+                                            <MdDelete size={25} />
                                         </Button>
                                     </td>
                                 </tr>

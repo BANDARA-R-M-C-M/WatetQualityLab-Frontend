@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
+import { useDebounce } from '../../Util/useDebounce';
 import { getNewSamples, submitReport, updateStatus } from "../../Service/MLTService";
 import { Button, Modal } from "flowbite-react";
+import { MdClose } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
 
 function Samples() {
 
@@ -14,6 +17,9 @@ function Samples() {
     const [remarks, setRemarks] = useState('');
     const [sampleId, setSampleId] = useState('');
     const [labId, setLabId] = useState('');
+    const [searchById, setSearchById] = useState('');
+    const [sortBy, setSortBy] = useState('');
+    const [isAscending, setIsAscending] = useState(true);
     const [stateOfChlorination, setStateOfChlorination] = useState('');
     const [collectingSource, setCollectingSource] = useState('');
     const [DateOfCollection, setDateOfCollection] = useState('');
@@ -26,11 +32,12 @@ function Samples() {
     const [previewUrl, setPreviewUrl] = useState('');
 
     const { user } = useAuth();
+    const debouncedSearch = useDebounce(searchById, 750);
 
     useEffect(() => {
         const fetchSamples = async () => {
             try {
-                const response = await getNewSamples(user.userId);
+                const response = await getNewSamples(user.userId, searchById, null, null, sortBy, isAscending);
                 if (response) {
                     const pendingSamples = response.data.filter(sample => sample.acceptance === 'Accepted');
                     setSamples(pendingSamples);
@@ -41,7 +48,7 @@ function Samples() {
         };
 
         fetchSamples();
-    }, [openModal]);
+    }, [openModal, debouncedSearch]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -76,14 +83,21 @@ function Samples() {
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
                 <div className="flex items-center justify-between">
-                    <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fillRule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                clipRule="evenodd" />
-                        </svg>
-                        <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                    <div className="flex bg-gray-200 items-center p-2 rounded-md">
+                        <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
+                        <input
+                            className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
+                            type="text"
+                            placeholder="search..."
+                            value={searchById}
+                            onChange={(e) => setSearchById(e.target.value)}
+                        />
+                        {searchById && (
+                            <MdClose
+                                className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                onClick={() => setSearchById('')}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
@@ -94,6 +108,9 @@ function Samples() {
                             <tr>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Sample Id
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Your Ref No
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Date of Collection
@@ -127,6 +144,9 @@ function Samples() {
                                 <tr key={index}>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{sample.sampleId}</p>
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p className="text-gray-900 whitespace-no-wrap">{sample.yourRefNo}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{sample.dateOfCollection}</p>

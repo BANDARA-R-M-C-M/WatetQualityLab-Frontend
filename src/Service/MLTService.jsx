@@ -1,14 +1,19 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getNewSamples = async (mltId) => {
+export const getNewSamples = async (mltId, yourRefNo, pageNumber, pageSize, sortBy, isAscending) => {
   try {
     const response = await axios.get(`${base_url}/WCSample/newsamples`, {
       // headers: {
       //     Authorization: `Bearer ${token}`
       // },
       params: {
-        mltId: mltId
+        UserId: mltId,
+        YourRefNo: yourRefNo,
+        PageNumber: pageNumber,
+        PageSize: pageSize,
+        SortBy: sortBy,
+        IsAscending: isAscending
       }
     });
     return response;
@@ -17,11 +22,16 @@ export const getNewSamples = async (mltId) => {
   }
 };
 
-export const getAddedReports = async (mltId) => {
+export const getAddedReports = async (mltId, myRefNo, pageNumber, pageSize, sortBy, isAscending) => {
   try {
     const response = await axios.get(`${base_url}/WCReport/getAddedReports`, {
       params: {
-        mltId: mltId
+        UserId: mltId,
+        MyRefNo: myRefNo,
+        PageNumber: pageNumber,
+        PageSize: pageSize,
+        SortBy: sortBy,
+        IsAscending: isAscending
       }
     });
     return response;
@@ -32,15 +42,15 @@ export const getAddedReports = async (mltId) => {
 
 export const getReportrPDF = async (reportId) => {
   try {
-      const response = await axios.get(`${base_url}/WCReport/GetReportPDF`, {
-          responseType: 'blob',
-          params: {
-            reportId: reportId
-          }
-      });
-      return response;
+    const response = await axios.get(`${base_url}/WCReport/GetReportPDF`, {
+      responseType: 'blob',
+      params: {
+        reportId: reportId
+      }
+    });
+    return response;
   } catch (error) {
-      console.log(error);
+    console.log(error);
   }
 }
 

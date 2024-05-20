@@ -1,11 +1,16 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getMediaQualityRecords = async (mltId) => {
+export const getMediaQualityRecords = async (mltId, mediaId, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/MediaQualityControl/GetMediaQualityControlRecords`, {
             params: {
-                mltId: mltId
+                UserId: mltId,
+                MediaId: mediaId,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
             }
         });
         return response;
@@ -14,11 +19,11 @@ export const getMediaQualityRecords = async (mltId) => {
     }
 }
 
-export const addMediaQualityControlRecord = async (dateTime, media, sterility, stability, sensitivity, remarks, mltId, labId) => {
+export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId, labId) => {
     try {
         await axios.post(`${base_url}/MediaQualityControl/AddMediaQualityControlRecord`, {
             dateTime: dateTime,
-            media: media,
+            mediaId: mediaId,
             sterility: sterility,
             stability: stability,
             sensitivity: sensitivity,
@@ -32,15 +37,16 @@ export const addMediaQualityControlRecord = async (dateTime, media, sterility, s
     }
 }
 
-export const updateMediaQualityControlRecord = async (dateTime, media, sterility, stability, sensitivity, remarks) => {
+export const updateMediaQualityControlRecord = async (updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId) => {
     try {
-        await axios.put(`${base_url}/MediaQualityControl/UpdateMediaQualityControlRecord`, {
+        await axios.put(`${base_url}/MediaQualityControl/UpdateMediaQualityControlRecord/${updateId}`, {
             dateTime: dateTime,
-            media: media,
+            mediaId: mediaId,
             sterility: sterility,
             stability: stability,
             sensitivity: sensitivity,
-            remarks: remarks
+            remarks: remarks,
+            mltId: mltId
         });
         return true
     } catch (error) {

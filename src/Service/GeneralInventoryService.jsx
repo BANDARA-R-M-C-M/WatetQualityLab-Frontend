@@ -28,12 +28,17 @@ export const getGeneralItemDetails = async (itemId) => {
     }
 }
 
-export const getGeneralInventoryItems = async (mltId, categoryId) => {
+export const getGeneralInventoryItems = async (mltId, categoryId, generalItemName, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryItems`, {
             params: {
-                mltId: mltId,
-                categoryId: categoryId
+                UserId: mltId,
+                CategoryId: categoryId,
+                GeneralItemName: generalItemName,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
             }
         });
         return response;
@@ -42,11 +47,16 @@ export const getGeneralInventoryItems = async (mltId, categoryId) => {
     }
 }
 
-export const getGeneralCatagories = async (mltId) => {
+export const getGeneralCatagories = async (mltId, generalCategoryName, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralCategories`, {
             params: {
-                mltId: mltId,
+                UserId: mltId,
+                GeneralCategoryName: generalCategoryName,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
             }
         });
         return response;
@@ -71,10 +81,10 @@ export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, re
     }
 }
 
-export const addGeneralCategory = async (categoryName, labId) => {
+export const addGeneralCategory = async (generalCategoryName, labId) => {
     try {
         await axios.post(`${base_url}/GeneralInventory/AddGeneralCategory`, {
-            categoryName: categoryName,
+            generalCategoryName: generalCategoryName,
             labId: labId
         });
         return true;
@@ -98,10 +108,10 @@ export const updateGeneralInventoryItem = async (itemId, itemName, issuedDate, i
     }
 }
 
-export const updateGeneralCategory = async (categoryId, categoryName) => {
+export const updateGeneralCategory = async (categoryId, generalCategoryName) => {
     try {
         await axios.put(`${base_url}/GeneralInventory/UpdateGeneralCategory/${categoryId}`, {
-            categoryName: categoryName
+            generalCategoryName: generalCategoryName
         });
         return true;
     } catch (error) {

@@ -1,11 +1,16 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getInstrumentalQualityRecords = async (mltId) => {
+export const getInstrumentalQualityRecords = async (mltId, instrumentId, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/InstrumentalQualityControl/GetInstrumentalQualityControlRecords`, {
             params: {
-                mltId: mltId
+                UserId: mltId,
+                InstrumentId: instrumentId,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
             }
         });
         return response;
@@ -14,11 +19,11 @@ export const getInstrumentalQualityRecords = async (mltId) => {
     }
 }
 
-export const addInstrumentalQualityControlRecord = async (dateTime, instrument, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, mltId, labId) => {
+export const addInstrumentalQualityControlRecord = async (dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, mltId, labId) => {
     try {
         await axios.post(`${base_url}/InstrumentalQualityControl/AddInstrumentalQualityControlRecord`, {
             dateTime: dateTime,
-            instrument: instrument,
+            instrumentId: instrumentId,
             temperatureFluctuation: temperatureFluctuation,
             pressureGradient: pressureGradient,
             timer: timer,
@@ -34,17 +39,18 @@ export const addInstrumentalQualityControlRecord = async (dateTime, instrument, 
     }
 }
 
-export const updateInstrumentalQualityControlRecord = async (dateTime, instrument, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks) => {
+export const updateInstrumentalQualityControlRecord = async (updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, mltId) => {
     try {
-        await axios.put(`${base_url}/InstrumentalQualityControl/UpdateInstrumentalQualityControlRecord`, {
+        await axios.put(`${base_url}/InstrumentalQualityControl/UpdateInstrumentalQualityControlRecord/${updateId}`, {
             dateTime: dateTime,
-            instrument: instrument,
+            instrumentId: instrumentId,
             temperatureFluctuation: temperatureFluctuation,
             pressureGradient: pressureGradient,
             timer: timer,
             sterility: sterility,
             stability: stability,
-            remarks: remarks
+            remarks: remarks,
+            mltId: mltId
         });
         return true
     } catch (error) {

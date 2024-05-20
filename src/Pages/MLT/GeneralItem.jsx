@@ -54,7 +54,7 @@ function GeneralItem() {
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Category Name:</td>
-                                <td className="py-5 border-b border-gray-200">{generalItem.categoryName}</td>
+                                <td className="py-5 border-b border-gray-200">{generalItem.generalCategoryName}</td>
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 font-bold text-lg">Remarks :</td>
