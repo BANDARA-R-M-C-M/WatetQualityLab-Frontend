@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { useDebounce } from '../../Util/useDebounce';
 import { updateWCReport, getAddedReports, getReportrPDF, deleteWCReport } from "../../Service/MLTService";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { TbReportAnalytics } from "react-icons/tb";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 
 function WCReports() {
 
@@ -17,9 +18,15 @@ function WCReports() {
     const [appearanceOfSample, setAppearanceOfSample] = useState('');
     const [remarks, setRemarks] = useState('');
     const [reportUrl, setReportUrl] = useState('');
-    const [searchById, setSearchById] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('My Ref No...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('MyRefNo');
+    const [searchParameterType, setSearchParameterType] = useState('string');
     const [sortBy, setSortBy] = useState('');
     const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
@@ -27,14 +34,15 @@ function WCReports() {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const { user } = useAuth();
-    const debouncedSearch = useDebounce(searchById, 750);
+    const debouncedSearch = useDebounce(searchTerm, 750);
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await getAddedReports(user.userId, searchById, null, null, sortBy, isAscending);
+                const response = await getAddedReports(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
-                    setReports(response.data);
+                    setReports(response.data.items);
+                    setTotalPages(response.data.totalPages);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -42,11 +50,11 @@ function WCReports() {
         };
 
         fetchReports();
-    }, [openEditModal, openDeleteModal, debouncedSearch]);
+    }, [openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handlePreview = async (reportId) => {
         const response = await getReportrPDF(reportId);
-        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const pdfBlob = new Blob([response.data.items], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setReportUrl(pdfUrl);
     };
@@ -87,21 +95,108 @@ function WCReports() {
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
                 <div className="flex items-center justify-between">
-                    <div className="flex bg-gray-200 items-center p-2 rounded-md">
-                        <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
-                        <input
-                            className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
-                            type="text"
-                            placeholder="search..."
-                            value={searchById}
-                            onChange={(e) => setSearchById(e.target.value)}
-                        />
-                        {searchById && (
-                            <MdClose
-                                className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
-                                onClick={() => setSearchById('')}
+                <div className="flex items-center justify-between">
+                        <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                            <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                            <input
+                                className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                type="text"
+                                placeholder={placeholderText}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                        )}
+                            {searchTerm && (
+                                <MdClose
+                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                    onClick={() => setSearchTerm('')}
+                                />
+                            )}
+                        </div>
+                        <div className="flex items-center p-2 rounded-md">
+                            <Dropdown label="Sort">
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('MyRefNo');
+                                        setSearchParameter('MyRefNo');
+                                        setPlaceholderText('My Ref No...');
+                                    }}
+                                >
+                                    My Ref No
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('IssuedDate');
+                                        setSearchParameter('IssuedDate');
+                                        setSearchParameterType('DateOnly');
+                                        setPlaceholderText('Issued Date...');
+                                    }}
+                                >
+                                    Issued Date
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('MOHAreaName');
+                                        setSearchParameter('MOHAreaName');
+                                        setPlaceholderText('MOHAreaName...');
+                                    }}
+                                >
+                                    MOH Area Name
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('phiAreaName');
+                                        setSearchParameter('phiAreaName');
+                                        setPlaceholderText('PHI Area Name...');
+                                    }}
+                                >
+                                    PHI Area Name
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('EcoliCount');
+                                        setSearchParameter('EcoliCount');
+                                        setSearchParameterType('int');
+                                        setPlaceholderText('Ecoli Count...');
+                                    }}
+                                >
+                                    Ecoli Count
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('PresumptiveColiformCount');
+                                        setSearchParameter('PresumptiveColiformCount');
+                                        setSearchParameterType('int');
+                                        setPlaceholderText('Presumptive Coliform Count...');
+                                    }}
+                                >
+                                    Presumptive Coliform Count
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('AppearanceOfSample');
+                                        setSearchParameter('AppearanceOfSample');
+                                        setPlaceholderText('Appearance Of Sample...');
+                                    }}
+                                >
+                                    Appearance Of Sample
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('Remarks');
+                                        setSearchParameter('Remarks');
+                                        setPlaceholderText('Remarks...');
+                                    }}
+                                >
+                                    Remarks
+                                </Dropdown.Item>
+                            </Dropdown>
+                        </div>
+                        <div className="flex items-center rounded-md">
+                            <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                {isAscending ? <AiOutlineSortAscending size={28} />
+                                    : <AiOutlineSortDescending size={28} />}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,12 +205,12 @@ function WCReports() {
                     <table className="min-w-full leading-normal">
                         <thead>
                             <tr>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Sample Id
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Report Id
-                                </th>
+                                </th> */}
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     My Ref No
                                 </th>
@@ -148,12 +243,12 @@ function WCReports() {
                         <tbody>
                             {reports.map((report, index) => (
                                 <tr key={index}>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{report.sampleId}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{report.reportRefId}</p>
-                                    </td>
+                                    </td> */}
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{report.myRefNo}</p>
                                     </td>
@@ -211,6 +306,9 @@ function WCReports() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+                <div className="flex overflow-x-auto sm:justify-center">
+                    <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => {setPageNumber(page)}} showIcons />
                 </div>
             </div>
 

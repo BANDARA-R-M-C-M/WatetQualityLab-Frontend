@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { MdEdit, MdDelete, MdClose, MdQrCode } from "react-icons/md";
 import { FaPlus, FaSearch } from "react-icons/fa";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { TbReport } from "react-icons/tb";
 import { getSurgicalInventoryItems, getSurgicalCatagories, getSurgicalInventoryQR, addSurgicalInventoryItem, addQuantity, issueItem, updateSurgicalInventoryItem, deleteSurgicalInventoryItem } from '../../Service/SurgicalInventoryService';
 import { useAuth } from '../../Context/useAuth';
@@ -24,9 +25,15 @@ function SurgicalItems() {
     const [quantity, setQuantity] = useState();
     const [remarks, setRemarks] = useState('');
     const [QRurl, setQRurl] = useState('');
-    const [searchByName, setSearchByName] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('Item Name...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('ItemName');
+    const [searchParameterType, setSearchParameterType] = useState('string');
     const [sortBy, setSortBy] = useState('');
     const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
     const [openNewModal, setOpenNewModal] = useState(false);
@@ -38,32 +45,33 @@ function SurgicalItems() {
 
     const { user } = useAuth();
     const { categoryId } = useParams();
-    const debouncedSearch = useDebounce(searchByName, 750);
+    const debouncedSearch = useDebounce(searchTerm, 750);
 
     useEffect(() => {
         const fetchSurgicalItems = async () => {
             try {
-                const response = await getSurgicalInventoryItems(user.userId, categoryId, searchByName, null, null, sortBy, isAscending);
+                const response = await getSurgicalInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
-                    setItems(response.data);
-                    setLabId(response.data[0].labId);
+                    setItems(response.data.items);
+                    setLabId(response.data.items[0].labId);
+                    setTotalPages(response.data.totalPages);
                 }
             } catch (error) {
                 console.error('Error fetching Surgical Inventory Items', error);
             }
         };
         fetchSurgicalItems();
-    }, [openNewModal, openAddModal, openIssueModal, openEditModal, openDeleteModal, debouncedSearch]);
+    }, [openNewModal, openAddModal, openIssueModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
         getSurgicalCatagories(user.userId).then((response) => {
-            setSurgicalCatagories(response.data);
+            setSurgicalCatagories(response.data.items);
         });
     }, []);
 
     const handlePreview = async (itemId) => {
         const response = await getSurgicalInventoryQR(itemId);
-        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const pdfBlob = new Blob([response.data.items], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setQRurl(pdfUrl);
     };
@@ -151,21 +159,70 @@ function SurgicalItems() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-200 items-center p-2 rounded-md">
-                            <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
-                            <input
-                                className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
-                                type="text"
-                                placeholder="search..."
-                                value={searchByName}
-                                onChange={(e) => setSearchByName(e.target.value)}
-                            />
-                            {searchByName && (
-                                <MdClose
-                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
-                                    onClick={() => setSearchByName('')}
+                    <div className="flex items-center justify-between">
+                            <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                <input
+                                    className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                    type="text"
+                                    placeholder={placeholderText}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
-                            )}
+                                {searchTerm && (
+                                    <MdClose
+                                        className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                        onClick={() => setSearchTerm('')}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex items-center p-2 rounded-md">
+                                <Dropdown label="Sort">
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('ItemName');
+                                            setSearchParameter('ItemName');
+                                            setPlaceholderText('Item Name...');
+                                        }}
+                                    >
+                                        Item Name
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('IssuedDate');
+                                            setSearchParameter('IssuedDate');
+                                            setSearchParameterType('DateOnly');
+                                            setPlaceholderText('Issued Date...');
+                                        }}
+                                    >
+                                        Issued Date
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('IssuedBy');
+                                            setSearchParameter('IssuedBy');
+                                            setPlaceholderText('Issued By...');
+                                        }}
+                                    >
+                                        Issued By
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('Remarks');
+                                            setSearchParameter('Remarks');
+                                            setPlaceholderText('Remarks...');
+                                        }}
+                                    >
+                                        Remarks
+                                    </Dropdown.Item>
+                                </Dropdown>
+                            </div>
+                            <div className="flex items-center rounded-md">
+                                <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                    {isAscending ? <AiOutlineSortAscending size={28} />
+                                        : <AiOutlineSortDescending size={28} />}
+                                </Button>
+                            </div>
                         </div>
                         <Button
                             onClick={() => {
@@ -303,6 +360,9 @@ function SurgicalItems() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                    <div className="flex overflow-x-auto sm:justify-center">
+                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => {setPageNumber(page)}} showIcons />
                     </div>
                 </div>
             </div>

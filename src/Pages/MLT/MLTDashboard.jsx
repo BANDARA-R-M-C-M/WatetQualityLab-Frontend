@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { useDebounce } from '../../Util/useDebounce';
-import { getNewSamples, updateStatus } from "../../Service/MLTService";
-import { Button, Modal } from 'flowbite-react';
+import { getPendingSamples, updateStatus } from "../../Service/MLTService";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 
 function MLTDashboard() {
     const [samples, setSamples] = useState([]);
     const [comment, setComment] = useState('');
-    const [searchById, setSearchById] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('Your Ref No...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('YourRefNo');
+    const [searchParameterType, setSearchParameterType] = useState('string');
     const [sortBy, setSortBy] = useState('YourRefNo');
     const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [rejectedId, setRejectedId] = useState('');
     const [openModal, setOpenModal] = useState(false);
 
     const { user } = useAuth();
-    const debouncedSearch = useDebounce(searchById, 750);
+    const debouncedSearch = useDebounce(searchTerm, 750);
 
     useEffect(() => {
         const fetchSamples = async () => {
             try {
-                const response = await getNewSamples(user.userId, searchById, null, null, sortBy, isAscending);
+                const response = await getPendingSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
-                    const pendingSamples = response.data.filter(sample => sample.acceptance === 'Pending');
-                    setSamples(pendingSamples);
+                    setSamples(response.data.items);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -32,7 +38,7 @@ function MLTDashboard() {
         };
 
         fetchSamples();
-    }, [debouncedSearch]);
+    }, [pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handleAccept = async (sampleId) => {
         try {
@@ -59,22 +65,69 @@ function MLTDashboard() {
         <>
             <div className="bg-white rounded-md w-full">
                 <div className="flex items-center justify-between pb-6">
-                <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-200 items-center p-2 rounded-md">
-                            <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
+                    <div className="flex items-center justify-between">
+                        <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                            <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
                             <input
-                                className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
+                                className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
                                 type="text"
-                                placeholder="search..."
-                                value={searchById}
-                                onChange={(e) => setSearchById(e.target.value)}
+                                placeholder={placeholderText}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            {searchById && (
+                            {searchTerm && (
                                 <MdClose
                                     className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
-                                    onClick={() => setSearchById('')}
+                                    onClick={() => setSearchTerm('')}
                                 />
                             )}
+                        </div>
+                        <div className="flex items-center p-2 rounded-md">
+                            <Dropdown label="Sort">
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('YourRefNo');
+                                        setSearchParameter('YourRefNo');
+                                        setPlaceholderText('Your Ref No...');
+                                    }}
+                                >
+                                    Your Ref No
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('DateOfCollection');
+                                        setSearchParameter('DateOfCollection');
+                                        setSearchParameterType('DateOnly');
+                                        setPlaceholderText('Date of Collection...');
+                                    }}
+                                >
+                                    Date of Collection
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('CatagoryOfSource');
+                                        setSearchParameter('CatagoryOfSource');
+                                        setPlaceholderText('Category of Source...');
+                                    }}
+                                >
+                                    Category of Source
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('CollectingSource');
+                                        setSearchParameter('CollectingSource');
+                                        setPlaceholderText('Collecting Source...');
+                                    }}
+                                >
+                                    Collecting Source
+                                </Dropdown.Item>
+                            </Dropdown>
+                        </div>
+                        <div className="flex items-center rounded-md">
+                            <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                {isAscending ? <AiOutlineSortAscending size={28} />
+                                    : <AiOutlineSortDescending size={28} />}
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -158,6 +211,9 @@ function MLTDashboard() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                    <div className="flex overflow-x-auto sm:justify-center">
+                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
                     </div>
                 </div>
             </div>

@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { FaPlus } from "react-icons/fa6";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { MdEdit, MdDelete, MdClose } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getPHIDetails, submitSample, getAddedSamples, updateWCSample, deleteWCSample } from '../../Service/PHIService';
 import { useAuth } from '../../Context/useAuth';
+import { useDebounce } from '../../Util/useDebounce';
 
 function Samples() {
 
@@ -16,6 +19,15 @@ function Samples() {
     const [catagoryOfSource, setCatagoryOfSource] = useState('');
     const [collectingSource, setCollectingSource] = useState('');
     const [stateOfChlorination, setStateOfChlorination] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('Your Ref No...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('YourRefNo');
+    const [searchParameterType, setSearchParameterType] = useState('string');
+    const [sortBy, setSortBy] = useState('YourRefNo');
+    const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
     const [openNewModal, setOpenNewModal] = useState(false);
@@ -23,21 +35,22 @@ function Samples() {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const { user } = useAuth();
+    const debouncedSearch = useDebounce(searchTerm, 750);
 
     useEffect(() => {
         const fetchAddedSamples = async () => {
             try {
-                const response = await getAddedSamples(user.userId);
+                const response = await getAddedSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
-                    const pendingSamples = response.data.filter(sample => sample.acceptance === 'Pending');
-                    setSamples(pendingSamples);
+                    setSamples(response.data.items);
+                    setTotalPages(response.data.totalPages);
                 }
             } catch (error) {
                 console.error('Error fetching added samples:', error);
             }
         };
         fetchAddedSamples();
-    }, [openNewModal, openEditModal, openDeleteModal]);
+    }, [openNewModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
         getPHIDetails(user.userId).then((response) => {
@@ -99,14 +112,88 @@ function Samples() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd" />
-                            </svg>
-                            <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                        <div className="flex items-center justify-between">
+                            <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                <input
+                                    className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                    type="text"
+                                    placeholder={placeholderText}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                                {searchTerm && (
+                                    <MdClose
+                                        className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                        onClick={() => setSearchTerm('')}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex items-center p-2 rounded-md">
+                            <Dropdown label="Sort">
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('YourRefNo');
+                                        setSearchParameter('YourRefNo');
+                                        setPlaceholderText('Your Ref No...');
+                                    }}
+                                >
+                                    Your Ref No
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('DateOfCollection');
+                                        setSearchParameter('DateOfCollection');
+                                        setSearchParameterType('DateOnly');
+                                        setPlaceholderText('Date of Collection...');
+                                    }}
+                                >
+                                    Date of Collection
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('phiAreaName');
+                                        setSearchParameter('phiAreaName');
+                                        setPlaceholderText('PHI Area Name...');
+                                    }}
+                                >
+                                    PHI Area Name
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('CatagoryOfSource');
+                                        setSearchParameter('CatagoryOfSource');
+                                        setPlaceholderText('Category of Source...');
+                                    }}
+                                >
+                                    Category of Source
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('CollectingSource');
+                                        setSearchParameter('CollectingSource');
+                                        setPlaceholderText('Collecting Source...');
+                                    }}
+                                >
+                                    Collecting Source
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('StateOfChlorination');
+                                        setSearchParameter('StateOfChlorination');
+                                        setPlaceholderText('State Of Chlorination...');
+                                    }}
+                                >
+                                    State Of Chlorination
+                                </Dropdown.Item>
+                            </Dropdown>
+                            </div>
+                            <div className="flex items-center rounded-md">
+                                <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                    {isAscending ? <AiOutlineSortAscending size={28} />
+                                        : <AiOutlineSortDescending size={28} />}
+                                </Button>
+                            </div>
                         </div>
                         <Button
                             onClick={() => {
@@ -149,9 +236,9 @@ function Samples() {
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         State of Chlorination
                                     </th>
-                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Status
-                                    </th>
+                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -182,12 +269,12 @@ function Samples() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{sample.stateOfChlorination}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                                 <span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
                                                 <span className="relative">{sample.acceptance}</span>
                                             </span>
-                                        </td>
+                                        </td> */}
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button size="xs"
                                                 onClick={() => {
@@ -200,20 +287,23 @@ function Samples() {
                                                     setStateOfChlorination(sample.stateOfChlorination);
                                                 }}
                                             >
-                                                <MdEdit size={25}/>
+                                                <MdEdit size={25} />
                                             </Button>
                                         </td>
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button size="xs" color="failure"
                                                 onClick={() => { setOpenDeleteModal(true); setDeletedId(sample.sampleId); }}
                                             >
-                                                <MdDelete size={25}/>
+                                                <MdDelete size={25} />
                                             </Button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                    <div className="flex overflow-x-auto sm:justify-center">
+                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
                     </div>
                 </div>
             </div>

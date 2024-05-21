@@ -14,11 +14,38 @@ export const getPHIDetails = async (phiId) => {
     }
 };
 
-export const getAddedSamples = async (phiId) => {
+export const getAddedSamples = async (phiId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/WCSample/getAddedSamples`, {
             params: {
-                phiId: phiId
+                UserId: phiId,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getHistory = async (phiId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+    try {
+        const response = await axios.get(`${base_url}/WCSample/GetHistory`, {
+            params: {
+                UserId: phiId,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
             }
         });
         return response;

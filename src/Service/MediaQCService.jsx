@@ -1,12 +1,14 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getMediaQualityRecords = async (mltId, mediaId, pageNumber, pageSize, sortBy, isAscending) => {
+export const getMediaQualityRecords = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/MediaQualityControl/GetMediaQualityControlRecords`, {
             params: {
                 UserId: mltId,
-                MediaId: mediaId,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
                 PageNumber: pageNumber,
                 PageSize: pageSize,
                 SortBy: sortBy,

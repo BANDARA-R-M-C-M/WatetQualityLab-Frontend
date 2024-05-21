@@ -1,21 +1,28 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { MdEdit, MdDelete, MdViewList, MdClose } from "react-icons/md";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getSurgicalCatagories, addSurgicalCategory, updateSurgicalCategory, deleteSurgicalCategory } from '../../Service/SurgicalInventoryService';
 import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 
 function SurgicalInventory() {
 
     const [surgicalCatagories, setSurgicalCatagories] = useState([]);
     const [labId, setLabId] = useState('');
     const [categoryName, setCategoryName] = useState('');
-    const [searchByName, setSearchByName] = useState('');
-    const [sortBy, setSortBy] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('Surgical Category Name...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('SurgicalCategoryName');
+    const [searchParameterType, setSearchParameterType] = useState('string');
+    const [sortBy, setSortBy] = useState('SurgicalCategoryName');
     const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [updatedCategoryId, setUpdatedCategoryId] = useState('');
     const [deletedCategoryId, setDeletedCategoryId] = useState('');
     const [openModal, setOpenModal] = useState(false);
@@ -23,22 +30,22 @@ function SurgicalInventory() {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const { user } = useAuth();
-    const debouncedSearch = useDebounce(searchByName, 750);
+    const debouncedSearch = useDebounce(searchTerm, 750);
 
     useEffect(() => {
         const fetchSurgicalCategories = async () => {
             try {
-                const response = await getSurgicalCatagories(user.userId, searchByName, null, null, sortBy, isAscending);
+                const response = await getSurgicalCatagories(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
-                    setSurgicalCatagories(response.data);
-                    setLabId(response.data[0].labId);
+                    setSurgicalCatagories(response.data.items);
+                    setLabId(response.data.items[0].labId);
                 }
             } catch (error) {
                 console.error('Error fetching Surgical Categories', error);
             }
         };
         fetchSurgicalCategories();
-    }, [openModal, openEditModal, openDeleteModal, debouncedSearch]);
+    }, [openModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handleAddCatagory = async (event) => {
         event.preventDefault();
@@ -86,21 +93,42 @@ function SurgicalInventory() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-200 items-center p-2 rounded-md">
-                            <FaSearch className="mr-2 h-6 w-6 text-gray-400" />
-                            <input
-                                className="bg-gray-200 border-none ml-1 block pr-6 focus:ring focus:ring-gray-200"
-                                type="text"
-                                placeholder="search..."
-                                value={searchByName}
-                                onChange={(e) => setSearchByName(e.target.value)}
-                            />
-                            {searchByName && (
-                                <MdClose
-                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
-                                    onClick={() => setSearchByName('')}
+                        <div className="flex items-center">
+                            <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                <input
+                                    className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                    type="text"
+                                    placeholder={placeholderText}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
-                            )}
+                                {searchTerm && (
+                                    <MdClose
+                                        className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                        onClick={() => setSearchTerm('')}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex items-center p-2 rounded-md">
+                                <Dropdown label="Sort">
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('SurgicalCategoryName');
+                                            setSearchParameter('SurgicalCategoryName');
+                                            setPlaceholderText('Surgical Category Name...');
+                                        }}
+                                    >
+                                        Surgical Category Name
+                                    </Dropdown.Item>
+                                </Dropdown>
+                            </div>
+                            <div className="flex items-center rounded-md">
+                                <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                    {isAscending ? <AiOutlineSortAscending size={28} />
+                                        : <AiOutlineSortDescending size={28} />}
+                                </Button>
+                            </div>
                         </div>
                         <Button className="mr-1"
                             onClick={() => {
@@ -174,6 +202,9 @@ function SurgicalInventory() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                    <div className="flex overflow-x-auto sm:justify-center">
+                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
                     </div>
                 </div>
             </div>

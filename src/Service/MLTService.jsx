@@ -1,15 +1,17 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getNewSamples = async (mltId, yourRefNo, pageNumber, pageSize, sortBy, isAscending) => {
+export const getPendingSamples = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
   try {
-    const response = await axios.get(`${base_url}/WCSample/newsamples`, {
+    const response = await axios.get(`${base_url}/WCSample/GetPendingSamples`, {
       // headers: {
       //     Authorization: `Bearer ${token}`
       // },
       params: {
         UserId: mltId,
-        YourRefNo: yourRefNo,
+        SearchTerm: searchTerm,
+        SearchParameter: searchParameter,
+        SearchParameterType: searchParameterType,
         PageNumber: pageNumber,
         PageSize: pageSize,
         SortBy: sortBy,
@@ -22,12 +24,37 @@ export const getNewSamples = async (mltId, yourRefNo, pageNumber, pageSize, sort
   }
 };
 
-export const getAddedReports = async (mltId, myRefNo, pageNumber, pageSize, sortBy, isAscending) => {
+export const getAcceptedSamples = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+  try {
+    const response = await axios.get(`${base_url}/WCSample/GetAcceptedSamples`, {
+      // headers: {
+      //     Authorization: `Bearer ${token}`
+      // },
+      params: {
+        UserId: mltId,
+        SearchTerm: searchTerm,
+        SearchParameter: searchParameter,
+        SearchParameterType: searchParameterType,
+        PageNumber: pageNumber,
+        PageSize: pageSize,
+        SortBy: sortBy,
+        IsAscending: isAscending
+      }
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAddedReports = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
   try {
     const response = await axios.get(`${base_url}/WCReport/getAddedReports`, {
       params: {
         UserId: mltId,
-        MyRefNo: myRefNo,
+        SearchTerm: searchTerm,
+        SearchParameter: searchParameter,
+        SearchParameterType: searchParameterType,
         PageNumber: pageNumber,
         PageSize: pageSize,
         SortBy: sortBy,

@@ -28,13 +28,15 @@ export const getGeneralItemDetails = async (itemId) => {
     }
 }
 
-export const getGeneralInventoryItems = async (mltId, categoryId, generalItemName, pageNumber, pageSize, sortBy, isAscending) => {
+export const getGeneralInventoryItems = async (mltId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryItems`, {
             params: {
                 UserId: mltId,
                 CategoryId: categoryId,
-                GeneralItemName: generalItemName,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
                 PageNumber: pageNumber,
                 PageSize: pageSize,
                 SortBy: sortBy,
@@ -47,12 +49,14 @@ export const getGeneralInventoryItems = async (mltId, categoryId, generalItemNam
     }
 }
 
-export const getGeneralCatagories = async (mltId, generalCategoryName, pageNumber, pageSize, sortBy, isAscending) => {
+export const getGeneralCatagories = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralCategories`, {
             params: {
                 UserId: mltId,
-                GeneralCategoryName: generalCategoryName,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
                 PageNumber: pageNumber,
                 PageSize: pageSize,
                 SortBy: sortBy,

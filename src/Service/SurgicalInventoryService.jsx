@@ -28,13 +28,15 @@ export const getSurgicalItemDetails = async (itemId) => {
     }
 }
 
-export const getSurgicalInventoryItems = async (mltId, categoryId, surgicalItemName, pageNumber, pageSize, sortBy, isAscending) => {
+export const getSurgicalInventoryItems = async (mltId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/SurgicalInventory/GetSurgicalInventoryItems`, {
             params: {
                 UserId: mltId,
                 CategoryId: categoryId,
-                SurgicalItemName: surgicalItemName,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
                 PageNumber: pageNumber,
                 PageSize: pageSize,
                 SortBy: sortBy,
@@ -48,12 +50,14 @@ export const getSurgicalInventoryItems = async (mltId, categoryId, surgicalItemN
     }
 }
 
-export const getSurgicalCatagories = async (mltId, surgicalCategoryName, pageNumber, pageSize, sortBy, isAscending) => {
+export const getSurgicalCatagories = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/SurgicalInventory/GetSurgicalCategories`, {
             params: {
                 UserId: mltId,
-                SurgicalCategoryName: surgicalCategoryName,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
                 PageNumber: pageNumber,
                 PageSize: pageSize,
                 SortBy: sortBy,

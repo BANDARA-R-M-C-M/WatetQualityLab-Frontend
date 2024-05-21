@@ -1,12 +1,14 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getInstrumentalQualityRecords = async (mltId, instrumentId, pageNumber, pageSize, sortBy, isAscending) => {
+export const getInstrumentalQualityRecords = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
         const response = await axios.get(`${base_url}/InstrumentalQualityControl/GetInstrumentalQualityControlRecords`, {
             params: {
                 UserId: mltId,
-                InstrumentId: instrumentId,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
                 PageNumber: pageNumber,
                 PageSize: pageSize,
                 SortBy: sortBy,
