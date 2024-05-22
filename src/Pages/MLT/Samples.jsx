@@ -287,9 +287,11 @@ function Samples() {
                         </tbody>
                     </table>
                 </div>
-                <div className="flex overflow-x-auto sm:justify-center">
-                    <Pagination layout="navigation" currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => {setPageNumber(page)}} />
-                </div>
+                {samples.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
             </div>
 
 

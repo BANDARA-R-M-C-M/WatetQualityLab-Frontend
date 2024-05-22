@@ -198,23 +198,25 @@ function MLTDashboard() {
                                         </td>
                                         <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
                                             <Button onClick={() => handleAccept(sample.sampleId)}
-                                                color="success">accept</Button>
+                                                color="success">Accept</Button>
                                         </td>
                                         <td className="px-3 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button onClick={() => {
                                                 setOpenModal(true);
                                                 setRejectedId(sample.sampleId)
                                             }}
-                                                color="failure">reject</Button>
+                                                color="failure">Reject</Button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-                    <div className="flex overflow-x-auto sm:justify-center">
-                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
-                    </div>
+                    {samples.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
                 </div>
             </div>
 

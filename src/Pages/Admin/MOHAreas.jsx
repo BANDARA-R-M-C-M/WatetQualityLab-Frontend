@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { FaPlus } from "react-icons/fa6";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
+import { MdEdit, MdDelete, MdClose } from "react-icons/md";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getMOHAreas, addMOHArea, getLabs, updateMOHAreas, deleteMOHArea } from "../../Service/AdminService";
+import { useDebounce } from '../../Util/useDebounce';
 
 function MOHAreas() {
 
@@ -11,29 +14,41 @@ function MOHAreas() {
     const [labs, setLabs] = useState([]);
     const [mohAreaName, setMohAreaName] = useState('');
     const [labId, setLabId] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('MOH Area Name...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('MOHAreaName');
+    const [searchParameterType, setSearchParameterType] = useState('string');
+    const [sortBy, setSortBy] = useState('MOHAreaName');
+    const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [updatedId, setUpdatedId] = useState(null);
     const [deletedId, setDeletedId] = useState(null);
     const [openNewModal, setOpenNewModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const debouncedSearch = useDebounce(searchTerm, 750);
+
     useEffect(() => {
         const fetchMOHAreas = async () => {
-            const response = await getMOHAreas();
+            const response = await getMOHAreas(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
             if (response) {
-                setMohAreas(response.data);
+                setMohAreas(response.data.items);
+                setTotalPages(response.data.totalPages);
             } else {
                 console.log("Error fetching MOH Areas");
             }
         }
         fetchMOHAreas();
-    }, [openNewModal, openEditModal, openDeleteModal]);
+    }, [openNewModal, openEditModal, openDeleteModal,pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
         const fetchLabs = async () => {
             const response = await getLabs();
             if (response) {
-                setLabs(response.data);
+                setLabs(response.data.items);
             } else {
                 console.log("Error fetching MOH Area");
             }
@@ -88,14 +103,53 @@ function MOHAreas() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd" />
-                            </svg>
-                            <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                    <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
+                                <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                    <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                    <input
+                                        className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                        type="text"
+                                        placeholder={placeholderText}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                    {searchTerm && (
+                                        <MdClose
+                                            className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                            onClick={() => setSearchTerm('')}
+                                        />
+                                    )}
+                                </div>
+                                <div className="flex items-center p-2 rounded-md">
+                                <Dropdown label="Sort">
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('MOHAreaName');
+                                                setSearchParameter('MOHAreaName');
+                                                setPlaceholderText('MOH Area Name...');
+                                            }}
+                                        >
+                                            MOH Area Name
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('LabName');
+                                                setSearchParameter('LabName');
+                                                setPlaceholderText('Lab Name...');
+                                            }}
+                                        >
+                                            Lab Name
+                                        </Dropdown.Item>
+                                    </Dropdown>
+                                </div>
+                                <div className="flex items-center rounded-md">
+                                    <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                        {isAscending ? <AiOutlineSortAscending size={28} />
+                                            : <AiOutlineSortDescending size={28} />}
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                         <Button
                             onClick={() => {setOpenNewModal(true)}}
@@ -111,14 +165,17 @@ function MOHAreas() {
                         <table className="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         MOH Area ID
-                                    </th>
+                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         MOH Area Name
                                     </th>
-                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Assigned Lab
+                                    </th> */}
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Assigned Lab Name
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
@@ -129,14 +186,17 @@ function MOHAreas() {
                             <tbody>
                                 {mohAreas.map((mohArea, index) => (
                                     <tr key={index}>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{mohArea.mohAreaId}</p>
-                                        </td>
+                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{mohArea.mohAreaName}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{mohArea.labId}</p>
+                                        </td> */}
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{mohArea.labName}</p>
                                         </td>
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button size="xs"
@@ -165,6 +225,11 @@ function MOHAreas() {
                             </tbody>
                         </table>
                     </div>
+                    {mohAreas.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
                 </div>
             </div>
 

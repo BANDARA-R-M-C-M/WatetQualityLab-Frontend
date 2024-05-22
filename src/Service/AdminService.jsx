@@ -1,9 +1,10 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const registerUser = async (userName, password, email, phoneNumber, role) => {
+export const registerUser = async (id, userName, password, email, phoneNumber, role) => {
     try {
         const response = await axios.post(`${base_url}/User/signUp`, {
+            id: id,
             userName: userName,
             password: password,
             email: email,
@@ -53,54 +54,114 @@ export const addMOHArea = async (mohAreaName, labId) => {
     }
 }
 
-export const getMLTs = async () => {
+export const getMLTs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
-        const response = await axios.get(`${base_url}/User/getMLTs`);
+        const response = await axios.get(`${base_url}/User/getMLTs`, {
+            params: {
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
+              }
+        });
         return response;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const getPHIs = async () => {
+export const getPHIs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try{
-        const response = await axios.get(`${base_url}/User/getPHIs`);
+        const response = await axios.get(`${base_url}/User/getPHIs`, {
+            params: {
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
+              }
+        });
         return response;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const getMOHSupervisors = async () => {
+export const getMOHSupervisors = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try{
-        const response = await axios.get(`${base_url}/User/getMOHSupervisors`);
+        const response = await axios.get(`${base_url}/User/getMOHSupervisors`, {
+            params: {
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
+              }
+        });
         return response;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const getLabs = async () => {
+export const getLabs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
-        const response = await axios.get(`${base_url}/Area/getLabs`);
+        const response = await axios.get(`${base_url}/Area/getLabs`, {
+            params: {
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
+              }
+        });
         return response;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const getPHIAreas = async () => {
+export const getPHIAreas = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
-        const response = await axios.get(`${base_url}/Area/getPHIAreas`);
+        const response = await axios.get(`${base_url}/Area/getPHIAreas`, {
+            params: {
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
+              }
+        });
         return response;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const getMOHAreas = async () => {
+export const getMOHAreas = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
     try {
-        const response = await axios.get(`${base_url}/Area/getMOHAreas`);
+        const response = await axios.get(`${base_url}/Area/getMOHAreas`, {
+            params: {
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending
+              }
+        });
         return response;
     } catch (error) {
         console.log(error);

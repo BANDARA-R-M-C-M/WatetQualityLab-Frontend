@@ -11,7 +11,7 @@ import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai"
 
 function SurgicalInventory() {
 
-    const [surgicalCatagories, setSurgicalCatagories] = useState([]);
+    const [surgicalCategories, setSurgicalCatagories] = useState([]);
     const [labId, setLabId] = useState('');
     const [categoryName, setCategoryName] = useState('');
     const [placeholderText, setPlaceholderText] = useState('Surgical Category Name...');
@@ -161,7 +161,7 @@ function SurgicalInventory() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {surgicalCatagories.map((surgicalCatagory, index) => (
+                                {surgicalCategories.map((surgicalCatagory, index) => (
                                     <tr key={index}>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{surgicalCatagory.surgicalCategoryID}</p>
@@ -203,9 +203,11 @@ function SurgicalInventory() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="flex overflow-x-auto sm:justify-center">
-                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
-                    </div>
+                    {surgicalCategories.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
                 </div>
             </div>
 

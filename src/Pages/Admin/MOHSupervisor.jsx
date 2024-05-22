@@ -1,43 +1,59 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { FaPlus } from "react-icons/fa6";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
+import { MdEdit, MdDelete, MdClose } from "react-icons/md";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getMOHSupervisors, getMOHAreas, assignMOHSupervisortoMOHAreas, deleteUser } from "../../Service/AdminService";
+import { useDebounce } from '../../Util/useDebounce';
 
 function MOHSupervisor() {
 
-    const [mohSupservisors, setMohSupevisors] = useState([]);
+    const [mohSupervisors, setMohSupevisors] = useState([]);
     const [mohAreas, setMohAreas] = useState([]);
+    const [id, setId] = useState('');
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [role, setRole] = useState('Moh_Supervisor');
     const [mohAreaId, setMohAreaId] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('Identity Number...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('ID');
+    const [searchParameterType, setSearchParameterType] = useState('string');
+    const [sortBy, setSortBy] = useState('ID');
+    const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [assignId, setAssignId] = useState('');
     const [deletedId, setDeletedId] = useState(null);
     const [openNewModal, setOpenNewModal] = useState(false);
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const debouncedSearch = useDebounce(searchTerm, 750);
+
     useEffect(() => {
         const fetchMOHSupervisors = async () => {
-            const response = await getMOHSupervisors();
+            const response = await getMOHSupervisors(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
             if (response) {
-                setMohSupevisors(response.data);
+                setMohSupevisors(response.data.items);
+                setTotalPages(response.data.totalPages);
             } else {
                 console.log("Error fetching MOH Supervisors");
             }
         }
         fetchMOHSupervisors();
-    }, [openNewModal, openAssignModal, openDeleteModal]);
+    }, [openNewModal, openAssignModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
         const fetchMOHAreas = async () => {
             const response = await getMOHAreas();
             if (response) {
-                setMohAreas(response.data);
+                setMohAreas(response.data.items);
             } else {
                 console.log("Error fetching MOH Areas");
             }
@@ -48,7 +64,7 @@ function MOHSupervisor() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await registerUser(userName, password, email, phoneNumber, role);
+            await registerUser(id, userName, password, email, phoneNumber, role);
             alert('MOH Supervisor added successfully');
         } catch (error) {
             console.error('Error adding MOH Supervisor:', error);
@@ -87,14 +103,80 @@ function MOHSupervisor() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd" />
-                            </svg>
-                            <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
+                                <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                    <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                    <input
+                                        className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                        type="text"
+                                        placeholder={placeholderText}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                    {searchTerm && (
+                                        <MdClose
+                                            className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                            onClick={() => setSearchTerm('')}
+                                        />
+                                    )}
+                                </div>
+                                <div className="flex items-center p-2 rounded-md">
+                                    <Dropdown label="Sort">
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('ID');
+                                                setSearchParameter('ID');
+                                                setPlaceholderText('Identity Number...');
+                                            }}
+                                        >
+                                            Identity Number
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('UserName');
+                                                setSearchParameter('UserName');
+                                                setPlaceholderText('User Name...');
+                                            }}
+                                        >
+                                            User Name
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('PhoneNumber');
+                                                setSearchParameter('PhoneNumber');
+                                                setPlaceholderText('Phone Number...');
+                                            }}
+                                        >
+                                            Phone Number
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('Email');
+                                                setSearchParameter('Email');
+                                                setPlaceholderText('Email...');
+                                            }}
+                                        >
+                                            Email
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('MOHAreaName');
+                                                setSearchParameter('MOHAreaName');
+                                                setPlaceholderText('MOH Area Name...');
+                                            }}
+                                        >
+                                            MOH Area Name
+                                        </Dropdown.Item>
+                                    </Dropdown>
+                                </div>
+                                <div className="flex items-center rounded-md">
+                                    <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                        {isAscending ? <AiOutlineSortAscending size={28} />
+                                            : <AiOutlineSortDescending size={28} />}
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                         <Button
                             onClick={() => { setOpenNewModal(true) }}
@@ -132,7 +214,7 @@ function MOHSupervisor() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {mohSupservisors.map((mohSupservisor, index) => (
+                                {mohSupervisors.map((mohSupservisor, index) => (
                                     <tr key={index}>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{mohSupservisor.userName}</p>
@@ -175,6 +257,11 @@ function MOHSupervisor() {
                             </tbody>
                         </table>
                     </div>
+                    {mohSupervisors.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -212,9 +299,17 @@ function MOHSupervisor() {
             </Modal>
 
             <Modal show={openNewModal} onClose={() => setOpenNewModal(false)}>
-                <Modal.Header>Add MLT</Modal.Header>
+                <Modal.Header>Add MOH Supervisor</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label htmlFor="id" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                                Identity Card Number
+                            </label>
+                            <input type="text" name="id" id="id" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value={id} onChange={(e) => setId(e.target.value)} required />
+                        </div>
+
                         <div className="mb-4">
                             <label htmlFor="userName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 Name

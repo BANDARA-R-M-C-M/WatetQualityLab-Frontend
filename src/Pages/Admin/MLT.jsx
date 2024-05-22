@@ -1,43 +1,59 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { FaPlus } from "react-icons/fa6";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
+import { MdEdit, MdDelete, MdClose } from "react-icons/md";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getMLTs, getLabs, assignMLTtoLabs, deleteUser } from "../../Service/AdminService";
+import { useDebounce } from '../../Util/useDebounce';
 
 function MLT() {
 
     const [mlts, setMLTs] = useState([]);
     const [labs, setLabs] = useState([]);
+    const [id, setId] = useState('');
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [role, setRole] = useState('Mlt');
     const [labId, setLabId] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('Identity Number...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('ID');
+    const [searchParameterType, setSearchParameterType] = useState('string');
+    const [sortBy, setSortBy] = useState('ID');
+    const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [assignId, setAssignId] = useState('');
     const [deletedId, setDeletedId] = useState(null);
     const [openNewModal, setOpenNewModal] = useState(false);
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const debouncedSearch = useDebounce(searchTerm, 750);
+
     useEffect(() => {
         const fetchMLTs = async () => {
-            const response = await getMLTs();
+            const response = await getMLTs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
             if (response) {
-                setMLTs(response.data);
+                setMLTs(response.data.items);
+                setTotalPages(response.data.totalPages);
             } else {
                 console.log("Error fetching MLTs");
             }
         }
         fetchMLTs();
-    }, [openNewModal, openAssignModal, openDeleteModal]);
+    }, [openNewModal, openAssignModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
         const fetchLabs = async () => {
             const response = await getLabs();
             if (response) {
-                setLabs(response.data);
+                setLabs(response.data.items);
             } else {
                 console.log("Error fetching Labs");
             }
@@ -48,7 +64,7 @@ function MLT() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await registerUser(userName, password, email, phoneNumber, role);
+            await registerUser(id, userName, password, email, phoneNumber, role);
             alert('MLT added successfully');
         } catch (error) {
             console.error('Error adding MLT:', error);
@@ -60,8 +76,8 @@ function MLT() {
 
     const handleAssign = async (e) => {
         e.preventDefault();
-        
-        if(await assignMLTtoLabs(assignId, labId)){
+
+        if (await assignMLTtoLabs(assignId, labId)) {
             alert('MLT assigned successfully');
         } else {
             alert('Failed to assign MLT');
@@ -87,14 +103,80 @@ function MLT() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd" />
-                            </svg>
-                            <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
+                                <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                    <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                    <input
+                                        className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                        type="text"
+                                        placeholder={placeholderText}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                    {searchTerm && (
+                                        <MdClose
+                                            className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                            onClick={() => setSearchTerm('')}
+                                        />
+                                    )}
+                                </div>
+                                <div className="flex items-center p-2 rounded-md">
+                                    <Dropdown label="Sort">
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('ID');
+                                                setSearchParameter('ID');
+                                                setPlaceholderText('Identity Number...');
+                                            }}
+                                        >
+                                            Identity Number
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('UserName');
+                                                setSearchParameter('UserName');
+                                                setPlaceholderText('User Name...');
+                                            }}
+                                        >
+                                            User Name
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('PhoneNumber');
+                                                setSearchParameter('PhoneNumber');
+                                                setPlaceholderText('Phone Number...');
+                                            }}
+                                        >
+                                            Phone Number
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('Email');
+                                                setSearchParameter('Email');
+                                                setPlaceholderText('Email...');
+                                            }}
+                                        >
+                                            Email
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                setSortBy('LabName');
+                                                setSearchParameter('LabName');
+                                                setPlaceholderText('Lab Name...');
+                                            }}
+                                        >
+                                            Lab Name
+                                        </Dropdown.Item>
+                                    </Dropdown>
+                                </div>
+                                <div className="flex items-center rounded-md">
+                                    <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                        {isAscending ? <AiOutlineSortAscending size={28} />
+                                            : <AiOutlineSortDescending size={28} />}
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                         <Button
                             onClick={() => { setOpenNewModal(true) }}
@@ -117,7 +199,7 @@ function MLT() {
                                         Identity Card Number
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Telephone
+                                        Phone Number
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         E-Mail
@@ -151,7 +233,7 @@ function MLT() {
                                         </td>
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button
-                                                onClick={() => {setOpenAssignModal(true), setAssignId(mlt.id)}}
+                                                onClick={() => { setOpenAssignModal(true), setAssignId(mlt.id) }}
                                             >
                                                 <MdEdit className="mr-2 h-5 w-5" />
                                                 Assign
@@ -159,7 +241,7 @@ function MLT() {
                                         </td>
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button size="xs" color="failure"
-                                                onClick={() => {setOpenDeleteModal(true), setDeletedId(mlt.id)}}
+                                                onClick={() => { setOpenDeleteModal(true), setDeletedId(mlt.id) }}
                                             >
                                                 <MdDelete size={25} />
                                             </Button>
@@ -169,8 +251,13 @@ function MLT() {
                             </tbody>
                         </table>
                     </div>
+                    {mlts.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
                 </div>
-            </div>         
+            </div>
 
             <Modal show={openAssignModal} onClose={() => setOpenAssignModal(false)}>
                 <Modal.Header>Assign MLT to Laboratory</Modal.Header>
@@ -210,13 +297,19 @@ function MLT() {
                 <Modal.Body>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
+                            <label htmlFor="id" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                                Identity Card Number
+                            </label>
+                            <input type="text" name="id" id="id" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value={id} onChange={(e) => setId(e.target.value)} required />
+                        </div>
+                        <div className="mb-4">
                             <label htmlFor="userName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 Name
                             </label>
                             <input type="text" name="userName" id="userName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 value={userName} onChange={(e) => setUserName(e.target.value)} required />
                         </div>
-
                         <div className="mb-4">
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 Password
@@ -224,7 +317,6 @@ function MLT() {
                             <input type="password" name="password" id="password" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 value={password} onChange={(e) => setPassword(e.target.value)} required />
                         </div>
-
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 E-Mail
@@ -232,7 +324,6 @@ function MLT() {
                             <input type="email" name="email" id="email" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 value={email} onChange={(e) => setEmail(e.target.value)} required />
                         </div>
-
                         <div className="mb-4">
                             <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 Telephone
@@ -240,14 +331,12 @@ function MLT() {
                             <input type="tel" name="phoneNumber" id="phoneNumber" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
                         </div>
-
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
                         </div>
                     </form>
                 </Modal.Body>
             </Modal>
-
 
             <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup>
                 <Modal.Header />

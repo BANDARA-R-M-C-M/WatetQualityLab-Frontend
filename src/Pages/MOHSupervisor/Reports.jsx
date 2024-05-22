@@ -1,21 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
+import { useDebounce } from '../../Util/useDebounce';
 import { getNewReports } from "../../Service/MOHService";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
+import { FaSearch } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 
 function Reports() {
 
     const [reports, setReports] = useState([]);
     const [reportUrl, setReportUrl] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('Date Of Collection...');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParameter, setSearchParameter] = useState('DateOfCollection');
+    const [searchParameterType, setSearchParameterType] = useState('DateOnly');
+    const [sortBy, setSortBy] = useState('DateOfCollection');
+    const [isAscending, setIsAscending] = useState(true);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
+
     const { user } = useAuth();
+    const debouncedSearch = useDebounce(searchTerm, 750);
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await getNewReports(user.userId);
+                const response = await getNewReports(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
-                    setReports(response.data);
+                    setReports(response.data.items);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -23,22 +38,81 @@ function Reports() {
         };
 
         fetchReports();
-    }, []);
+    }, [pageNumber, sortBy, isAscending, debouncedSearch]);
 
     return (
         <>
             <div className="bg-white rounded-md w-full">
                 <div className="flex items-center justify-between pb-6">
                     <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fillRule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clipRule="evenodd" />
-                            </svg>
-                            <input className="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
+                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between">
+                        <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                            <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                            <input
+                                className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                type="text"
+                                placeholder={placeholderText}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            {searchTerm && (
+                                <MdClose
+                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                    onClick={() => setSearchTerm('')}
+                                />
+                            )}
                         </div>
+                        <div className="flex items-center p-2 rounded-md">
+                            <Dropdown label="Sort">
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('DateOfCollection');
+                                        setSearchParameter('DateOfCollection');
+                                        setPlaceholderText('Date Of Collection...');
+                                    }}
+                                >
+                                    Date Of Collection
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('IssuedDate');
+                                        setSearchParameter('IssuedDate');
+                                        setPlaceholderText('Issued Date...');
+                                    }}
+                                >
+                                    Issued Date
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('MOHAreaName');
+                                        setSearchParameter('MOHAreaName');
+                                        setSearchParameterType('string');
+                                        setPlaceholderText('MOHAreaName...');
+                                    }}
+                                >
+                                    MOH Area Name
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        setSortBy('phiAreaName');
+                                        setSearchParameter('phiAreaName');
+                                        setSearchParameterType('string');
+                                        setPlaceholderText('PHI Area Name...');
+                                    }}
+                                >
+                                    PHI Area Name
+                                </Dropdown.Item>
+                            </Dropdown>
+                        </div>
+                        <div className="flex items-center rounded-md">
+                            <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                {isAscending ? <AiOutlineSortAscending size={28} />
+                                    : <AiOutlineSortDescending size={28} />}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
                     </div>
                 </div>
                 <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -94,6 +168,11 @@ function Reports() {
                             </tbody>
                         </table>
                     </div>
+                    {reports.length > 0 && (
+                    <div className="flex overflow-x-auto sm:justify-center">
+                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                    </div>
+                )}
                 </div>
             </div>
 

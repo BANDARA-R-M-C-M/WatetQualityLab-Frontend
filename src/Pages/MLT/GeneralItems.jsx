@@ -24,7 +24,7 @@ function GeneralItems() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchParameter, setSearchParameter] = useState('ItemName');
     const [searchParameterType, setSearchParameterType] = useState('string');
-    const [sortBy, setSortBy] = useState('');
+    const [sortBy, setSortBy] = useState('ItemName');
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
@@ -293,9 +293,11 @@ function GeneralItems() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="flex overflow-x-auto sm:justify-center">
-                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
-                    </div>
+                    {items.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
                 </div>
             </div>
 

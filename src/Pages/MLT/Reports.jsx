@@ -22,7 +22,7 @@ function WCReports() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchParameter, setSearchParameter] = useState('MyRefNo');
     const [searchParameterType, setSearchParameterType] = useState('string');
-    const [sortBy, setSortBy] = useState('');
+    const [sortBy, setSortBy] = useState('MyRefNo');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(5);
@@ -95,7 +95,7 @@ function WCReports() {
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
                 <div className="flex items-center justify-between">
-                <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between">
                         <div className="flex bg-gray-200 items-center p-1 rounded-md">
                             <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
                             <input
@@ -307,9 +307,11 @@ function WCReports() {
                         </tbody>
                     </table>
                 </div>
-                <div className="flex overflow-x-auto sm:justify-center">
-                    <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => {setPageNumber(page)}} showIcons />
-                </div>
+                {reports.length > 0 && (
+                    <div className="flex overflow-x-auto sm:justify-center">
+                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                    </div>
+                )}
             </div>
 
             <Modal show={openPreviewModal} onClose={() => setOpenPreviewModal(false)}>

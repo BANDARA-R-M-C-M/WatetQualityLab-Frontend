@@ -11,7 +11,7 @@ import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai"
 
 function GeneralInventory() {
 
-    const [generalCatagories, setGeneralCatagories] = useState([]);
+    const [generalCategories, setGeneralCatagories] = useState([]);
     const [labId, setLabId] = useState('');
     const [categoryName, setCategoryName] = useState('');
     const [placeholderText, setPlaceholderText] = useState('General Category Name...');
@@ -162,7 +162,7 @@ function GeneralInventory() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {generalCatagories.map((generalCatagory, index) => (
+                                {generalCategories.map((generalCatagory, index) => (
                                     <tr key={index}>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{generalCatagory.generalCategoryID}</p>
@@ -204,9 +204,11 @@ function GeneralInventory() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="flex overflow-x-auto sm:justify-center">
-                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
-                    </div>
+                    {generalCategories.length > 0 && (
+                        <div className="flex overflow-x-auto sm:justify-center">
+                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                        </div>
+                    )}
                 </div>
             </div>
 
