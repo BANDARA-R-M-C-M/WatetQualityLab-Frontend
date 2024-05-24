@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { useDebounce } from '../../Util/useDebounce';
-import { updateWCReport, getAddedReports, getReportrPDF, deleteWCReport } from "../../Service/MLTService";
+import { updateWCReport, getAddedReports, getReportPDF, deleteWCReport } from "../../Service/MLTService";
 import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
@@ -53,8 +53,8 @@ function WCReports() {
     }, [openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handlePreview = async (reportId) => {
-        const response = await getReportrPDF(reportId);
-        const pdfBlob = new Blob([response.data.items], { type: 'application/pdf' });
+        const response = await getReportPDF(reportId);
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setReportUrl(pdfUrl);
     };
@@ -340,7 +340,7 @@ function WCReports() {
                         </label>
                         <input
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            name="presumptiveColiformCount" id="presumptiveColiformCount" type="text" placeholder="Presumptive Coliform Count"
+                            name="presumptiveColiformCount" id="presumptiveColiformCount" type="number" placeholder="Presumptive Coliform Count"
                             value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
                     </div>
 
@@ -350,7 +350,7 @@ function WCReports() {
                         </label>
                         <input
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            name="ecoliCount" id="ecoliCount" type="text" placeholder="Ecoli Count"
+                            name="ecoliCount" id="ecoliCount" type="number" placeholder="Ecoli Count"
                             value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
                     </div>
 

@@ -31,6 +31,7 @@ function MLTDashboard() {
                 const response = await getPendingSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
                     setSamples(response.data.items);
+                    setTotalPages(response.data.totalPages);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -105,6 +106,15 @@ function MLTDashboard() {
                                 </Dropdown.Item>
                                 <Dropdown.Item
                                     onClick={() => {
+                                        setSortBy('phiAreaName');
+                                        setSearchParameter('phiAreaName');
+                                        setPlaceholderText('PHI Area Name...');
+                                    }}
+                                >
+                                    PHI Area Name
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
                                         setSortBy('CatagoryOfSource');
                                         setSearchParameter('CatagoryOfSource');
                                         setPlaceholderText('Category of Source...');
@@ -157,9 +167,9 @@ function MLTDashboard() {
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         State of Chlorination
                                     </th>
-                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Acceptance
-                                    </th>
+                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -190,12 +200,12 @@ function MLTDashboard() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{sample.stateOfChlorination}</p>
                                         </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                                 <span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
                                                 <span className="relative">{sample.acceptance}</span>
                                             </span>
-                                        </td>
+                                        </td> */}
                                         <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
                                             <Button onClick={() => handleAccept(sample.sampleId)}
                                                 color="success">Accept</Button>

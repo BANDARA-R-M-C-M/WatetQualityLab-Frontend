@@ -53,7 +53,7 @@ function SurgicalItems() {
                 const response = await getSurgicalInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
                     setItems(response.data.items);
-                    setLabId(response.data.items[0].labId);
+                    setLabId(user.areaId);
                     setTotalPages(response.data.totalPages);
                 }
             } catch (error) {

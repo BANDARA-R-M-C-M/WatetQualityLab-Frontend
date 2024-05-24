@@ -44,7 +44,7 @@ function InstrumentalQuality() {
                 const response = await getInstrumentalQualityRecords(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
                     setInstrumentalQualityRecords(response.data.items);
-                    setLabId(response.data.items[0].labId);
+                    setLabId(user.areaId);
                     setTotalPages(response.data.totalPages);
                 }
             } catch (error) {

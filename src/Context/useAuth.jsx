@@ -58,6 +58,7 @@ export const UserProvider = ({ children }) => {
           userName: res?.data.username,
           userId: res?.data.userId,
           userRole: res?.data.role,
+          areaId: res?.data.areaId
         };
 
         localStorage.setItem("token", res?.data.token);

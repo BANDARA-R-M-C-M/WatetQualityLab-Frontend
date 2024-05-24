@@ -38,7 +38,7 @@ function SurgicalInventory() {
                 const response = await getSurgicalCatagories(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
                     setSurgicalCatagories(response.data.items);
-                    setLabId(response.data.items[0].labId);
+                    setLabId(user.areaId);
                 }
             } catch (error) {
                 console.error('Error fetching Surgical Categories', error);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { useDebounce } from '../../Util/useDebounce';
 import { getNewReports } from "../../Service/MOHService";
+import { getReportPDF } from "../../Service/MLTService";
 import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { FaSearch } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
@@ -39,6 +40,13 @@ function Reports() {
 
         fetchReports();
     }, [pageNumber, sortBy, isAscending, debouncedSearch]);
+
+    const handlePreview = async (reportId) => {
+        const response = await getReportPDF(reportId);
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        setReportUrl(pdfUrl);
+    };
 
     return (
         <>
@@ -160,7 +168,7 @@ function Reports() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <Button onClick={() => {
                                                 setOpenPreviewModal(true);
-                                                setReportUrl(report.reportUrl);
+                                                handlePreview(report.reportRefId);
                                             }}>Preview</Button>
                                         </td>
                                     </tr>

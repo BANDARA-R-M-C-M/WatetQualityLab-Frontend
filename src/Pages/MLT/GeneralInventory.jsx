@@ -38,7 +38,7 @@ function GeneralInventory() {
                 const response = await getGeneralCatagories(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
                     setGeneralCatagories(response.data.items);
-                    setLabId(response.data.items[0].labId);
+                    setLabId(user.areaId);
                     setTotalPages(response.data.totalPages);
                 }
             } catch (error) {

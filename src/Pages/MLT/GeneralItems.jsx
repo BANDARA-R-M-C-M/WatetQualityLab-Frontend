@@ -46,7 +46,7 @@ function GeneralItems() {
                 const response = await getGeneralInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
                     setItems(response.data.items);
-                    setLabId(response.data.items[0].labId);
+                    setLabId(user.areaId);
                     setTotalPages(response.data.totalPages);
                 }
             } catch (error) {

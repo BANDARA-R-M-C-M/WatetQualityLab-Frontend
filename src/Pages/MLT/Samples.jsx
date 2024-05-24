@@ -213,9 +213,9 @@ function Samples() {
                                 {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Acceptance
                                 </th> */}
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Report Availability
-                                </th>
+                                </th> */}
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -252,14 +252,14 @@ function Samples() {
                                             <span className="relative">{sample.acceptance}</span>
                                         </span>
                                     </td> */}
-                                    <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm">
+                                    {/* <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm">
                                         <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                             <span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
                                             {sample.reportAvailable ?
                                                 <span className="relative">Has report</span> :
                                                 <span className="relative">Hasn't report</span>}
                                         </span>
-                                    </td>
+                                    </td> */}
                                     <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm">
                                         {sample.reportAvailable ?
                                             <Button disabled>Report</Button> :
@@ -315,7 +315,7 @@ function Samples() {
                             </label>
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                name="presumptiveColiformCount" id="presumptiveColiformCount" type="text" placeholder="Presumptive Coliform Count"
+                                name="presumptiveColiformCount" id="presumptiveColiformCount" type="number" placeholder="Presumptive Coliform Count"
                                 value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
                         </div>
 
@@ -325,7 +325,7 @@ function Samples() {
                             </label>
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                name="ecoliCount" id="ecoliCount" type="text" placeholder="Ecoli Count"
+                                name="ecoliCount" id="ecoliCount" type="number" placeholder="Ecoli Count"
                                 value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
                         </div>
 

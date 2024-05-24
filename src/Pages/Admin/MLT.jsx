@@ -71,6 +71,7 @@ function MLT() {
             alert('Failed to add MLT');
         }
 
+
         setOpenNewModal(false);
     }
 

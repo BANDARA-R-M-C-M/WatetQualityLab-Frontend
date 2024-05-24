@@ -67,12 +67,32 @@ export const getAddedReports = async (mltId, searchTerm, searchParameter, search
   }
 }
 
-export const getReportrPDF = async (reportId) => {
+export const getReportPDF = async (reportId) => {
   try {
     const response = await axios.get(`${base_url}/WCReport/GetReportPDF`, {
       responseType: 'blob',
       params: {
         reportId: reportId
+      }
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getSampleCount = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+  try {
+    const response = await axios.get(`${base_url}/WCSample/GetSampleCount`, {
+      params: {
+        UserId: mltId,
+        SearchTerm: searchTerm,
+        SearchParameter: searchParameter,
+        SearchParameterType: searchParameterType,
+        PageNumber: pageNumber,
+        PageSize: pageSize,
+        SortBy: sortBy,
+        IsAscending: isAscending
       }
     });
     return response;

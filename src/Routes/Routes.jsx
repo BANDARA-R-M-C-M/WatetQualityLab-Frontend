@@ -7,6 +7,7 @@ import GeneralItems from "../Pages/MLT/GeneralItems.jsx";
 import SurgicalItems from "../Pages/MLT/SurgicaItems.jsx";
 import GeneralItem from "../Pages/MLT/GeneralItem.jsx";
 import SurgicalItem from "../Pages/MLT/SurgicalItem.jsx";
+import SampleCount from "../Pages/MLT/SampleCount.jsx";
 import AdminDashboard from "../Pages/Admin/AdminDashboard"
 import MLT from "../Pages/Admin/MLT"
 import PHI from "../Pages/Admin/PHI";
@@ -63,7 +64,8 @@ export const router = createBrowserRouter([
                 {path: "inventory-surgical/:categoryId/:itemId", element: <SurgicalItem/>},
                 {path: "quality-instrumental", element: <InstrumentalQuality/>},
                 {path: "quality-media", element: <MediaQuality/>},
-                {path: "reports", element: <Reports/>}
+                {path: "reports", element: <Reports/>},
+                {path: "sample-count-report", element: <SampleCount/>}
               ]
         },
         {path: "phi",

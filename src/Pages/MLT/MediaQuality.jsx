@@ -42,7 +42,7 @@ function MediaQuality() {
                 const response = await getMediaQualityRecords(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
                     setMediaQualityRecords(response.data.items);
-                    setLabId(response.data.items[0].labId);
+                    setLabId(user.areaId);
                     setTotalPages(response.data.totalPages);
                 }
             } catch (error) {
