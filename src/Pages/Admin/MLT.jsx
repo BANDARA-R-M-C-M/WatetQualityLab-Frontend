@@ -34,7 +34,7 @@ function MLT() {
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const debouncedSearch = useDebounce(searchTerm, 750);
+    const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchMLTs = async () => {

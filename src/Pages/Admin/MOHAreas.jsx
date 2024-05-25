@@ -29,7 +29,7 @@ function MOHAreas() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const debouncedSearch = useDebounce(searchTerm, 750);
+    const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchMOHAreas = async () => {

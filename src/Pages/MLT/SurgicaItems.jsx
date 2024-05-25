@@ -45,7 +45,7 @@ function SurgicalItems() {
 
     const { user } = useAuth();
     const { categoryId } = useParams();
-    const debouncedSearch = useDebounce(searchTerm, 750);
+    const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchSurgicalItems = async () => {

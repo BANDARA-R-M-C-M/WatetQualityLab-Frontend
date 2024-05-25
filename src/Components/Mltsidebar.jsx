@@ -49,7 +49,8 @@ function Mltsidebar() {
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
                       <Link to='/mlt/dashboard' className={location.pathname === '/mlt/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
-                      <Link to='/mlt/samples' className={location.pathname === '/mlt/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Samples</Link>
+                      <Link to='/mlt/new-samples' className={location.pathname === '/mlt/new-samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>New Samples</Link>
+                      <Link to='/mlt/samples' className={location.pathname === '/mlt/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Accepted Samples</Link>
 
                       <div onClick={() => { setShowInventory(!showInventory) }} className={'flex items-center justify-between text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>
                         Inventory
@@ -101,7 +102,8 @@ function Mltsidebar() {
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
                 <Link to='/mlt/dashboard' className={location.pathname === '/mlt/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
-                <Link to='/mlt/samples' className={location.pathname === '/mlt/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Samples</Link>
+                <Link to='/mlt/new-samples' className={location.pathname === '/mlt/new-samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>New Samples</Link>
+                <Link to='/mlt/samples' className={location.pathname === '/mlt/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Accepted Samples</Link>
 
                 <div onClick={() => { setShowInventory(!showInventory) }} className={'flex items-center justify-between text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>
                   Inventory

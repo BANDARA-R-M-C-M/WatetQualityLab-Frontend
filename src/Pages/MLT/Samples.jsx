@@ -39,7 +39,7 @@ function Samples() {
     const [previewUrl, setPreviewUrl] = useState('');
 
     const { user } = useAuth();
-    const debouncedSearch = useDebounce(searchTerm, 750);
+    const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchSamples = async () => {

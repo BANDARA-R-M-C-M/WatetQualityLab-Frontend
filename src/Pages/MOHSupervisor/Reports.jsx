@@ -24,7 +24,7 @@ function Reports() {
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
     const { user } = useAuth();
-    const debouncedSearch = useDebounce(searchTerm, 750);
+    const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchReports = async () => {

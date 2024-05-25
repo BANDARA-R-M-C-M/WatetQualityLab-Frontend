@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getSampleCount } from '../../Service/MLTService';
+import { getSampleCount, getSampleCountReport } from '../../Service/MLTService';
 import { useAuth } from "../../Context/useAuth";
 import { useDebounce } from '../../Util/useDebounce';
-import { Button, Pagination, Dropdown } from 'flowbite-react';
+import { Button, Modal, Pagination, Dropdown } from 'flowbite-react';
 import { MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { TbReportAnalytics } from "react-icons/tb";
@@ -10,6 +10,7 @@ import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai"
 
 function SampleCount() {
     const [sampleCount, setSampleCount] = useState([]);
+    const [reportUrl, setReportUrl] = useState(null);
     const [selectedYear, setSelectedYear] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [placeholderText, setPlaceholderText] = useState('Year...');
@@ -21,9 +22,25 @@ function SampleCount() {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
+    const [openPreviewModal, setOpenPreviewModal] = useState(false);
+
+    const monthNames = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December"
+    };
 
     const { user } = useAuth();
-    const debouncedSearch = useDebounce(searchTerm, 750);
+    const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -48,7 +65,14 @@ function SampleCount() {
 
     const handleYearChange = (year) => {
         setSelectedYear(year);
-        setSelectedMonth(null); // Reset month when year changes
+        setSelectedMonth(null);
+    };
+
+    const handlePreview = async (mltId, year) => {
+        const response = await getSampleCountReport(mltId, year);
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        setReportUrl(pdfUrl);
     };
 
     const handleMonthChange = (month) => {
@@ -58,7 +82,7 @@ function SampleCount() {
     return (
         <>
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row items-center justify-between">
                     <div className="flex items-center justify-between">
                         <div className="flex bg-gray-200 items-center p-1 rounded-md">
                             <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
@@ -91,7 +115,7 @@ function SampleCount() {
                                     onClick={() => {
                                         setSortBy('month');
                                         setSearchParameter('month');
-                                        setPlaceholderText('Month...');
+                                        setPlaceholderText('Month Number...');
                                     }}
                                 >
                                     Month
@@ -134,6 +158,16 @@ function SampleCount() {
                                 ))}
                             </Dropdown>
                         </div>
+                        <Button 
+                        className='mr-2' 
+                        disabled={!selectedYear}
+                        onClick={() => {
+                            setOpenPreviewModal(true);
+                            handlePreview(user.userId, selectedYear);
+                        }}>
+                            <TbReportAnalytics className="mr-2 h-5 w-5" />
+                            View
+                        </Button>
                         <Button color="failure"
                             onClick={() => {
                                 setSelectedYear(null);
@@ -152,7 +186,7 @@ function SampleCount() {
                                 {yearData.months.map((monthData) => (
                                     (!selectedMonth || selectedMonth === monthData.month) && (
                                         <div key={monthData.month} className="mt-2">
-                                            <h3 className="text-lg font-semibold mt-2">{monthData.month}</h3>
+                                            <h3 className="text-lg font-semibold mt-2">{monthNames[monthData.month]}</h3>
                                             <table className="min-w-full divide-y divide-gray-200 mt-2">
                                                 <thead className="bg-gray-50">
                                                     <tr>
@@ -190,6 +224,13 @@ function SampleCount() {
                     </div>
                 )}
             </div >
+
+            <Modal show={openPreviewModal} onClose={() => setOpenPreviewModal(false)}>
+                <Modal.Header>Report Preview</Modal.Header>
+                <Modal.Body>
+                    <embed src={reportUrl} type="application/pdf" width={100 + '%'} height={500 + 'px'} />
+                </Modal.Body>
+            </Modal>
         </>
     );
 }

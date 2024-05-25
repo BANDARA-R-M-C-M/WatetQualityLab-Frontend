@@ -30,7 +30,7 @@ function GeneralInventory() {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const { user } = useAuth();
-    const debouncedSearch = useDebounce(searchTerm, 750);
+    const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchGeneralCategories = async () => {

@@ -9,6 +9,8 @@ import GeneralItem from "../Pages/MLT/GeneralItem.jsx";
 import SurgicalItem from "../Pages/MLT/SurgicalItem.jsx";
 import SampleCount from "../Pages/MLT/SampleCount.jsx";
 import AdminDashboard from "../Pages/Admin/AdminDashboard"
+import MLTDashboard from '../Pages/MLT/MLTDashboard.jsx';
+import PendingSamples from '../Pages/MLT/PendingSamples.jsx';
 import MLT from "../Pages/Admin/MLT"
 import PHI from "../Pages/Admin/PHI";
 import Login from '../View/Login.jsx';
@@ -16,7 +18,6 @@ import MOHSupervisor from '../Pages/Admin/MOHSupervisor.jsx';
 import Laboratories from '../Pages/Admin/Laboratories.jsx';
 import PHIAreas from '../Pages/Admin/PHIAreas.jsx';
 import MOHAreas from '../Pages/Admin/MOHAreas.jsx';
-import MLTDashboard from '../Pages/MLT/MLTDashboard.jsx';
 import Samples from '../Pages/MLT/Samples.jsx';
 import Reports from '../Pages/MLT/Reports.jsx';
 import GeneralInventory from '../Pages/MLT/GeneralInventory.jsx';
@@ -55,6 +56,7 @@ export const router = createBrowserRouter([
             element: <ProtectedRoute children={<Mltsidebar />}/>,
               children: [
                 {path: "dashboard", element: <MLTDashboard/>},
+                {path: "new-samples", element: <PendingSamples/>},
                 {path: "samples", element: <Samples/>},
                 {path: "inventory-general", element: <GeneralInventory/>},
                 {path: "inventory-general/:categoryId", element: <GeneralItems/>},

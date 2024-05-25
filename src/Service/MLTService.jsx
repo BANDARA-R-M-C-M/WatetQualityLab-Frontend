@@ -101,6 +101,22 @@ export const getSampleCount = async (mltId, searchTerm, searchParameter, searchP
   }
 }
 
+export const getSampleCountReport = async (mltId, year) => {
+  try {
+    const response = await axios.get(`${base_url}/WCSample/GetSampleCountReport`, {
+      responseType: 'blob',
+      params: {
+        MltId: mltId,
+        Year: year
+      }
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+
 export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDate, EcoliCount, AppearanceOfSample, Remarks, MltId, SampleId, LabId) => {
   try {
     await axios.post(`${base_url}/WCReport/AddWCReport`, {
