@@ -43,7 +43,7 @@ function SampleCount() {
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
-        const fetchReports = async () => {
+        const fetchSampleCount = async () => {
             try {
                 const response = await getSampleCount(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
                 if (response) {
@@ -55,7 +55,7 @@ function SampleCount() {
             }
         };
 
-        fetchReports();
+        fetchSampleCount();
     }, [pageNumber, sortBy, isAscending, debouncedSearch, user.userId]);
 
     const years = sampleCount.map((yearData) => yearData.year);

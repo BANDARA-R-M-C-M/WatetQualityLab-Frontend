@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { getPHIAreas, addPHIArea, getMOHAreas, updatePHIAreas, deletePHIArea } from "../../Service/AdminService";
+import { getPHIAreas, fetchLocations, addPHIArea, getMOHAreas, updatePHIAreas, deletePHIArea } from "../../Service/AdminService";
 import { useDebounce } from '../../Util/useDebounce';
 
 function PHIAreas() {
@@ -14,6 +14,7 @@ function PHIAreas() {
     const [mohAreas, setMohAreas] = useState([]);
     const [phiAreaName, setPhiAreaName] = useState('');
     const [mohAreaId, setMohAreaId] = useState('');
+    const [cities, setCities] = useState([]);
     const [placeholderText, setPlaceholderText] = useState('PHI Area Name...');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchParameter, setSearchParameter] = useState('PHIAreaName');
@@ -30,6 +31,18 @@ function PHIAreas() {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
     const debouncedSearch = useDebounce(searchTerm);
+
+    useEffect(() => {
+        const loadLocations = async () => {
+            try {
+                const cities = await fetchLocations(phiAreaName);
+                setCities(cities);
+            } catch (error) {
+                console.error('Error loading cities:', error);
+            }
+        };
+        loadLocations();
+    }, [phiAreaName]);
 
     useEffect(() => {
         const fetchPHIAreas = async () => {
@@ -241,8 +254,20 @@ function PHIAreas() {
                             <label htmlFor="phiAreaName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 Phi Area Name
                             </label>
-                            <input type="text" name="phiAreaName" id="phiAreaName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={phiAreaName} onChange={(e) => setPhiAreaName(e.target.value)} required />
+                            <input type="text"
+                                name="phiAreaName"
+                                id="phiAreaName"
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value={phiAreaName}
+                                list="citySuggestions"
+                                onChange={(e) => setPhiAreaName(e.target.value)}
+                                required
+                            />
+                            <datalist id="citySuggestions">
+                                {cities.map((city, index) => (
+                                    <option key={index} value={city} />
+                                ))}
+                            </datalist>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="mohAreaId" className="block text-sm font-medium text-gray-700 dark:text-gray-200">

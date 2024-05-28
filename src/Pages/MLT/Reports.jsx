@@ -82,7 +82,7 @@ function WCReports() {
     const handleDelete = async (deletedId) => {
         try {
             await deleteWCReport(deletedId);
-            alert('Sample deleted successfully');
+            alert('Report deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);
             alert('Failed to delete sample');

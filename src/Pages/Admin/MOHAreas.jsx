@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { getMOHAreas, addMOHArea, getLabs, updateMOHAreas, deleteMOHArea } from "../../Service/AdminService";
+import { getMOHAreas, fetchLocations, addMOHArea, getLabs, updateMOHAreas, deleteMOHArea } from "../../Service/AdminService";
 import { useDebounce } from '../../Util/useDebounce';
 
 function MOHAreas() {
@@ -14,6 +14,7 @@ function MOHAreas() {
     const [labs, setLabs] = useState([]);
     const [mohAreaName, setMohAreaName] = useState('');
     const [labId, setLabId] = useState('');
+    const [cities, setCities] = useState([]);
     const [placeholderText, setPlaceholderText] = useState('MOH Area Name...');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchParameter, setSearchParameter] = useState('MOHAreaName');
@@ -32,6 +33,18 @@ function MOHAreas() {
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
+        const loadLocations = async () => {
+            try {
+                const cities = await fetchLocations(mohAreaName);
+                setCities(cities);
+            } catch (error) {
+                console.error('Error loading cities:', error);
+            }
+        };
+        loadLocations();
+    }, [mohAreaName]);
+
+    useEffect(() => {
         const fetchMOHAreas = async () => {
             const response = await getMOHAreas(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
             if (response) {
@@ -42,7 +55,7 @@ function MOHAreas() {
             }
         }
         fetchMOHAreas();
-    }, [openNewModal, openEditModal, openDeleteModal,pageNumber, sortBy, isAscending, debouncedSearch]);
+    }, [openNewModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
         const fetchLabs = async () => {
@@ -103,7 +116,7 @@ function MOHAreas() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center justify-between">
                                 <div className="flex bg-gray-200 items-center p-1 rounded-md">
                                     <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
@@ -122,7 +135,7 @@ function MOHAreas() {
                                     )}
                                 </div>
                                 <div className="flex items-center p-2 rounded-md">
-                                <Dropdown label="Sort">
+                                    <Dropdown label="Sort">
                                         <Dropdown.Item
                                             onClick={() => {
                                                 setSortBy('MOHAreaName');
@@ -152,7 +165,7 @@ function MOHAreas() {
                             </div>
                         </div>
                         <Button
-                            onClick={() => {setOpenNewModal(true)}}
+                            onClick={() => { setOpenNewModal(true) }}
                         >
                             <FaPlus className="mr-2 h-5 w-5" />
                             Add MOH Area
@@ -245,8 +258,21 @@ function MOHAreas() {
                             <label htmlFor="mohAreaName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 MOH Area Name
                             </label>
-                            <input type="text" name="mohAreaName" id="mohAreaName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={mohAreaName} onChange={(e) => setMohAreaName(e.target.value)} required />
+                            <input
+                                type="text"
+                                name="mohAreaName"
+                                id="mohAreaName"
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value={mohAreaName}
+                                onChange={(e) => setMohAreaName(e.target.value)}
+                                list="citySuggestions" // Add list attribute with the ID of the datalist
+                                required
+                            />
+                            <datalist id="citySuggestions">
+                                {cities.map((city, index) => (
+                                    <option key={index} value={city} />
+                                ))}
+                            </datalist>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="labId" className="block text-sm font-medium text-gray-700 dark:text-gray-200">

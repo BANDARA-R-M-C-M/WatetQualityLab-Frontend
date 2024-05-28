@@ -1,6 +1,23 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
+export const fetchLocations = async (location) => {
+    try {
+        const response = await axios.get(`${base_url}/WCSample/GetCities`, {
+            params: {
+                query: location
+            },
+        });
+        
+        const cityNames = response.data.predictions.map(prediction => prediction.structured_formatting.main_text);
+        
+        return cityNames;
+    } catch (error) {
+        console.error('Error fetching cities:', error);
+        return [];
+    }
+};
+
 export const registerUser = async (id, userName, password, email, phoneNumber, role) => {
     try {
         const response = await axios.post(`${base_url}/User/signUp`, {
@@ -65,7 +82,7 @@ export const getMLTs = async (searchTerm, searchParameter, searchParameterType, 
                 PageSize: pageSize,
                 SortBy: sortBy,
                 IsAscending: isAscending
-              }
+            }
         });
         return response;
     } catch (error) {
@@ -74,7 +91,7 @@ export const getMLTs = async (searchTerm, searchParameter, searchParameterType, 
 }
 
 export const getPHIs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
-    try{
+    try {
         const response = await axios.get(`${base_url}/User/getPHIs`, {
             params: {
                 SearchTerm: searchTerm,
@@ -84,7 +101,7 @@ export const getPHIs = async (searchTerm, searchParameter, searchParameterType, 
                 PageSize: pageSize,
                 SortBy: sortBy,
                 IsAscending: isAscending
-              }
+            }
         });
         return response;
     } catch (error) {
@@ -93,7 +110,7 @@ export const getPHIs = async (searchTerm, searchParameter, searchParameterType, 
 }
 
 export const getMOHSupervisors = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
-    try{
+    try {
         const response = await axios.get(`${base_url}/User/getMOHSupervisors`, {
             params: {
                 SearchTerm: searchTerm,
@@ -103,7 +120,7 @@ export const getMOHSupervisors = async (searchTerm, searchParameter, searchParam
                 PageSize: pageSize,
                 SortBy: sortBy,
                 IsAscending: isAscending
-              }
+            }
         });
         return response;
     } catch (error) {
@@ -122,7 +139,7 @@ export const getLabs = async (searchTerm, searchParameter, searchParameterType, 
                 PageSize: pageSize,
                 SortBy: sortBy,
                 IsAscending: isAscending
-              }
+            }
         });
         return response;
     } catch (error) {
@@ -141,7 +158,7 @@ export const getPHIAreas = async (searchTerm, searchParameter, searchParameterTy
                 PageSize: pageSize,
                 SortBy: sortBy,
                 IsAscending: isAscending
-              }
+            }
         });
         return response;
     } catch (error) {
@@ -160,7 +177,7 @@ export const getMOHAreas = async (searchTerm, searchParameter, searchParameterTy
                 PageSize: pageSize,
                 SortBy: sortBy,
                 IsAscending: isAscending
-              }
+            }
         });
         return response;
     } catch (error) {
