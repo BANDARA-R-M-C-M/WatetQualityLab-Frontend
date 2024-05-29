@@ -56,7 +56,7 @@ function SampleCount() {
         };
 
         fetchSampleCount();
-    }, [pageNumber, sortBy, isAscending, debouncedSearch, user.userId]);
+    }, [pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const years = sampleCount.map((yearData) => yearData.year);
     const months = selectedYear
@@ -68,15 +68,15 @@ function SampleCount() {
         setSelectedMonth(null);
     };
 
+    const handleMonthChange = (month) => {
+        setSelectedMonth(month);
+    };
+
     const handlePreview = async (mltId, year) => {
         const response = await getSampleCountReport(mltId, year);
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setReportUrl(pdfUrl);
-    };
-
-    const handleMonthChange = (month) => {
-        setSelectedMonth(month);
     };
 
     return (
@@ -125,7 +125,7 @@ function SampleCount() {
                                         setSortBy('MOHAreaName');
                                         setSearchParameter('MOHAreaName');
                                         setSearchParameterType('string');
-                                        setPlaceholderText('MOHAreaName...');
+                                        setPlaceholderText('MOH Area Name...');
                                     }}
                                 >
                                     MOH Area Name

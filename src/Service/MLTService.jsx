@@ -114,10 +114,29 @@ export const getSampleCountReport = async (mltId, year) => {
   } catch (error) {
     console.log(error);
   }
-
 }
 
-export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDate, EcoliCount, AppearanceOfSample, Remarks, MltId, SampleId, LabId) => {
+export const getMonthlySampleDetails = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, year, month) => {
+  try {
+    const response = await axios.get(`${base_url}/WCSample/GetMonthlySamples`, {
+      params: {
+        UserId: mltId,
+        SearchTerm: searchTerm,
+        SearchParameter: searchParameter,
+        SearchParameterType: searchParameterType,
+        PageNumber: pageNumber,
+        PageSize: pageSize,
+        Year: year,
+        Month: month
+      }
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDate, EcoliCount, AppearanceOfSample, Remarks, IsContaminated, MltId, SampleId, LabId) => {
   try {
     await axios.post(`${base_url}/WCReport/AddWCReport`, {
       myRefNo: myRefNo,
@@ -126,6 +145,7 @@ export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDa
       ecoliCount: EcoliCount,
       appearanceOfSample: AppearanceOfSample,
       remarks: Remarks,
+      contaminated: IsContaminated,
       mltId: MltId,
       sampleId: SampleId,
       labId: LabId

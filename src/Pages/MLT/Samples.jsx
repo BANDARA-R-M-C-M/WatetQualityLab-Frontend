@@ -31,6 +31,7 @@ function Samples() {
     const [collectingSource, setCollectingSource] = useState('');
     const [DateOfCollection, setDateOfCollection] = useState('');
     const [analyzedDate, setAnalyzedDate] = useState('');
+    const [isContaminated, setIsContaminated] = useState(null);
     const [labName, setLabName] = useState('');
     const [labLocation, setLabLocation] = useState('');
     const [labTelephone, setLabTelephone] = useState('');
@@ -60,7 +61,7 @@ function Samples() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await submitReport(myRefNo, presumptiveColiformCount, analyzedDate, ecoliCount, appearanceOfSample, remarks, user.userId, sampleId, labId)) {
+        if (await submitReport(myRefNo, presumptiveColiformCount, analyzedDate, ecoliCount, appearanceOfSample, remarks, isContaminated, user.userId, sampleId, labId)) {
             alert('Report created successfully');
         } else {
             alert('Failed to create report');
@@ -294,7 +295,6 @@ function Samples() {
                     )}
             </div>
 
-
             <Modal show={openModal} onClose={() => setOpenModal(false)}>
                 <Modal.Header>Report</Modal.Header>
                 <Modal.Body>
@@ -358,6 +358,33 @@ function Samples() {
                                 name="remarks" id="remarks" type="text" placeholder="Remarks"
                                 value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
                         </div>
+                        <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Contamination Status</label>
+                        <div className="flex items-center">
+                            <input
+                                className="mr-2 leading-tight"
+                                type="radio"
+                                id="contaminatedTrue"
+                                name="isContaminated"
+                                value="true"
+                                checked={isContaminated === true}
+                                onChange={() => setIsContaminated(true)}
+                            />
+                            <label htmlFor="contaminatedTrue" className="text-gray-700">True</label>
+                        </div>
+                        <div className="flex items-center">
+                            <input
+                                className="mr-2 leading-tight"
+                                type="radio"
+                                id="contaminatedFalse"
+                                name="isContaminated"
+                                value="false"
+                                checked={isContaminated === false}
+                                onChange={() => setIsContaminated(false)}
+                            />
+                            <label htmlFor="contaminatedFalse" className="text-gray-700">False</label>
+                        </div>
+                    </div>
 
                         <div className="flex mb-4 justify-evenly">
                             <Button type="submit" size="xl">Submit</Button>

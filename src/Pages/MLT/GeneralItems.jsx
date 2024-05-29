@@ -64,7 +64,7 @@ function GeneralItems() {
 
     const handlePreview = async (itemId) => {
         const response = await getGeneralInventoryQR(itemId);
-        const pdfBlob = new Blob([response.data.items], { type: 'application/pdf' });
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setQRurl(pdfUrl);
     };
