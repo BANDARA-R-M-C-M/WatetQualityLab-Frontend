@@ -6,6 +6,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { addLab, getLabs, updateLabs, deleteLab } from "../../Service/AdminService";
+import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
 
 function Laboratories() {
@@ -29,11 +30,12 @@ function Laboratories() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchLabs = async () => {
-            const response = await getLabs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+            const response = await getLabs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
             if (response) {
                 setLabs(response.data.items);
                 setTotalPages(response.data.totalPages);
@@ -47,7 +49,7 @@ function Laboratories() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await addLab(labName, labLocation, labTelephone);
+            await addLab(labName, labLocation, labTelephone, token);
             alert('Lab added successfully');
         } catch (error) {
             console.error('Error adding Lab:', error);
@@ -59,7 +61,7 @@ function Laboratories() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (await updateLabs(updatedId, labName, labLocation, labTelephone)) {
+        if (await updateLabs(updatedId, labName, labLocation, labTelephone, token)) {
             alert('Lab updated successfully');
         } else {
             alert('Failed to update lab');
@@ -74,7 +76,7 @@ function Laboratories() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteLab(deletedId);
+            await deleteLab(deletedId, token);
             alert('Lab deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

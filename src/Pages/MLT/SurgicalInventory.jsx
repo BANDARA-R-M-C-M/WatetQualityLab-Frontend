@@ -29,13 +29,13 @@ function SurgicalInventory() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchSurgicalCategories = async () => {
             try {
-                const response = await getSurgicalCatagories(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getSurgicalCatagories(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setSurgicalCatagories(response.data.items);
                     setLabId(user.areaId);
@@ -50,7 +50,7 @@ function SurgicalInventory() {
     const handleAddCatagory = async (event) => {
         event.preventDefault();
 
-        if (await addSurgicalCategory(categoryName, labId)) {
+        if (await addSurgicalCategory(categoryName, labId, token)) {
             alert('Category Added Successfully')
         } else {
             alert('Failed to Add Category')
@@ -64,7 +64,7 @@ function SurgicalInventory() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateSurgicalCategory(updatedCategoryId, categoryName)) {
+        if (await updateSurgicalCategory(updatedCategoryId, categoryName, token)) {
             alert('Category Updated Successfully')
         } else {
             alert('Failed to Update Category')
@@ -78,7 +78,7 @@ function SurgicalInventory() {
 
     const handleDelete = async (deletedCategoryId) => {
         try {
-            await deleteSurgicalCategory(deletedCategoryId);
+            await deleteSurgicalCategory(deletedCategoryId, token);
             alert('Category deleted successfully');
         } catch (error) {
             console.error('Error deleting category:', error);

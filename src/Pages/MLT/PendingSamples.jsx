@@ -22,13 +22,13 @@ function PendingSamples() {
     const [rejectedId, setRejectedId] = useState('');
     const [openModal, setOpenModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchSamples = async () => {
             try {
-                const response = await getPendingSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getPendingSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setSamples(response.data.items);
                     setTotalPages(response.data.totalPages);
@@ -43,7 +43,7 @@ function PendingSamples() {
 
     const handleAccept = async (sampleId) => {
         try {
-            await updateStatus(sampleId, 'Accepted', comment);
+            await updateStatus(sampleId, 'Accepted', comment, token);
             const updatedSamples = samples.filter(sample => sample.sampleId !== sampleId);
             setSamples(updatedSamples);
         } catch (error) {
@@ -53,7 +53,7 @@ function PendingSamples() {
 
     const handleReject = async () => {
         try {
-            await updateStatus(rejectedId, 'Rejected', comment);
+            await updateStatus(rejectedId, 'Rejected', comment, token);
             const updatedSamples = samples.filter(sample => sample.sampleId !== rejectedId);
             setSamples(updatedSamples);
             setOpenModal(false);

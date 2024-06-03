@@ -35,13 +35,13 @@ function InstrumentalQuality() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchInstrumentalQualityRecords = async () => {
             try {
-                const response = await getInstrumentalQualityRecords(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getInstrumentalQualityRecords(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setInstrumentalQualityRecords(response.data.items);
                     setLabId(user.areaId);
@@ -57,7 +57,7 @@ function InstrumentalQuality() {
     const handleAddRecord = async (event) => {
         event.preventDefault();
 
-        if (await addInstrumentalQualityControlRecord(dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, labId)) {
+        if (await addInstrumentalQualityControlRecord(dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, labId, token)) {
             alert('Record Added Successfully')
         } else {
             alert('Failed to Add Record')
@@ -69,7 +69,7 @@ function InstrumentalQuality() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateInstrumentalQualityControlRecord(updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId)) {
+        if (await updateInstrumentalQualityControlRecord(updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, token)) {
             alert('Record Updated Successfully')
         } else {
             alert('Failed to Update Record')
@@ -90,7 +90,7 @@ function InstrumentalQuality() {
 
     const handleDelete = async (deleteId) => {
         try {
-            await deleteInstrumentalQualityControlRecord(deleteId);
+            await deleteInstrumentalQualityControlRecord(deleteId, token);
             alert('Record deleted successfully');
         } catch (error) {
             console.error('Error deleting category:', error);

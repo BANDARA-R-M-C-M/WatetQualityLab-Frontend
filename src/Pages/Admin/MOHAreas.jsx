@@ -6,6 +6,7 @@ import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getMOHAreas, fetchLocations, addMOHArea, getLabs, updateMOHAreas, deleteMOHArea } from "../../Service/AdminService";
+import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
 
 function MOHAreas() {
@@ -30,6 +31,7 @@ function MOHAreas() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
@@ -46,7 +48,7 @@ function MOHAreas() {
 
     useEffect(() => {
         const fetchMOHAreas = async () => {
-            const response = await getMOHAreas(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+            const response = await getMOHAreas(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
             if (response) {
                 setMohAreas(response.data.items);
                 setTotalPages(response.data.totalPages);
@@ -59,7 +61,7 @@ function MOHAreas() {
 
     useEffect(() => {
         const fetchLabs = async () => {
-            const response = await getLabs();
+            const response = await getLabs(null, null, null, null, 100, null, null, null, token);
             if (response) {
                 setLabs(response.data.items);
             } else {
@@ -72,7 +74,7 @@ function MOHAreas() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await addMOHArea(mohAreaName, labId);
+            await addMOHArea(mohAreaName, labId, token);
             alert('MOH Area added successfully');
         } catch (error) {
             console.error('Error adding PHI Area:', error);
@@ -87,7 +89,7 @@ function MOHAreas() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (await updateMOHAreas(updatedId, mohAreaName, labId)) {
+        if (await updateMOHAreas(updatedId, mohAreaName, labId, token)) {
             alert('MOH Area updated successfully');
         } else {
             alert('Failed to update MOH Area');
@@ -101,7 +103,7 @@ function MOHAreas() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteMOHArea(deletedId);
+            await deleteMOHArea(deletedId, token);
             alert('MOH Area deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

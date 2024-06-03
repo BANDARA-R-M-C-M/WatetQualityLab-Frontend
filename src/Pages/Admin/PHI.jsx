@@ -6,6 +6,7 @@ import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getPHIs, getPHIAreas, assignPHItoPHIAreas, deleteUser } from "../../Service/AdminService";
+import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
 
 function PHI(){
@@ -34,11 +35,12 @@ function PHI(){
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchPHIs = async () => {
-            const response = await getPHIs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+            const response = await getPHIs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
             if (response) {
                 setPHIs(response.data.items);
                 setTotalPages(response.data.totalPages);
@@ -51,7 +53,7 @@ function PHI(){
 
     useEffect(() => {
         const fetchPHIAreas = async () => {
-            const response = await getPHIAreas();
+            const response = await getPHIAreas(null, null, null, null, 100, null, null, null, token);
             if (response) {
                 setPhiAreas(response.data.items);
             } else {
@@ -64,7 +66,7 @@ function PHI(){
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await registerUser(id, userName, password, email, phoneNumber, role);
+            await registerUser(id, userName, password, email, phoneNumber, role, token);
             alert('PHI added successfully');
         } catch (error) {
             console.error('Error adding PhI:', error);
@@ -77,7 +79,7 @@ function PHI(){
     const handleAssign = async (e) => {
         e.preventDefault();
         
-        if(await assignPHItoPHIAreas(assignId, phiAreaId)){
+        if(await assignPHItoPHIAreas(assignId, phiAreaId, token)){
             alert('PHI assigned successfully');
         } else {
             alert('Failed to assign PHI');
@@ -88,7 +90,7 @@ function PHI(){
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteUser(deletedId);
+            await deleteUser(deletedId, token);
             alert('PHI deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

@@ -39,13 +39,13 @@ function SampleCount() {
         12: "December"
     };
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchSampleCount = async () => {
             try {
-                const response = await getSampleCount(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getSampleCount(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setSampleCount(response.data.groupedSamples);
                     setTotalPages(response.data.totalPages);
@@ -73,7 +73,7 @@ function SampleCount() {
     };
 
     const handlePreview = async (mltId, year) => {
-        const response = await getSampleCountReport(mltId, year);
+        const response = await getSampleCountReport(mltId, year, token);
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setReportUrl(pdfUrl);
@@ -158,13 +158,13 @@ function SampleCount() {
                                 ))}
                             </Dropdown>
                         </div>
-                        <Button 
-                        className='mr-2' 
-                        disabled={!selectedYear}
-                        onClick={() => {
-                            setOpenPreviewModal(true);
-                            handlePreview(user.userId, selectedYear);
-                        }}>
+                        <Button
+                            className='mr-2'
+                            disabled={!selectedYear}
+                            onClick={() => {
+                                setOpenPreviewModal(true);
+                                handlePreview(user.userId, selectedYear);
+                            }}>
                             <TbReportAnalytics className="mr-2 h-5 w-5" />
                             View
                         </Button>

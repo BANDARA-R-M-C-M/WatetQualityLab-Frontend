@@ -6,6 +6,7 @@ import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getMLTs, getLabs, assignMLTtoLabs, deleteUser } from "../../Service/AdminService";
+import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
 
 function MLT() {
@@ -34,11 +35,12 @@ function MLT() {
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchMLTs = async () => {
-            const response = await getMLTs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+            const response = await getMLTs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
             if (response) {
                 setMLTs(response.data.items);
                 setTotalPages(response.data.totalPages);
@@ -51,7 +53,7 @@ function MLT() {
 
     useEffect(() => {
         const fetchLabs = async () => {
-            const response = await getLabs();
+            const response = await getLabs(null, null, null, null, 100, null, null, null, token);
             if (response) {
                 setLabs(response.data.items);
             } else {
@@ -64,7 +66,7 @@ function MLT() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await registerUser(id, userName, password, email, phoneNumber, role);
+            await registerUser(id, userName, password, email, phoneNumber, role, token);
             alert('MLT added successfully');
         } catch (error) {
             console.error('Error adding MLT:', error);
@@ -78,7 +80,7 @@ function MLT() {
     const handleAssign = async (e) => {
         e.preventDefault();
 
-        if (await assignMLTtoLabs(assignId, labId)) {
+        if (await assignMLTtoLabs(assignId, labId, userId, token)) {
             alert('MLT assigned successfully');
         } else {
             alert('Failed to assign MLT');
@@ -89,7 +91,7 @@ function MLT() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteUser(deletedId);
+            await deleteUser(deletedId, token);
             alert('MLT deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

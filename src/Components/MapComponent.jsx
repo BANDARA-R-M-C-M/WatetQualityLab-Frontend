@@ -53,33 +53,37 @@ function MapComponent() {
 
         fetchSampleDetails();
     }, [selectedMonth, selectedYear, debouncedSearch]);
+    
+    const fetchGeoData = async (mohAreas) => {
+        const geoDataPromises = mohAreas.flatMap(mohArea =>
+            mohArea.phiAreas.map(async (area) => {
+                const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
+                    params: {
+                        q: area.phiAreaName,
+                        format: 'json',
+                        countrycodes: 'LK',
+                        limit: 1,
+                    },
+                });
 
-    const fetchGeoData = async (areas) => {
-        const geoDataPromises = areas.map(async (area) => {
-            const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
-                params: {
-                    q: area.phiAreaName,
-                    format: 'json',
-                    countrycodes: 'LK',
-                    limit: 1,
-                },
-            });
-
-            if (response.data && response.data[0]) {
-                const { lat, lon } = response.data[0];
-                return {
-                    ...area,
-                    lat: parseFloat(lat),
-                    lon: parseFloat(lon),
-                };
-            } else {
-                return {
-                    ...area,
-                    lat: null,
-                    lon: null,
-                };
-            }
-        });
+                if (response.data && response.data[0]) {
+                    const { lat, lon } = response.data[0];
+                    return {
+                        ...area,
+                        lat: parseFloat(lat),
+                        lon: parseFloat(lon),
+                        mohAreaName: mohArea.mohAreaName,
+                    };
+                } else {
+                    return {
+                        ...area,
+                        lat: null,
+                        lon: null,
+                        mohAreaName: mohArea.mohAreaName,
+                    };
+                }
+            })
+        );
 
         const results = await Promise.all(geoDataPromises);
         return results.filter(area => area.lat && area.lon);

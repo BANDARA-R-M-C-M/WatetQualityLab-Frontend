@@ -99,6 +99,8 @@ export const UserProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.clear();
+    sessionStorage.clear();
+    axios.defaults.headers.common["Authorization"] = null;
     setUser(null);
     setToken(null);
     navigate("/");

@@ -33,13 +33,13 @@ function WCReports() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await getAddedReports(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getAddedReports(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setReports(response.data.items);
                     setTotalPages(response.data.totalPages);
@@ -53,7 +53,7 @@ function WCReports() {
     }, [openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handlePreview = async (reportId) => {
-        const response = await getReportPDF(reportId);
+        const response = await getReportPDF(reportId, token);
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setReportUrl(pdfUrl);
@@ -63,7 +63,7 @@ function WCReports() {
         e.preventDefault();
 
         try {
-            await updateWCReport(updatedId, myRefNo, appearanceOfSample, presumptiveColiformCount, ecoliCount, remarks);
+            await updateWCReport(updatedId, myRefNo, appearanceOfSample, presumptiveColiformCount, ecoliCount, remarks, token);
             alert('Report updated successfully');
         } catch (error) {
             console.error('Error submitting report:', error);
@@ -81,7 +81,7 @@ function WCReports() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteWCReport(deletedId);
+            await deleteWCReport(deletedId, token);
             alert('Report deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

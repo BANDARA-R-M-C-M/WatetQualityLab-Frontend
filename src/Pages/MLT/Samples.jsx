@@ -39,13 +39,13 @@ function Samples() {
     const [previewModalOpen, setPreviewModalOpen] = useState(false);
     const [previewUrl, setPreviewUrl] = useState('');
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchSamples = async () => {
             try {
-                const response = await getAcceptedSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getAcceptedSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setSamples(response.data.items);
                     setTotalPages(response.data.totalPages);
@@ -61,7 +61,7 @@ function Samples() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await submitReport(myRefNo, presumptiveColiformCount, analyzedDate, ecoliCount, appearanceOfSample, remarks, isContaminated, user.userId, sampleId, labId)) {
+        if (await submitReport(myRefNo, presumptiveColiformCount, analyzedDate, ecoliCount, appearanceOfSample, remarks, isContaminated, user.userId, sampleId, labId, token)) {
             alert('Report created successfully');
         } else {
             alert('Failed to create report');
@@ -79,7 +79,7 @@ function Samples() {
 
     const handleRemove = async (removedId) => {
         try {
-            await updateStatus(removedId, 'Pending', "");
+            await updateStatus(removedId, 'Pending', "", token);
             const updatedSamples = samples.filter(sample => sample.sampleId !== removedId);
             setSamples(updatedSamples);
         } catch (error) {

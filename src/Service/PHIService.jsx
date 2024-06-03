@@ -1,9 +1,12 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getPHIDetails = async (phiId) => {
+export const getPHIDetails = async (phiId, token) => {
     try {
         const response = await axios.get(`${base_url}/Area/GetPHIDetails`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 phiId: phiId
             }
@@ -14,9 +17,12 @@ export const getPHIDetails = async (phiId) => {
     }
 };
 
-export const getAddedSamples = async (phiId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getAddedSamples = async (phiId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/WCSample/getAddedSamples`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 UserId: phiId,
                 SearchTerm: searchTerm,
@@ -34,9 +40,12 @@ export const getAddedSamples = async (phiId, searchTerm, searchParameter, search
     }
 }
 
-export const getHistory = async (phiId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getHistory = async (phiId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/WCSample/GetHistory`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 UserId: phiId,
                 SearchTerm: searchTerm,
@@ -54,9 +63,12 @@ export const getHistory = async (phiId, searchTerm, searchParameter, searchParam
     }
 }
 
-export const submitSample = async (yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, phiId, phiAreaID, phiAreaName) => {
+export const submitSample = async (yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, phiId, phiAreaID, phiAreaName, token) => {
     try {
         await axios.post(`${base_url}/WCSample/AddWCSample`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             yourRefNo: yourRefNo,
             stateOfChlorination: stateOfChlorination,
             dateOfCollection: dateOfCollection,
@@ -72,9 +84,12 @@ export const submitSample = async (yourRefNo, dateOfCollection, catagoryOfSource
     }
 };
 
-export const updateWCSample = async (sampleId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination) => {
+export const updateWCSample = async (sampleId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, token) => {
     try {
         await axios.put(`${base_url}/WCSample/updateWCSample/${sampleId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             yourRefNo: yourRefNo,
             stateOfChlorination: stateOfChlorination,
             dateOfCollection: dateOfCollection,
@@ -87,9 +102,13 @@ export const updateWCSample = async (sampleId, yourRefNo, dateOfCollection, cata
     }
 };
 
-export const deleteWCSample = async (sampleId) => {
+export const deleteWCSample = async (sampleId, token) => {
     try {
-        await axios.delete(`${base_url}/WCSample/deleteWCSample/${sampleId}`);
+        await axios.delete(`${base_url}/WCSample/deleteWCSample/${sampleId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);

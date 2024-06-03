@@ -6,6 +6,7 @@ import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getPHIAreas, fetchLocations, addPHIArea, getMOHAreas, updatePHIAreas, deletePHIArea } from "../../Service/AdminService";
+import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
 
 function PHIAreas() {
@@ -30,6 +31,7 @@ function PHIAreas() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
@@ -46,7 +48,7 @@ function PHIAreas() {
 
     useEffect(() => {
         const fetchPHIAreas = async () => {
-            const response = await getPHIAreas(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+            const response = await getPHIAreas(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
             if (response) {
                 setPHIAreas(response.data.items);
                 setTotalPages(response.data.totalPages);
@@ -59,7 +61,7 @@ function PHIAreas() {
 
     useEffect(() => {
         const fetchMOHAreas = async () => {
-            const response = await getMOHAreas();
+            const response = await getMOHAreas(null, null, null, null, 100, null, null, null, token);
             if (response) {
                 setMohAreas(response.data.items);
             } else {
@@ -72,7 +74,7 @@ function PHIAreas() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await addPHIArea(phiAreaName, mohAreaId);
+            await addPHIArea(phiAreaName, mohAreaId, token);
             alert('PHI Area added successfully');
         } catch (error) {
             console.error('Error adding PHI Area:', error);
@@ -87,7 +89,7 @@ function PHIAreas() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (await updatePHIAreas(updatedId, phiAreaName, mohAreaId)) {
+        if (await updatePHIAreas(updatedId, phiAreaName, mohAreaId, token)) {
             alert('PHI Area updated successfully');
         } else {
             alert('Failed to update PHI Area');
@@ -101,7 +103,7 @@ function PHIAreas() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deletePHIArea(deletedId);
+            await deletePHIArea(deletedId, token);
             alert('PHI Area deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

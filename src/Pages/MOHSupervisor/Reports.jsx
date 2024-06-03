@@ -23,13 +23,13 @@ function Reports() {
     const [totalPages, setTotalPages] = useState(1);
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await getNewReports(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getNewReports(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setReports(response.data.items);
                 }
@@ -42,7 +42,7 @@ function Reports() {
     }, [pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handlePreview = async (reportId) => {
-        const response = await getReportPDF(reportId);
+        const response = await getReportPDF(reportId, token);
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setReportUrl(pdfUrl);

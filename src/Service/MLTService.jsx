@@ -1,12 +1,12 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getPendingSamples = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getPendingSamples = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
   try {
     const response = await axios.get(`${base_url}/WCSample/GetPendingSamples`, {
-      // headers: {
-      //     Authorization: `Bearer ${token}`
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         UserId: mltId,
         SearchTerm: searchTerm,
@@ -24,12 +24,12 @@ export const getPendingSamples = async (mltId, searchTerm, searchParameter, sear
   }
 };
 
-export const getAcceptedSamples = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getAcceptedSamples = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
   try {
     const response = await axios.get(`${base_url}/WCSample/GetAcceptedSamples`, {
-      // headers: {
-      //     Authorization: `Bearer ${token}`
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         UserId: mltId,
         SearchTerm: searchTerm,
@@ -47,9 +47,12 @@ export const getAcceptedSamples = async (mltId, searchTerm, searchParameter, sea
   }
 };
 
-export const getAddedReports = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getAddedReports = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
   try {
     const response = await axios.get(`${base_url}/WCReport/getAddedReports`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         UserId: mltId,
         SearchTerm: searchTerm,
@@ -67,10 +70,13 @@ export const getAddedReports = async (mltId, searchTerm, searchParameter, search
   }
 }
 
-export const getReportPDF = async (reportId) => {
+export const getReportPDF = async (reportId, token) => {
   try {
     const response = await axios.get(`${base_url}/WCReport/GetReportPDF`, {
       responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         reportId: reportId
       }
@@ -81,9 +87,12 @@ export const getReportPDF = async (reportId) => {
   }
 }
 
-export const getSampleCount = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getSampleCount = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
   try {
     const response = await axios.get(`${base_url}/WCSample/GetSampleCount`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         UserId: mltId,
         SearchTerm: searchTerm,
@@ -101,9 +110,12 @@ export const getSampleCount = async (mltId, searchTerm, searchParameter, searchP
   }
 }
 
-export const getSampleCountReport = async (mltId, year) => {
+export const getSampleCountReport = async (mltId, year, token) => {
   try {
     const response = await axios.get(`${base_url}/WCSample/GetSampleCountReport`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       responseType: 'blob',
       params: {
         MltId: mltId,
@@ -116,9 +128,12 @@ export const getSampleCountReport = async (mltId, year) => {
   }
 }
 
-export const getMonthlySampleDetails = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, year, month) => {
+export const getMonthlySampleDetails = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, year, month, token) => {
   try {
     const response = await axios.get(`${base_url}/WCSample/GetMonthlySamples`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         UserId: mltId,
         SearchTerm: searchTerm,
@@ -136,9 +151,12 @@ export const getMonthlySampleDetails = async (mltId, searchTerm, searchParameter
   }
 }
 
-export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDate, EcoliCount, AppearanceOfSample, Remarks, IsContaminated, MltId, SampleId, LabId) => {
+export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDate, EcoliCount, AppearanceOfSample, Remarks, IsContaminated, MltId, SampleId, LabId, token) => {
   try {
     await axios.post(`${base_url}/WCReport/AddWCReport`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       myRefNo: myRefNo,
       presumptiveColiformCount: PresumptiveColiformCount,
       analyzedDate: analyzedDate,
@@ -156,9 +174,12 @@ export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDa
   }
 }
 
-export const generateReport = async (ReportRefId) => {
+export const generateReport = async (ReportRefId, token) => {
   try {
     await axios.post(`${base_url}/Report/uploadPDF`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         reportRefId: ReportRefId
       }
@@ -168,9 +189,12 @@ export const generateReport = async (ReportRefId) => {
   }
 }
 
-export const updateStatus = async (sampleId, Status, Comment) => {
+export const updateStatus = async (sampleId, Status, Comment, token) => {
   try {
     await axios.put(`${base_url}/WCSample/updateSampleStatus`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       sampleId: sampleId,
       status: Status,
       comment: Comment
@@ -181,9 +205,12 @@ export const updateStatus = async (sampleId, Status, Comment) => {
   }
 };
 
-export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, PresumptiveColiformCount, EcoliCount, Results) => {
+export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, PresumptiveColiformCount, EcoliCount, Results, token) => {
   try {
     await axios.put(`${base_url}/WCReport/updateWCReport/${ReportRefId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       myRefNo: myRefNo,
       appearanceOfSample: AppearanceOfSample,
       presumptiveColiformCount: PresumptiveColiformCount,
@@ -196,9 +223,13 @@ export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, P
   }
 };
 
-export const deleteWCReport = async (reportId) => {
+export const deleteWCReport = async (reportId, token) => {
   try {
-    await axios.delete(`${base_url}/WCReport/deleteWCReport/${reportId}`);
+    await axios.delete(`${base_url}/WCReport/deleteWCReport/${reportId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return true;
   } catch (error) {
     console.log(error);

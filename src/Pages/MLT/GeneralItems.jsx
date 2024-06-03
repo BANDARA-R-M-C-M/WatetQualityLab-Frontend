@@ -372,10 +372,10 @@ function GeneralItems() {
                                 value={generalCategoryID}
                                 onChange={(e) => setGeneralCategoryID(e.target.value)}
                             >
-                                <option value="">Select Catagory</option>
+                                <option value="">Select Category</option>
                                 {generalCatagories.map((category, index) => (
                                     <option key={index} value={category.generalCategoryID}>
-                                        {category.categoryName}
+                                        {category.generalCategoryName}
                                     </option>
                                 ))}
                             </select>

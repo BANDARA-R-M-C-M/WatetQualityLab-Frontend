@@ -33,13 +33,13 @@ function MediaQuality() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchMediaQualityRecords = async () => {
             try {
-                const response = await getMediaQualityRecords(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getMediaQualityRecords(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setMediaQualityRecords(response.data.items);
                     setLabId(user.areaId);
@@ -55,7 +55,7 @@ function MediaQuality() {
     const handleAddRecord = async (event) => {
         event.preventDefault();
 
-        if (await addMediaQualityControlRecord(dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, labId)) {
+        if (await addMediaQualityControlRecord(dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, labId, token)) {
             alert('Record Added Successfully')
         } else {
             alert('Failed to Add Record')
@@ -67,19 +67,18 @@ function MediaQuality() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateMediaQualityControlRecord(updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId)) {
+        if (await updateMediaQualityControlRecord(updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, token)) {
             alert('Record Updated Successfully')
         } else {
             alert('Failed to Update Record')
         }
-
 
         setOpenEditModal(false);
     };
 
     const handleDelete = async (deleteId) => {
         try {
-            await deleteMediaQualityControlRecord(deleteId);
+            await deleteMediaQualityControlRecord(deleteId, token);
             alert('Record deleted successfully');
         } catch (error) {
             console.error('Error deleting category:', error);

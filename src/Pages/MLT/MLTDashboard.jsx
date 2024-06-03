@@ -14,7 +14,7 @@ function MLTDashboard() {
     const [pageNumber] = useState(1);
     const [pageSize] = useState(1000);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const chartGeneralRef = useRef();
     const chartSurgicalRef = useRef();
 
@@ -30,7 +30,7 @@ function MLTDashboard() {
     useEffect(() => {
         const fetchGeneralCategories = async () => {
             try {
-                const response = await getGeneralCatagories(user.userId, null, null, null, pageNumber, pageSize);
+                const response = await getGeneralCatagories(user.userId, null, null, null, pageNumber, pageSize, null, null, token);
                 if (response.data) {
                     setGeneralCatagories(response.data.items);
                 }
@@ -44,7 +44,7 @@ function MLTDashboard() {
 
     const fetchGeneralCatagoryItems = async (mltId, generalCategoryId) => {
         try {
-            const response = await getGeneralInventoryItems(mltId, generalCategoryId, null, null, null, pageNumber, pageSize);
+            const response = await getGeneralInventoryItems(mltId, generalCategoryId, null, null, null, pageNumber, pageSize, null, null, token);
             if (response.data) {
                 setGeneralInventoryItems(response.data.items);
             }
@@ -56,7 +56,7 @@ function MLTDashboard() {
     useEffect(() => {
         const fetchSurgicalCategories = async () => {
             try {
-                const response = await getSurgicalCatagories(user.userId, null, null, null, pageNumber, pageSize);
+                const response = await getSurgicalCatagories(user.userId, null, null, null, pageNumber, pageSize, null, null, token);
                 if (response.data) {
                     setSurgicalCatagories(response.data.items);
                 }
@@ -70,7 +70,7 @@ function MLTDashboard() {
 
     const fetchSurgicalCatagoryItems = async (mltId, surgicalCategoryId) => {
         try {
-            const response = await getSurgicalInventoryItems(mltId, surgicalCategoryId, null, null, null, pageNumber, pageSize);
+            const response = await getSurgicalInventoryItems(mltId, surgicalCategoryId, null, null, null, pageNumber, pageSize, null, null, token);
             if (response.data) {
                 setSurgicalInventoryItems(response.data.items);
             }

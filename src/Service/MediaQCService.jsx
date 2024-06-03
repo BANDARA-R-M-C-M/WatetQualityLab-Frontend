@@ -1,9 +1,12 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getMediaQualityRecords = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getMediaQualityRecords = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/MediaQualityControl/GetMediaQualityControlRecords`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 UserId: mltId,
                 SearchTerm: searchTerm,
@@ -21,9 +24,12 @@ export const getMediaQualityRecords = async (mltId, searchTerm, searchParameter,
     }
 }
 
-export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId, labId) => {
+export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId, labId, token) => {
     try {
         await axios.post(`${base_url}/MediaQualityControl/AddMediaQualityControlRecord`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             dateTime: dateTime,
             mediaId: mediaId,
             sterility: sterility,
@@ -39,9 +45,12 @@ export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility,
     }
 }
 
-export const updateMediaQualityControlRecord = async (updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId) => {
+export const updateMediaQualityControlRecord = async (updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId, token) => {
     try {
         await axios.put(`${base_url}/MediaQualityControl/UpdateMediaQualityControlRecord/${updateId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             dateTime: dateTime,
             mediaId: mediaId,
             sterility: sterility,
@@ -56,9 +65,13 @@ export const updateMediaQualityControlRecord = async (updateId, dateTime, mediaI
     }
 }
 
-export const deleteMediaQualityControlRecord = async (recordId) => {
+export const deleteMediaQualityControlRecord = async (recordId, token) => {
     try {
-        await axios.delete(`${base_url}/MediaQualityControl/DeleteMediaQualityControlRecord/${recordId}`);
+        await axios.delete(`${base_url}/MediaQualityControl/DeleteMediaQualityControlRecord/${recordId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);

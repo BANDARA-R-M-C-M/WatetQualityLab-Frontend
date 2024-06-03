@@ -34,13 +34,13 @@ function Samples() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchAddedSamples = async () => {
             try {
-                const response = await getAddedSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getAddedSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setSamples(response.data.items);
                     setTotalPages(response.data.totalPages);
@@ -53,7 +53,7 @@ function Samples() {
     }, [openNewModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
-        getPHIDetails(user.userId).then((response) => {
+        getPHIDetails(user.userId, token).then((response) => {
             setPhiAreaId(response.data.phiAreaId);
             setPhiAreaName(response.data.phiAreaName);
         });
@@ -62,7 +62,7 @@ function Samples() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await submitSample(yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, user.userId, phiAreaId, phiAreaName)) {
+        if (await submitSample(yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, user.userId, phiAreaId, phiAreaName, token)) {
             alert('Sample added successfully');
         } else {
             alert('Failed to add sample');
@@ -80,7 +80,7 @@ function Samples() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateWCSample(updatedId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination)) {
+        if (await updateWCSample(updatedId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, token)) {
             alert('Sample updated successfully');
         } else {
             alert('Failed to update sample');
@@ -97,7 +97,7 @@ function Samples() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteWCSample(deletedId);
+            await deleteWCSample(deletedId, token);
             alert('Sample deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

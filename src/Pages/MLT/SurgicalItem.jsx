@@ -12,12 +12,12 @@ function SurgicalItem() {
     const [openIssueModal, setOpenIssueModal] = useState(false);
 
     const { itemId } = useParams();
-    const { user } = useAuth();
+    const { user, token } = useAuth();
 
     useEffect(() => {
         const fetchItemDetails = async () => {
             try {
-                const response = await getSurgicalItemDetails(itemId);
+                const response = await getSurgicalItemDetails(itemId, token);
                 if (response) {
                     setSurgicalItem(response.data);
                 }
@@ -30,7 +30,7 @@ function SurgicalItem() {
 
     const handleIssue = async (event) => {
         event.preventDefault();
-        if (await issueItem(itemId, issuingQuantity, user.userId, issuingRemarks)) {
+        if (await issueItem(itemId, issuingQuantity, user.userId, issuingRemarks, token)) {
             alert('Item Issued Successfully')
         } else {
             alert('Failed to Issue Item')

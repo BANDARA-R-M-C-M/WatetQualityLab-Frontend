@@ -6,6 +6,7 @@ import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getMOHSupervisors, getMOHAreas, assignMOHSupervisortoMOHAreas, deleteUser } from "../../Service/AdminService";
+import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
 
 function MOHSupervisor() {
@@ -34,11 +35,12 @@ function MOHSupervisor() {
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+    const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchMOHSupervisors = async () => {
-            const response = await getMOHSupervisors(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+            const response = await getMOHSupervisors(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
             if (response) {
                 setMohSupevisors(response.data.items);
                 setTotalPages(response.data.totalPages);
@@ -51,7 +53,7 @@ function MOHSupervisor() {
 
     useEffect(() => {
         const fetchMOHAreas = async () => {
-            const response = await getMOHAreas();
+            const response = await getMOHAreas(null, null, null, null, 100, null, null, null, token);
             if (response) {
                 setMohAreas(response.data.items);
             } else {
@@ -64,7 +66,7 @@ function MOHSupervisor() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await registerUser(id, userName, password, email, phoneNumber, role);
+            await registerUser(id, userName, password, email, phoneNumber, role, token);
             alert('MOH Supervisor added successfully');
         } catch (error) {
             console.error('Error adding MOH Supervisor:', error);
@@ -77,7 +79,7 @@ function MOHSupervisor() {
     const handleAssign = async (e) => {
         e.preventDefault();
 
-        if (await assignMOHSupervisortoMOHAreas(assignId, mohAreaId)) {
+        if (await assignMOHSupervisortoMOHAreas(assignId, mohAreaId, token)) {
             alert('MOH Supervisor assigned successfully');
         } else {
             alert('Failed to assign MOH Supervisor');
@@ -88,7 +90,7 @@ function MOHSupervisor() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteUser(deletedId);
+            await deleteUser(deletedId, token);
             alert('MOH Supervisor deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

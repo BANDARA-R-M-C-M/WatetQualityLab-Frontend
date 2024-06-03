@@ -159,7 +159,7 @@ function SurgicalItems() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between">
                             <div className="flex bg-gray-200 items-center p-1 rounded-md">
                                 <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
                                 <input
@@ -487,10 +487,10 @@ function SurgicalItems() {
                                 value={SurgicalCategoryID}
                                 onChange={(e) => setSurgicalCategoryID(e.target.value)}
                             >
-                                <option value="">Select Catagory</option>
+                                <option value="">Select Category</option>
                                 {SurgicalCatagories.map((category, index) => (
                                     <option key={index} value={category.surgicalCategoryID}>
-                                        {category.categoryName}
+                                        {category.surgicalCategoryName}
                                     </option>
                                 ))}
                             </select>

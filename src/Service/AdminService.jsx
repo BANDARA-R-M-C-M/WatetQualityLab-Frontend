@@ -10,7 +10,7 @@ export const fetchLocations = async (location) => {
         });
         
         const cityNames = response.data.predictions.map(prediction => prediction.structured_formatting.main_text);
-        
+
         return cityNames;
     } catch (error) {
         console.error('Error fetching cities:', error);
@@ -18,9 +18,12 @@ export const fetchLocations = async (location) => {
     }
 };
 
-export const registerUser = async (id, userName, password, email, phoneNumber, role) => {
+export const registerUser = async (id, userName, password, email, phoneNumber, role, token) => {
     try {
         const response = await axios.post(`${base_url}/User/signUp`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             id: id,
             userName: userName,
             password: password,
@@ -34,9 +37,12 @@ export const registerUser = async (id, userName, password, email, phoneNumber, r
     }
 }
 
-export const addLab = async (labName, labLocation, labTelephone) => {
+export const addLab = async (labName, labLocation, labTelephone, token) => {
     try {
         await axios.post(`${base_url}/Area/AddLab`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             labName: labName,
             labLocation: labLocation,
             labTelephone: labTelephone
@@ -47,9 +53,12 @@ export const addLab = async (labName, labLocation, labTelephone) => {
     }
 }
 
-export const addPHIArea = async (phiAreaName, mohAreaId) => {
+export const addPHIArea = async (phiAreaName, mohAreaId, token) => {
     try {
         await axios.post(`${base_url}/Area/AddPHIArea`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             phiAreaName: phiAreaName,
             mohAreaId: mohAreaId
         });
@@ -59,9 +68,12 @@ export const addPHIArea = async (phiAreaName, mohAreaId) => {
     }
 }
 
-export const addMOHArea = async (mohAreaName, labId) => {
+export const addMOHArea = async (mohAreaName, labId, token) => {
     try {
         await axios.post(`${base_url}/Area/AddMOHArea`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             mohAreaName: mohAreaName,
             labId: labId
         });
@@ -71,9 +83,12 @@ export const addMOHArea = async (mohAreaName, labId) => {
     }
 }
 
-export const getMLTs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getMLTs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/User/getMLTs`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 SearchTerm: searchTerm,
                 SearchParameter: searchParameter,
@@ -90,9 +105,12 @@ export const getMLTs = async (searchTerm, searchParameter, searchParameterType, 
     }
 }
 
-export const getPHIs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getPHIs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/User/getPHIs`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 SearchTerm: searchTerm,
                 SearchParameter: searchParameter,
@@ -109,9 +127,12 @@ export const getPHIs = async (searchTerm, searchParameter, searchParameterType, 
     }
 }
 
-export const getMOHSupervisors = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getMOHSupervisors = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/User/getMOHSupervisors`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 SearchTerm: searchTerm,
                 SearchParameter: searchParameter,
@@ -128,9 +149,12 @@ export const getMOHSupervisors = async (searchTerm, searchParameter, searchParam
     }
 }
 
-export const getLabs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getLabs = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/Area/getLabs`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 SearchTerm: searchTerm,
                 SearchParameter: searchParameter,
@@ -147,9 +171,12 @@ export const getLabs = async (searchTerm, searchParameter, searchParameterType, 
     }
 }
 
-export const getPHIAreas = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getPHIAreas = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/Area/getPHIAreas`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 SearchTerm: searchTerm,
                 SearchParameter: searchParameter,
@@ -166,9 +193,12 @@ export const getPHIAreas = async (searchTerm, searchParameter, searchParameterTy
     }
 }
 
-export const getMOHAreas = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getMOHAreas = async (searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/Area/getMOHAreas`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 SearchTerm: searchTerm,
                 SearchParameter: searchParameter,
@@ -185,9 +215,12 @@ export const getMOHAreas = async (searchTerm, searchParameter, searchParameterTy
     }
 }
 
-export const updateLabs = async (labId, labName, labLocation, labTelephone) => {
+export const updateLabs = async (labId, labName, labLocation, labTelephone, token) => {
     try {
         await axios.put(`${base_url}/Area/UpdateLab/${labId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             labName: labName,
             labLocation: labLocation,
             labTelephone: labTelephone
@@ -199,9 +232,12 @@ export const updateLabs = async (labId, labName, labLocation, labTelephone) => {
     }
 }
 
-export const updatePHIAreas = async (phiAreaId, phiAreaName, mohAreaId) => {
+export const updatePHIAreas = async (phiAreaId, phiAreaName, mohAreaId, token) => {
     try {
         await axios.put(`${base_url}/Area/UpdatePHIArea/${phiAreaId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             phiAreaName: phiAreaName,
             mohAreaId: mohAreaId
         });
@@ -211,9 +247,12 @@ export const updatePHIAreas = async (phiAreaId, phiAreaName, mohAreaId) => {
     }
 }
 
-export const updateMOHAreas = async (mohAreaId, mohAreaName, labId) => {
+export const updateMOHAreas = async (mohAreaId, mohAreaName, labId, token) => {
     try {
         await axios.put(`${base_url}/Area/UpdateMOHArea/${mohAreaId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             mohAreaName: mohAreaName,
             labId: labId
         });
@@ -223,9 +262,12 @@ export const updateMOHAreas = async (mohAreaId, mohAreaName, labId) => {
     }
 }
 
-export const assignMLTtoLabs = async (mltId, labId) => {
+export const assignMLTtoLabs = async (mltId, labId, token) => {
     try {
-        await axios.post(`${base_url}/Userassign/assignMLTtoLabs`, {
+        await axios.post(`${base_url}/Userassign/AssignMLTtoLabs`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             mltId: mltId,
             labId: labId
         });
@@ -235,9 +277,12 @@ export const assignMLTtoLabs = async (mltId, labId) => {
     }
 }
 
-export const assignPHItoPHIAreas = async (phiId, phiAreaId) => {
+export const assignPHItoPHIAreas = async (phiId, phiAreaId, token) => {
     try {
-        await axios.post(`${base_url}/Userassign/assignPHItoPHIAreas`, {
+        await axios.post(`${base_url}/Userassign/AssignPHItoPHIAreas`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             phiId: phiId,
             phiAreaId: phiAreaId
         });
@@ -247,9 +292,12 @@ export const assignPHItoPHIAreas = async (phiId, phiAreaId) => {
     }
 }
 
-export const assignMOHSupervisortoMOHAreas = async (mohSupervisorId, mohAreaId) => {
+export const assignMOHSupervisortoMOHAreas = async (mohSupervisorId, mohAreaId, token) => {
     try {
-        await axios.post(`${base_url}/Userassign/assignMOHSupervisortoMOHAreas`, {
+        await axios.post(`${base_url}/Userassign/AssignMOHSupervisortoMOHAreas`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             mohSupervisorId: mohSupervisorId,
             mohAreaId: mohAreaId
         });
@@ -259,9 +307,13 @@ export const assignMOHSupervisortoMOHAreas = async (mohSupervisorId, mohAreaId) 
     }
 }
 
-export const deleteUser = async (id) => {
+export const deleteUser = async (id, token) => {
     try {
-        await axios.delete(`${base_url}/User/deleteUser/${id}`);
+        await axios.delete(`${base_url}/User/deleteUser/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);
@@ -269,27 +321,39 @@ export const deleteUser = async (id) => {
 }
 
 
-export const deleteLab = async (id) => {
+export const deleteLab = async (id, token) => {
     try {
-        await axios.delete(`${base_url}/Area/DeleteLab/${id}`);
+        await axios.delete(`${base_url}/Area/DeleteLab/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const deletePHIArea = async (id) => {
+export const deletePHIArea = async (id, token) => {
     try {
-        await axios.delete(`${base_url}/Area/DeletePHIArea/${id}`);
+        await axios.delete(`${base_url}/Area/DeletePHIArea/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const deleteMOHArea = async (id) => {
+export const deleteMOHArea = async (id, token) => {
     try {
-        await axios.delete(`${base_url}/Area/DeleteMOHArea/${id}`);
+        await axios.delete(`${base_url}/Area/DeleteMOHArea/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);

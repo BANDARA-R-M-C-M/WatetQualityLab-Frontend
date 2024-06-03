@@ -29,13 +29,13 @@ function GeneralInventory() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchGeneralCategories = async () => {
             try {
-                const response = await getGeneralCatagories(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getGeneralCatagories(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setGeneralCatagories(response.data.items);
                     setLabId(user.areaId);
@@ -51,7 +51,7 @@ function GeneralInventory() {
     const handleAddCatagory = async (event) => {
         event.preventDefault();
 
-        if (await addGeneralCategory(categoryName, labId)) {
+        if (await addGeneralCategory(categoryName, labId, token)) {
             alert('Category Added Successfully')
         } else {
             alert('Failed to Add Category')
@@ -65,7 +65,7 @@ function GeneralInventory() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateGeneralCategory(updatedCategoryId, categoryName)) {
+        if (await updateGeneralCategory(updatedCategoryId, categoryName, token)) {
             alert('Category Updated Successfully')
         } else {
             alert('Failed to Update Category')
@@ -79,7 +79,7 @@ function GeneralInventory() {
 
     const handleDelete = async (deletedCategoryId) => {
         try {
-            await deleteGeneralCategory(deletedCategoryId);
+            await deleteGeneralCategory(deletedCategoryId, token);
             alert('Category deleted successfully');
         } catch (error) {
             console.error('Error deleting category:', error);

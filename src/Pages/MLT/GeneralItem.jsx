@@ -12,7 +12,7 @@ function GeneralItem() {
     useEffect(() => {
         const fetchItemDetails = async () => {
             try {
-                const response = await getGeneralItemDetails(itemId);
+                const response = await getGeneralItemDetails(itemId, token);
                 if (response) {
                     setGeneralItem(response.data);
                 }

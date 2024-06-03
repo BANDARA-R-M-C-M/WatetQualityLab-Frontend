@@ -20,13 +20,13 @@ function History() {
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchAddedSamples = async () => {
             try {
-                const response = await getHistory(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getHistory(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setSamples(response.data.items);
                     setTotalPages(response.data.totalPages);
