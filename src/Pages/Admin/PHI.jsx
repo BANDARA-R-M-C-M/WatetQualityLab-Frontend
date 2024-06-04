@@ -53,7 +53,7 @@ function PHI(){
 
     useEffect(() => {
         const fetchPHIAreas = async () => {
-            const response = await getPHIAreas(null, null, null, null, 100, null, null, null, token);
+            const response = await getPHIAreas(null, null, null, null, null, null, null, token);
             if (response) {
                 setPhiAreas(response.data.items);
             } else {

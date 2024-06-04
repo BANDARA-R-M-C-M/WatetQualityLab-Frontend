@@ -43,14 +43,14 @@ function SurgicalItems() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const { categoryId } = useParams();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
         const fetchSurgicalItems = async () => {
             try {
-                const response = await getSurgicalInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending);
+                const response = await getSurgicalInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setItems(response.data.items);
                     setLabId(user.areaId);
@@ -64,13 +64,13 @@ function SurgicalItems() {
     }, [openNewModal, openAddModal, openIssueModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
     useEffect(() => {
-        getSurgicalCatagories(user.userId).then((response) => {
+        getSurgicalCatagories(user.userId, null, null, null, 1, 100, null, null, token).then((response) => {
             setSurgicalCatagories(response.data.items);
         });
     }, []);
 
     const handlePreview = async (itemId) => {
-        const response = await getSurgicalInventoryQR(itemId);
+        const response = await getSurgicalInventoryQR(itemId, token);
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setQRurl(pdfUrl);
@@ -79,7 +79,7 @@ function SurgicalItems() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId)) {
+        if (await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId, token)) {
             alert('Item Added Successfully')
         } else {
             alert('Failed to Add Item')
@@ -97,7 +97,7 @@ function SurgicalItems() {
 
     const handleIssue = async (event) => {
         event.preventDefault();
-        if (await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks)) {
+        if (await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks, token)) {
             alert('Item Issued Successfully')
         } else {
             alert('Failed to Issue Item')
@@ -111,7 +111,7 @@ function SurgicalItems() {
     const handleAdd = async (event) => {
         event.preventDefault();
 
-        if (await addQuantity(updatedId, quantity)) {
+        if (await addQuantity(updatedId, quantity, token)) {
             alert('Item Added Successfully')
         } else {
             alert('Failed to Add Item')
@@ -126,7 +126,7 @@ function SurgicalItems() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID)) {
+        if (await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID, token)) {
             alert('Item Updated Successfully')
         } else {
             alert('Failed to Update Item')
@@ -144,7 +144,7 @@ function SurgicalItems() {
 
     const handleDelete = async (deletedId) => {
         try {
-            await deleteSurgicalInventoryItem(deletedId);
+            await deleteSurgicalInventoryItem(deletedId, token);
             alert('Item deleted successfully');
         } catch (error) {
             console.error('Error deleting sample:', error);

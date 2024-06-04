@@ -135,16 +135,16 @@ function MLTDashboard() {
     return (
         <>
             <MapComponent />
-            <div className="flex flex-col md:flex-col items-start justify-between">
+            <div className="flex flex-col md:flex-col mt-20 items-start justify-between">
                 <div className="flex flex-col md:flex-row w-full">
                     <div className="md:w-1/2 p-2">
-                        <h2 className="text-xl font-bold mb-2">General Inventory Categories</h2>
+                        <h2 className="text-xl font-bold mb-2 text-center">General Inventory Categories</h2>
                         <Pie data={pieData}
                             ref={chartGeneralRef}
                             onClick={onSliceClick}
                         />
                     </div>
-                    <div className="md:w-1/2 p-2">
+                    {generalInventoryItems.length == 0 && <div className="md:w-1/2 p-2">
                         <h2 className="text-xl font-bold mb-2">General Inventory Items</h2>
                         <table className="min-w-full bg-white">
                             <thead>
@@ -164,12 +164,12 @@ function MLTDashboard() {
                                 ))}
                             </tbody>
                         </table>
-                    </div>
+                    </div>}
                 </div>
 
-                <div className="flex flex-col md:flex-row w-full">
+                <div className="flex flex-col mt-20 md:flex-row w-full">
                     <div className="md:w-1/2 p-2">
-                        <h2 className="text-xl font-bold mb-2">Surgical Inventory Categories</h2>
+                        <h2 className="text-xl font-bold mb-2 text-center">Surgical Inventory Categories</h2>
                         <Pie data={pieData2}
                             ref={chartSurgicalRef}
                             onClick={onSliceClick2}

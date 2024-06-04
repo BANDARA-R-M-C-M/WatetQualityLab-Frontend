@@ -53,7 +53,7 @@ function MOHSupervisor() {
 
     useEffect(() => {
         const fetchMOHAreas = async () => {
-            const response = await getMOHAreas(null, null, null, null, 100, null, null, null, token);
+            const response = await getMOHAreas(null, null, null, null, null, null, null, token);
             if (response) {
                 setMohAreas(response.data.items);
             } else {

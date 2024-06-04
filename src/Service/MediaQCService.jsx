@@ -27,9 +27,6 @@ export const getMediaQualityRecords = async (mltId, searchTerm, searchParameter,
 export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId, labId, token) => {
     try {
         await axios.post(`${base_url}/MediaQualityControl/AddMediaQualityControlRecord`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             dateTime: dateTime,
             mediaId: mediaId,
             sterility: sterility,
@@ -38,6 +35,10 @@ export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility,
             remarks: remarks,
             mltId: mltId,
             labId: labId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -48,9 +49,6 @@ export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility,
 export const updateMediaQualityControlRecord = async (updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, mltId, token) => {
     try {
         await axios.put(`${base_url}/MediaQualityControl/UpdateMediaQualityControlRecord/${updateId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             dateTime: dateTime,
             mediaId: mediaId,
             sterility: sterility,
@@ -58,6 +56,10 @@ export const updateMediaQualityControlRecord = async (updateId, dateTime, mediaI
             sensitivity: sensitivity,
             remarks: remarks,
             mltId: mltId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true
     } catch (error) {

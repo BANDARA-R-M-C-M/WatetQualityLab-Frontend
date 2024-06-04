@@ -27,9 +27,6 @@ export const getInstrumentalQualityRecords = async (mltId, searchTerm, searchPar
 export const addInstrumentalQualityControlRecord = async (dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, mltId, labId, token) => {
     try {
         await axios.post(`${base_url}/InstrumentalQualityControl/AddInstrumentalQualityControlRecord`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             dateTime: dateTime,
             instrumentId: instrumentId,
             temperatureFluctuation: temperatureFluctuation,
@@ -40,6 +37,10 @@ export const addInstrumentalQualityControlRecord = async (dateTime, instrumentId
             remarks: remarks,
             mltId: mltId,
             labId: labId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -50,9 +51,6 @@ export const addInstrumentalQualityControlRecord = async (dateTime, instrumentId
 export const updateInstrumentalQualityControlRecord = async (updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, mltId, token) => {
     try {
         await axios.put(`${base_url}/InstrumentalQualityControl/UpdateInstrumentalQualityControlRecord/${updateId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             dateTime: dateTime,
             instrumentId: instrumentId,
             temperatureFluctuation: temperatureFluctuation,
@@ -62,6 +60,10 @@ export const updateInstrumentalQualityControlRecord = async (updateId, dateTime,
             stability: stability,
             remarks: remarks,
             mltId: mltId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true
     } catch (error) {

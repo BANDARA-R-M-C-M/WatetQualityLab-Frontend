@@ -6,7 +6,7 @@ export const fetchLocations = async (location) => {
         const response = await axios.get(`${base_url}/WCSample/GetCities`, {
             params: {
                 query: location
-            },
+            }
         });
         
         const cityNames = response.data.predictions.map(prediction => prediction.structured_formatting.main_text);
@@ -21,15 +21,16 @@ export const fetchLocations = async (location) => {
 export const registerUser = async (id, userName, password, email, phoneNumber, role, token) => {
     try {
         const response = await axios.post(`${base_url}/User/signUp`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             id: id,
             userName: userName,
             password: password,
             email: email,
             phoneNumber: phoneNumber,
             role: role
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return response;
     } catch (error) {
@@ -40,12 +41,13 @@ export const registerUser = async (id, userName, password, email, phoneNumber, r
 export const addLab = async (labName, labLocation, labTelephone, token) => {
     try {
         await axios.post(`${base_url}/Area/AddLab`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             labName: labName,
             labLocation: labLocation,
             labTelephone: labTelephone
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -56,11 +58,12 @@ export const addLab = async (labName, labLocation, labTelephone, token) => {
 export const addPHIArea = async (phiAreaName, mohAreaId, token) => {
     try {
         await axios.post(`${base_url}/Area/AddPHIArea`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             phiAreaName: phiAreaName,
             mohAreaId: mohAreaId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -71,11 +74,12 @@ export const addPHIArea = async (phiAreaName, mohAreaId, token) => {
 export const addMOHArea = async (mohAreaName, labId, token) => {
     try {
         await axios.post(`${base_url}/Area/AddMOHArea`, {
+            mohAreaName: mohAreaName,
+            labId: labId
+        }, {
             headers: {
                 Authorization: `Bearer ${token}`
             },
-            mohAreaName: mohAreaName,
-            labId: labId
         });
         return true;
     } catch (error) {
@@ -218,12 +222,13 @@ export const getMOHAreas = async (searchTerm, searchParameter, searchParameterTy
 export const updateLabs = async (labId, labName, labLocation, labTelephone, token) => {
     try {
         await axios.put(`${base_url}/Area/UpdateLab/${labId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             labName: labName,
             labLocation: labLocation,
             labTelephone: labTelephone
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     }
@@ -235,11 +240,12 @@ export const updateLabs = async (labId, labName, labLocation, labTelephone, toke
 export const updatePHIAreas = async (phiAreaId, phiAreaName, mohAreaId, token) => {
     try {
         await axios.put(`${base_url}/Area/UpdatePHIArea/${phiAreaId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             phiAreaName: phiAreaName,
             mohAreaId: mohAreaId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -250,11 +256,12 @@ export const updatePHIAreas = async (phiAreaId, phiAreaName, mohAreaId, token) =
 export const updateMOHAreas = async (mohAreaId, mohAreaName, labId, token) => {
     try {
         await axios.put(`${base_url}/Area/UpdateMOHArea/${mohAreaId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             mohAreaName: mohAreaName,
             labId: labId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -265,11 +272,12 @@ export const updateMOHAreas = async (mohAreaId, mohAreaName, labId, token) => {
 export const assignMLTtoLabs = async (mltId, labId, token) => {
     try {
         await axios.post(`${base_url}/Userassign/AssignMLTtoLabs`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             mltId: mltId,
             labId: labId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -280,11 +288,12 @@ export const assignMLTtoLabs = async (mltId, labId, token) => {
 export const assignPHItoPHIAreas = async (phiId, phiAreaId, token) => {
     try {
         await axios.post(`${base_url}/Userassign/AssignPHItoPHIAreas`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             phiId: phiId,
             phiAreaId: phiAreaId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -295,11 +304,12 @@ export const assignPHItoPHIAreas = async (phiId, phiAreaId, token) => {
 export const assignMOHSupervisortoMOHAreas = async (mohSupervisorId, mohAreaId, token) => {
     try {
         await axios.post(`${base_url}/Userassign/AssignMOHSupervisortoMOHAreas`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             mohSupervisorId: mohSupervisorId,
             mohAreaId: mohAreaId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {

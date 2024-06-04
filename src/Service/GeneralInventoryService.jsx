@@ -1,10 +1,13 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
 
-export const getGeneralInventoryQR = async (itemId) => {
+export const getGeneralInventoryQR = async (itemId, token) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryQR`, {
             responseType: 'blob',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 itemId: itemId
             }
@@ -15,9 +18,12 @@ export const getGeneralInventoryQR = async (itemId) => {
     }
 }
 
-export const getGeneralItemDetails = async (itemId) => {
+export const getGeneralItemDetails = async (itemId, token) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryItem`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 itemId: itemId
             }
@@ -28,9 +34,12 @@ export const getGeneralItemDetails = async (itemId) => {
     }
 }
 
-export const getGeneralInventoryItems = async (mltId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getGeneralInventoryItems = async (mltId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralInventoryItems`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 UserId: mltId,
                 CategoryId: categoryId,
@@ -49,9 +58,12 @@ export const getGeneralInventoryItems = async (mltId, categoryId, searchTerm, se
     }
 }
 
-export const getGeneralCatagories = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending) => {
+export const getGeneralCatagories = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/GeneralInventory/GetGeneralCategories`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: {
                 UserId: mltId,
                 SearchTerm: searchTerm,
@@ -69,7 +81,7 @@ export const getGeneralCatagories = async (mltId, searchTerm, searchParameter, s
     }
 }
 
-export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, remarks, generalCategoryID, labId) => {
+export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, remarks, generalCategoryID, labId, token) => {
     try {
         await axios.post(`${base_url}/GeneralInventory/AddGeneralInventoryItem`, {
             itemName: itemName,
@@ -78,6 +90,10 @@ export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, re
             remarks: remarks,
             generalCategoryID: generalCategoryID,
             labId: labId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -85,11 +101,15 @@ export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, re
     }
 }
 
-export const addGeneralCategory = async (generalCategoryName, labId) => {
+export const addGeneralCategory = async (generalCategoryName, labId, token) => {
     try {
         await axios.post(`${base_url}/GeneralInventory/AddGeneralCategory`, {
             generalCategoryName: generalCategoryName,
             labId: labId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -97,7 +117,7 @@ export const addGeneralCategory = async (generalCategoryName, labId) => {
     }
 }
 
-export const updateGeneralInventoryItem = async (itemId, itemName, issuedDate, issuedBy, remarks, generalCategoryID) => {
+export const updateGeneralInventoryItem = async (itemId, itemName, issuedDate, issuedBy, remarks, generalCategoryID, token) => {
     try {
         await axios.put(`${base_url}/GeneralInventory/UpdateGeneralInventoryItem/${itemId}`, {
             itemName: itemName,
@@ -105,6 +125,10 @@ export const updateGeneralInventoryItem = async (itemId, itemName, issuedDate, i
             issuedBy: issuedBy,
             remarks: remarks,
             generalCategoryID: generalCategoryID
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -112,10 +136,14 @@ export const updateGeneralInventoryItem = async (itemId, itemName, issuedDate, i
     }
 }
 
-export const updateGeneralCategory = async (categoryId, generalCategoryName) => {
+export const updateGeneralCategory = async (categoryId, generalCategoryName, token) => {
     try {
         await axios.put(`${base_url}/GeneralInventory/UpdateGeneralCategory/${categoryId}`, {
             generalCategoryName: generalCategoryName
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         return true;
     } catch (error) {
@@ -123,18 +151,26 @@ export const updateGeneralCategory = async (categoryId, generalCategoryName) => 
     }
 }
 
-export const deleteGeneralInventoryItem = async (itemId) => {
+export const deleteGeneralInventoryItem = async (itemId, token) => {
     try {
-        await axios.delete(`${base_url}/GeneralInventory/DeleteGeneralInventoryItem/${itemId}`);
+        await axios.delete(`${base_url}/GeneralInventory/DeleteGeneralInventoryItem/${itemId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const deleteGeneralCategory = async (categoryId) => {
+export const deleteGeneralCategory = async (categoryId, token) => {
     try {
-        await axios.delete(`${base_url}/GeneralInventory/DeleteGeneralCategory/${categoryId}`);
+        await axios.delete(`${base_url}/GeneralInventory/DeleteGeneralCategory/${categoryId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return true;
     } catch (error) {
         console.log(error);

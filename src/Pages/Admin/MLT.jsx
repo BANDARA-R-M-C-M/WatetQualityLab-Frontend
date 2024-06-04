@@ -35,7 +35,7 @@ function MLT() {
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-    const { token } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ function MLT() {
 
     useEffect(() => {
         const fetchLabs = async () => {
-            const response = await getLabs(null, null, null, null, 100, null, null, null, token);
+            const response = await getLabs(null, null, null, null, null, null, null, token);
             if (response) {
                 setLabs(response.data.items);
             } else {
@@ -80,7 +80,7 @@ function MLT() {
     const handleAssign = async (e) => {
         e.preventDefault();
 
-        if (await assignMLTtoLabs(assignId, labId, userId, token)) {
+        if (await assignMLTtoLabs(assignId, labId, token)) {
             alert('MLT assigned successfully');
         } else {
             alert('Failed to assign MLT');

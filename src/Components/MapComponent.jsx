@@ -24,7 +24,7 @@ function MapComponent() {
     const [pageNumber] = useState(1);
     const [pageSize] = useState(1000);
 
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
     const center = {
@@ -42,7 +42,7 @@ function MapComponent() {
     useEffect(() => {
         const fetchSampleDetails = async () => {
             try {
-                const response = await getMonthlySampleDetails(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, selectedYear, selectedMonth);
+                const response = await getMonthlySampleDetails(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, selectedYear, selectedMonth, token);
                 if (response.data) {
                     setGeoData(await fetchGeoData(response.data.items));
                 }
@@ -53,7 +53,7 @@ function MapComponent() {
 
         fetchSampleDetails();
     }, [selectedMonth, selectedYear, debouncedSearch]);
-    
+
     const fetchGeoData = async (mohAreas) => {
         const geoDataPromises = mohAreas.flatMap(mohArea =>
             mohArea.phiAreas.map(async (area) => {
@@ -164,52 +164,52 @@ function MapComponent() {
                     </div>
                 </div>
                 <div className="w-full h-[700px] p-2">
-                        <GoogleMap
-                            mapContainerStyle={{
-                                width: '100%',
-                                height: '100%',
-                            }}
-                            center={center}
-                            zoom={8}
-                            options={{
-                                restriction: {
-                                    latLngBounds: sriLankaBounds,
-                                    strictBounds: false,
-                                },
-                            }}
-                        >
-                            {geoData.map((area) => (
-                                <Marker
-                                    key={area.phiAreaId}
-                                    title={area.phiAreaName}
-                                    position={{ lat: area.lat, lng: area.lon }}
-                                    onClick={() => setSelectedArea(area)}
-                                    icon={{
-                                        path: window.google.maps.SymbolPath.CIRCLE, // Use any symbol path you want
-                                        scale: 8, // Adjust the size of the marker
-                                        fillColor: area.sampleCount > 0 ? 'darkgreen' : 'blue', // Change the color of the marker
-                                        fillOpacity: 1, // Adjust the opacity of the marker color
-                                        strokeColor: 'black', // Change the color of the marker border
-                                        strokeWeight: 0.5, // Adjust the thickness of the marker border
-                                    }}
-                                />
-                            ))}
+                    <GoogleMap
+                        mapContainerStyle={{
+                            width: '100%',
+                            height: '100%',
+                        }}
+                        center={center}
+                        zoom={8}
+                        options={{
+                            restriction: {
+                                latLngBounds: sriLankaBounds,
+                                strictBounds: false,
+                            },
+                        }}
+                    >
+                        {geoData.map((area) => (
+                            <Marker
+                                key={area.phiAreaId}
+                                title={area.phiAreaName}
+                                position={{ lat: area.lat, lng: area.lon }}
+                                onClick={() => setSelectedArea(area)}
+                                icon={{
+                                    path: window.google.maps.SymbolPath.CIRCLE, // Use any symbol path you want
+                                    scale: 8, // Adjust the size of the marker
+                                    fillColor: area.sampleCount > 0 ? 'darkgreen' : 'blue', // Change the color of the marker
+                                    fillOpacity: 1, // Adjust the opacity of the marker color
+                                    strokeColor: 'black', // Change the color of the marker border
+                                    strokeWeight: 0.5, // Adjust the thickness of the marker border
+                                }}
+                            />
+                        ))}
 
-                            {selectedArea && (
-                                <InfoWindow
-                                    position={{ lat: selectedArea.lat, lng: selectedArea.lon }}
-                                    onCloseClick={() => setSelectedArea(null)}
-                                >
-                                    <div>
-                                        <h2>{selectedArea.phiAreaName}</h2>
-                                        <p>MOH Area: {selectedArea.mohAreaName}</p>
-                                        <p>Pending Sample Count: {selectedArea.pendingSampleCount}</p>
-                                        <p>Accepted Sample Count: {selectedArea.acceptedSampleCount}</p>
-                                        <p>Rejected Sample Count: {selectedArea.rejectedSampleCount}</p>
-                                    </div>
-                                </InfoWindow>
-                            )}
-                        </GoogleMap>
+                        {selectedArea && (
+                            <InfoWindow
+                                position={{ lat: selectedArea.lat, lng: selectedArea.lon }}
+                                onCloseClick={() => setSelectedArea(null)}
+                            >
+                                <div className="p-2 font-sans text-gray-800">
+                                    <h2 className="text-lg text-center mb-2 text-blue-600 font-bold">{selectedArea.phiAreaName}</h2>
+                                    <p className="my-1"><span className="font-bold">MOH Area:</span> <span className="font-bold text-gray-600">{selectedArea.mohAreaName}</span></p>
+                                    <p className="my-1"><span className="font-bold">Pending Sample Count:</span> <span className="font-bold text-gray-600">{selectedArea.pendingSampleCount}</span></p>
+                                    <p className="my-1"><span className="font-bold">Accepted Sample Count:</span> <span className="font-bold text-gray-600">{selectedArea.acceptedSampleCount}</span></p>
+                                    <p className="my-1"><span className="font-bold">Rejected Sample Count:</span> <span className="font-bold text-gray-600">{selectedArea.rejectedSampleCount}</span></p>
+                                </div>
+                            </InfoWindow>
+                        )}
+                    </GoogleMap>
                 </div>
             </div>
         </>

@@ -113,10 +113,10 @@ export const getSampleCount = async (mltId, searchTerm, searchParameter, searchP
 export const getSampleCountReport = async (mltId, year, token) => {
   try {
     const response = await axios.get(`${base_url}/WCSample/GetSampleCountReport`, {
+      responseType: 'blob',
       headers: {
         Authorization: `Bearer ${token}`
       },
-      responseType: 'blob',
       params: {
         MltId: mltId,
         Year: year
@@ -154,9 +154,6 @@ export const getMonthlySampleDetails = async (mltId, searchTerm, searchParameter
 export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDate, EcoliCount, AppearanceOfSample, Remarks, IsContaminated, MltId, SampleId, LabId, token) => {
   try {
     await axios.post(`${base_url}/WCReport/AddWCReport`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       myRefNo: myRefNo,
       presumptiveColiformCount: PresumptiveColiformCount,
       analyzedDate: analyzedDate,
@@ -167,6 +164,10 @@ export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDa
       mltId: MltId,
       sampleId: SampleId,
       labId: LabId
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     return true;
   } catch (error) {
@@ -192,12 +193,13 @@ export const generateReport = async (ReportRefId, token) => {
 export const updateStatus = async (sampleId, Status, Comment, token) => {
   try {
     await axios.put(`${base_url}/WCSample/updateSampleStatus`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       sampleId: sampleId,
       status: Status,
       comment: Comment
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     return true;
   } catch (error) {
@@ -208,14 +210,15 @@ export const updateStatus = async (sampleId, Status, Comment, token) => {
 export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, PresumptiveColiformCount, EcoliCount, Results, token) => {
   try {
     await axios.put(`${base_url}/WCReport/updateWCReport/${ReportRefId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       myRefNo: myRefNo,
       appearanceOfSample: AppearanceOfSample,
       presumptiveColiformCount: PresumptiveColiformCount,
       ecoliCount: EcoliCount,
       remarks: Results
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     return true;
   } catch (error) {

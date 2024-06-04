@@ -61,7 +61,7 @@ function MOHAreas() {
 
     useEffect(() => {
         const fetchLabs = async () => {
-            const response = await getLabs(null, null, null, null, 100, null, null, null, token);
+            const response = await getLabs(null, null, null, null, null, null, null, token);
             if (response) {
                 setLabs(response.data.items);
             } else {
@@ -267,7 +267,7 @@ function MOHAreas() {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 value={mohAreaName}
                                 onChange={(e) => setMohAreaName(e.target.value)}
-                                list="citySuggestions" // Add list attribute with the ID of the datalist
+                                list="citySuggestions"
                                 required
                             />
                             <datalist id="citySuggestions">
