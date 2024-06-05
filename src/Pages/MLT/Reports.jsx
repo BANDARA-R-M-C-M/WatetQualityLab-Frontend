@@ -17,6 +17,7 @@ function WCReports() {
     const [ecoliCount, setEcoliCount] = useState('');
     const [appearanceOfSample, setAppearanceOfSample] = useState('');
     const [remarks, setRemarks] = useState('');
+    const [isContaminated, setIsContaminated] = useState(null);
     const [reportUrl, setReportUrl] = useState('');
     const [placeholderText, setPlaceholderText] = useState('My Ref No...');
     const [searchTerm, setSearchTerm] = useState('');
@@ -63,7 +64,7 @@ function WCReports() {
         e.preventDefault();
 
         try {
-            await updateWCReport(updatedId, myRefNo, appearanceOfSample, presumptiveColiformCount, ecoliCount, remarks, token);
+            await updateWCReport(updatedId, myRefNo, appearanceOfSample, presumptiveColiformCount, ecoliCount, remarks, isContaminated, token);
             alert('Report updated successfully');
         } catch (error) {
             console.error('Error submitting report:', error);
@@ -289,6 +290,7 @@ function WCReports() {
                                                 setEcoliCount(report.ecoliCount);
                                                 setAppearanceOfSample(report.appearanceOfSample);
                                                 setRemarks(report.remarks);
+                                                setIsContaminated(report.contaminated);
                                             }}>
                                             <MdEdit size={25} />
                                         </Button>
@@ -333,7 +335,6 @@ function WCReports() {
                             name="myRefNo" id="myRefNo" type="text" placeholder="My Ref No"
                             value={myRefNo} onChange={(e) => setMyRefNo(e.target.value)} required />
                     </div>
-
                     <div className="m-4">
                         <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
                             Presumptive Coliform Count
@@ -343,7 +344,6 @@ function WCReports() {
                             name="presumptiveColiformCount" id="presumptiveColiformCount" type="number" placeholder="Presumptive Coliform Count"
                             value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
                     </div>
-
                     <div className="m-4">
                         <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
                             Ecoli Count
@@ -353,7 +353,6 @@ function WCReports() {
                             name="ecoliCount" id="ecoliCount" type="number" placeholder="Ecoli Count"
                             value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
                     </div>
-
                     <div className="m-4">
                         <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
                             Appearance Of Sample
@@ -363,7 +362,6 @@ function WCReports() {
                             name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
                             value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
                     </div>
-
                     <div className="m-4">
                         <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
                             Remarks
@@ -373,7 +371,33 @@ function WCReports() {
                             name="remarks" id="remarks" type="text" placeholder="Remarks"
                             value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
                     </div>
-
+                    <div className="m-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Contamination Status</label>
+                        <div className="flex items-center">
+                            <input
+                                className="mr-2 leading-tight"
+                                type="radio"
+                                id="contaminatedTrue"
+                                name="isContaminated"
+                                value="true"
+                                checked={isContaminated === true}
+                                onChange={() => setIsContaminated(true)}
+                            />
+                            <label htmlFor="contaminatedTrue" className="text-gray-700">True</label>
+                        </div>
+                        <div className="flex items-center">
+                            <input
+                                className="mr-2 leading-tight"
+                                type="radio"
+                                id="contaminatedFalse"
+                                name="isContaminated"
+                                value="false"
+                                checked={isContaminated === false}
+                                onChange={() => setIsContaminated(false)}
+                            />
+                            <label htmlFor="contaminatedFalse" className="text-gray-700">False</label>
+                        </div>
+                    </div>
                     <div className="flex mb-4 justify-evenly">
                         <Button type="submit" size="xl">Submit</Button>
                     </div>

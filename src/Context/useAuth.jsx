@@ -67,6 +67,8 @@ export const UserProvider = ({ children }) => {
         setToken(res?.data.token);
         setUser(userObj);
         
+        axios.defaults.headers.common["Authorization"] = "Bearer " + res?.data.token;
+        
         const redirectPath = sessionStorage.getItem("redirectPath");
 
         toast.success("Welcome " + userObj.userName);
@@ -77,11 +79,11 @@ export const UserProvider = ({ children }) => {
         } else if(userObj.userRole === "Admin"){
           navigate("/admin/dashboard");
         } else if(userObj.userRole === "Phi"){
-          navigate("/phi/dashboard");
+          navigate("/phi/home");
         } else if(userObj.userRole === "Mlt"){
           navigate("/mlt/dashboard");
         } else if(userObj.userRole === "MohSupervisor"){
-          navigate("/moh-supervisor/dashboard");
+          navigate("/moh-supervisor/home");
         }
       }
       

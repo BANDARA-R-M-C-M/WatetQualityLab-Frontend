@@ -47,6 +47,19 @@ export const getAcceptedSamples = async (mltId, searchTerm, searchParameter, sea
   }
 };
 
+export const getComments = async (token) => {
+  try {
+    const response = await axios.get(`${base_url}/WCReport/GetComments`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAddedReports = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
   try {
     const response = await axios.get(`${base_url}/WCReport/getAddedReports`, {
@@ -207,14 +220,15 @@ export const updateStatus = async (sampleId, Status, Comment, token) => {
   }
 };
 
-export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, PresumptiveColiformCount, EcoliCount, Results, token) => {
+export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, PresumptiveColiformCount, EcoliCount, Results, Contaminated, token) => {
   try {
     await axios.put(`${base_url}/WCReport/updateWCReport/${ReportRefId}`, {
       myRefNo: myRefNo,
       appearanceOfSample: AppearanceOfSample,
       presumptiveColiformCount: PresumptiveColiformCount,
       ecoliCount: EcoliCount,
-      remarks: Results
+      remarks: Results,
+      contaminated: Contaminated
     }, {
       headers: {
         Authorization: `Bearer ${token}`

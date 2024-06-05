@@ -153,7 +153,7 @@ function SampleCount() {
                             <Dropdown label="Month" disabled={!selectedYear}>
                                 {months.map((month) => (
                                     <Dropdown.Item key={month} onClick={() => handleMonthChange(month)}>
-                                        {month}
+                                        {monthNames[month]}
                                     </Dropdown.Item>
                                 ))}
                             </Dropdown>

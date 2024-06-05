@@ -42,7 +42,7 @@ function Phisidebar() {
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
-                        <Link to='/phi/dashboard' className={location.pathname === '/phi/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
+                        <Link to='/phi/home' className={location.pathname === '/phi/home' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Home</Link>
                         <Link to='/phi/samples' className={location.pathname === '/phi/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Samples</Link>
                         <Link to='/phi/history' className={location.pathname === '/phi/history' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>History</Link>
                         </li>
@@ -68,7 +68,7 @@ function Phisidebar() {
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
-                  <Link to='/phi/dashboard' className={location.pathname === '/phi/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
+                  <Link to='/phi/home' className={location.pathname === '/phi/home' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Home</Link>
                   <Link to='/phi/samples' className={location.pathname === '/phi/samples' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Samples</Link>
                   <Link to='/phi/history' className={location.pathname === '/phi/history' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>History</Link>
                 </li>

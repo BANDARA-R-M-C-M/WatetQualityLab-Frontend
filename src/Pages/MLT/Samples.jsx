@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { useDebounce } from '../../Util/useDebounce';
-import { getAcceptedSamples, submitReport, updateStatus } from "../../Service/MLTService";
+import { getAcceptedSamples, getComments, submitReport, updateStatus } from "../../Service/MLTService";
 import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
@@ -16,6 +16,7 @@ function Samples() {
     const [ecoliCount, setEcoliCount] = useState('');
     const [appearanceOfSample, setAppearanceOfSample] = useState('');
     const [remarks, setRemarks] = useState('');
+    const [comments, setComments] = useState([]);
     const [sampleId, setSampleId] = useState('');
     const [labId, setLabId] = useState('');
     const [placeholderText, setPlaceholderText] = useState('Your Ref No...');
@@ -58,6 +59,20 @@ function Samples() {
         fetchSamples();
     }, [openModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const response = await getComments(sampleId, token);
+                if (response) {
+                    setComments(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+        };
+        fetchComments();
+    }, []);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -73,6 +88,7 @@ function Samples() {
         setEcoliCount('');
         setAppearanceOfSample('');
         setRemarks('');
+        setIsContaminated(null);
 
         setOpenModal(false);
     };
@@ -86,12 +102,12 @@ function Samples() {
             console.error('Error remove sample:', error);
         }
     };
-
+    
     return (
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
                 <div className="flex items-center justify-between">
-                <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between">
                         <div className="flex bg-gray-200 items-center p-1 rounded-md">
                             <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
                             <input
@@ -289,10 +305,10 @@ function Samples() {
                     </table>
                 </div>
                 {samples.length > 0 && (
-                        <div className="flex overflow-x-auto sm:justify-center">
-                            <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
-                        </div>
-                    )}
+                    <div className="flex overflow-x-auto sm:justify-center">
+                        <Pagination currentPage={pageNumber} totalPages={totalPages} onPageChange={(page) => { setPageNumber(page) }} showIcons />
+                    </div>
+                )}
             </div>
 
             <Modal show={openModal} onClose={() => setOpenModal(false)}>
@@ -308,7 +324,6 @@ function Samples() {
                                 name="myRefNo" id="myRefNo" type="text" placeholder="My Ref No"
                                 value={myRefNo} onChange={(e) => setMyRefNo(e.target.value)} required />
                         </div>
-
                         <div className="mb-4">
                             <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
                                 Presumptive Coliform Count
@@ -318,7 +333,6 @@ function Samples() {
                                 name="presumptiveColiformCount" id="presumptiveColiformCount" type="number" placeholder="Presumptive Coliform Count"
                                 value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
                         </div>
-
                         <div className="mb-4">
                             <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
                                 Ecoli Count
@@ -328,7 +342,6 @@ function Samples() {
                                 name="ecoliCount" id="ecoliCount" type="number" placeholder="Ecoli Count"
                                 value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
                         </div>
-
                         <div className="mb-4">
                             <label htmlFor="analyzedDate" className="block text-gray-700 text-sm font-bold mb-2">
                                 Analyzed Date
@@ -338,7 +351,6 @@ function Samples() {
                                 name="analyzedDate" id="analyzedDate" type="date"
                                 value={analyzedDate} onChange={(e) => setAnalyzedDate(e.target.value)} required />
                         </div>
-
                         <div className="mb-4">
                             <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
                                 Appearance Of Sample
@@ -348,8 +360,7 @@ function Samples() {
                                 name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
                                 value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
                         </div>
-
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
                                 Remarks
                             </label>
@@ -357,34 +368,47 @@ function Samples() {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 name="remarks" id="remarks" type="text" placeholder="Remarks"
                                 value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
+                        </div> */}
+                        <div className="mb-4">
+                            <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
+                                Remarks
+                            </label>
+                            <select
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="remarks" id="remarks" value={remarks} onChange={(e) => setRemarks(e.target.value)} required>
+                                <option value="" disabled>Select a comment</option>
+                                {comments.map((comment, index) => (
+                                    <option key={index} value={comment.feedback}>{comment.feedback}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Contamination Status</label>
-                        <div className="flex items-center">
-                            <input
-                                className="mr-2 leading-tight"
-                                type="radio"
-                                id="contaminatedTrue"
-                                name="isContaminated"
-                                value="true"
-                                checked={isContaminated === true}
-                                onChange={() => setIsContaminated(true)}
-                            />
-                            <label htmlFor="contaminatedTrue" className="text-gray-700">True</label>
+                            <label className="block text-gray-700 text-sm font-bold mb-2">Contamination Status</label>
+                            <div className="flex items-center">
+                                <input
+                                    className="mr-2 leading-tight"
+                                    type="radio"
+                                    id="contaminatedTrue"
+                                    name="isContaminated"
+                                    value="true"
+                                    checked={isContaminated === true}
+                                    onChange={() => setIsContaminated(true)}
+                                />
+                                <label htmlFor="contaminatedTrue" className="text-gray-700">True</label>
+                            </div>
+                            <div className="flex items-center">
+                                <input
+                                    className="mr-2 leading-tight"
+                                    type="radio"
+                                    id="contaminatedFalse"
+                                    name="isContaminated"
+                                    value="false"
+                                    checked={isContaminated === false}
+                                    onChange={() => setIsContaminated(false)}
+                                />
+                                <label htmlFor="contaminatedFalse" className="text-gray-700">False</label>
+                            </div>
                         </div>
-                        <div className="flex items-center">
-                            <input
-                                className="mr-2 leading-tight"
-                                type="radio"
-                                id="contaminatedFalse"
-                                name="isContaminated"
-                                value="false"
-                                checked={isContaminated === false}
-                                onChange={() => setIsContaminated(false)}
-                            />
-                            <label htmlFor="contaminatedFalse" className="text-gray-700">False</label>
-                        </div>
-                    </div>
 
                         <div className="flex mb-4 justify-evenly">
                             <Button type="submit" size="xl">Submit</Button>

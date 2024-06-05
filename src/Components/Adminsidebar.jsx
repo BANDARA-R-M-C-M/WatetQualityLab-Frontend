@@ -43,7 +43,7 @@ function Adminsidebar() {
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
-                          <Link to='/admin/dashboard' className={location.pathname === '/admin/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
+                          {/* <Link to='/admin/dashboard' className={location.pathname === '/admin/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link> */}
                           <Link to='/admin/mlts' className={location.pathname === '/admin/mlts' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>MLT</Link>
                           <Link to='/admin/phis' className={location.pathname === '/admin/phis' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>PHI</Link>
                           <Link to='/admin/moh-supervisors' className={location.pathname === '/admin/moh-supervisors' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>MOH Supervisor</Link>
@@ -73,7 +73,7 @@ function Adminsidebar() {
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
-                  <Link to='/admin/dashboard' className={location.pathname === '/admin/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link>
+                  {/* <Link to='/admin/dashboard' className={location.pathname === '/admin/dashboard' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Dashboard</Link> */}
                   <Link to='/admin/mlts' className={location.pathname === '/admin/mlts' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>MLT</Link>
                   <Link to='/admin/phis' className={location.pathname === '/admin/phis' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>PHI</Link>
                   <Link to='/admin/moh-supervisors' className={location.pathname === '/admin/moh-supervisors' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>MOH Supervisor</Link>

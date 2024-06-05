@@ -40,6 +40,22 @@ export const getAddedSamples = async (phiId, searchTerm, searchParameter, search
     }
 }
 
+export const getSampleCount = async (phiId, token) => {
+    try {
+        const response = await axios.get(`${base_url}/WCSample/GetSampleCountDetails`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                UserId: phiId
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getHistory = async (phiId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
         const response = await axios.get(`${base_url}/WCSample/GetHistory`, {

@@ -30,9 +30,10 @@ import SamplesP from '../Pages/PHI/Samples.jsx';
 import HistoryP from '../Pages/PHI/History.jsx';
 import MOHDashboard from '../Pages/MOHSupervisor/MOHDashboard.jsx';
 import ReportM from '../Pages/MOHSupervisor/Reports.jsx';
-import SamplesM from '../Pages/MOHSupervisor/Samples.jsx';
-import HistoryM from '../Pages/MOHSupervisor/History.jsx';
+// import SamplesM from '../Pages/MOHSupervisor/Samples.jsx';
+// import HistoryM from '../Pages/MOHSupervisor/History.jsx';
 import Mohsidebar from "../Components/Mohsidebar.jsx";
+import Profile from "../Pages/Profile.jsx";
 
 export const router = createBrowserRouter([
       {
@@ -40,10 +41,11 @@ export const router = createBrowserRouter([
       element: <App />,
       children: [
         {path: "/", element: <Login/>},
+        {path: "/profile", element: <Profile/>},
         {path: "admin", 
           element: <ProtectedRoute children={<Adminsidebar />}/>,
             children: [
-              {path: "dashboard", element: <AdminDashboard/>},
+              // {path: "dashboard", element: <AdminDashboard/>},
               {path: "mlts", element: <MLT/>},
               {path: "phis", element: <PHI/>},
               {path: "moh-supervisors", element: <MOHSupervisor/>},
@@ -73,7 +75,7 @@ export const router = createBrowserRouter([
         {path: "phi",
             element: <ProtectedRoute children={<Phisidebar />}/>,
               children: [
-                {path: "dashboard", element: <PHIDashboard/>},
+                {path: "home", element: <PHIDashboard/>},
                 {path: "samples", element: <SamplesP/>},
                 {path: "history", element: <HistoryP/>}
               ]
@@ -81,10 +83,10 @@ export const router = createBrowserRouter([
         {path: "moh-supervisor",
             element: <ProtectedRoute children={<Mohsidebar />}/>,
               children: [
-                {path: "dashboard", element: <MOHDashboard/>},
+                {path: "home", element: <MOHDashboard/>},
                 {path: "reports", element: <ReportM/>},
-                {path: "samples", element: <SamplesM/>},
-                {path: "history", element: <HistoryM/>}
+                // {path: "samples", element: <SamplesM/>},
+                // {path: "history", element: <HistoryM/>}
               ]
         }
       ],

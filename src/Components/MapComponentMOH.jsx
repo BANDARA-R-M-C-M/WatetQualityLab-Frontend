@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
-import { getMonthlySampleDetails } from '../Service/MLTService';
+import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
+import { getContaminationDetails } from '../Service/MOHService';
 import { useAuth } from "../Context/useAuth";
 import { useDebounce } from '../Util/useDebounce';
 import { Button, Dropdown } from 'flowbite-react';
 import { MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 
-function MapComponent() {
-
+function MapComponentMOH() {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
 
@@ -17,15 +16,30 @@ function MapComponent() {
     const [selectedArea, setSelectedArea] = useState(null);
     const [selectedYear, setSelectedYear] = useState(currentYear);
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-    const [placeholderText, setPlaceholderText] = useState('MOH Area Name...');
+    const [placeholderText, setPlaceholderText] = useState('PHI Area Name...');
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchParameter, setSearchParameter] = useState('MOHAreaName');
+    const [searchParameter, setSearchParameter] = useState('PHIAreaName');
     const [searchParameterType] = useState('string');
     const [pageNumber] = useState(1);
     const [pageSize] = useState(1000);
 
     const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
+
+    const monthNames = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December"
+    };
 
     const center = {
         lat: 7.8731,
@@ -42,7 +56,7 @@ function MapComponent() {
     useEffect(() => {
         const fetchSampleDetails = async () => {
             try {
-                const response = await getMonthlySampleDetails(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, selectedYear, selectedMonth, token);
+                const response = await getContaminationDetails(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, selectedYear, selectedMonth, token);
                 if (response.data) {
                     setGeoData(await fetchGeoData(response.data.items));
                 }
@@ -54,39 +68,42 @@ function MapComponent() {
         fetchSampleDetails();
     }, [selectedMonth, selectedYear, debouncedSearch]);
 
-    const fetchGeoData = async (mohAreas) => {
-        const geoDataPromises = mohAreas.flatMap(mohArea =>
-            mohArea.phiAreas.map(async (area) => {
-                const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
-                    params: {
-                        q: area.phiAreaName,
-                        format: 'json',
-                        countrycodes: 'LK',
-                        limit: 1,
-                    },
-                });
+    const fetchGeoData = async (phiAreas) => {
+        const geoDataPromises = phiAreas.map(async (area) => {
+            const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
+                params: {
+                    q: area.phiAreaName,
+                    format: 'json',
+                    countrycodes: 'LK',
+                    limit: 1,
+                },
+            });
 
-                if (response.data && response.data[0]) {
-                    const { lat, lon } = response.data[0];
-                    return {
-                        ...area,
-                        lat: parseFloat(lat),
-                        lon: parseFloat(lon),
-                        mohAreaName: mohArea.mohAreaName,
-                    };
-                } else {
-                    return {
-                        ...area,
-                        lat: null,
-                        lon: null,
-                        mohAreaName: mohArea.mohAreaName,
-                    };
-                }
-            })
-        );
+            if (response.data && response.data[0]) {
+                const { lat, lon } = response.data[0];
+                return {
+                    ...area,
+                    lat: parseFloat(lat),
+                    lon: parseFloat(lon),
+                };
+            } else {
+                return {
+                    ...area,
+                    lat: null,
+                    lon: null,
+                };
+            }
+        });
 
         const results = await Promise.all(geoDataPromises);
         return results.filter(area => area.lat && area.lon);
+    };
+
+    const getMarkerColor = (area) => {
+        if (!area.reportAvailableForMonth) {
+            return 'grey';
+        }
+        return area.contaminationDetails.some(detail => detail.contaminated) ? 'red' : 'green';
     };
 
     const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
@@ -117,14 +134,6 @@ function MapComponent() {
                             <Dropdown label="Find">
                                 <Dropdown.Item
                                     onClick={() => {
-                                        setSearchParameter('MOHAreaName');
-                                        setPlaceholderText('MOH Area Name...');
-                                    }}
-                                >
-                                    MOH Area Name
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
                                         setSearchParameter('PHIAreaName');
                                         setPlaceholderText('PHI Area Name...');
                                     }}
@@ -148,7 +157,7 @@ function MapComponent() {
                             <Dropdown label="Month" disabled={!selectedYear}>
                                 {months.map((month) => (
                                     <Dropdown.Item key={month} onClick={() => setSelectedMonth(month)}>
-                                        {month}
+                                        {monthNames[month]}
                                     </Dropdown.Item>
                                 ))}
                             </Dropdown>
@@ -180,17 +189,17 @@ function MapComponent() {
                     >
                         {geoData.map((area) => (
                             <Marker
-                                key={area.phiAreaId}
+                                key={area.phiAreaID}
                                 title={area.phiAreaName}
                                 position={{ lat: area.lat, lng: area.lon }}
                                 onClick={() => setSelectedArea(area)}
                                 icon={{
-                                    path: window.google.maps.SymbolPath.CIRCLE, // Use any symbol path you want
-                                    scale: 8, // Adjust the size of the marker
-                                    fillColor: area.sampleCount > 0 ? 'darkgreen' : 'blue', // Change the color of the marker
-                                    fillOpacity: 1, // Adjust the opacity of the marker color
-                                    strokeColor: 'black', // Change the color of the marker border
-                                    strokeWeight: 0.5, // Adjust the thickness of the marker border
+                                    path: window.google.maps.SymbolPath.CIRCLE,
+                                    scale: 8,
+                                    fillColor: getMarkerColor(area),
+                                    fillOpacity: 1,
+                                    strokeColor: 'black',
+                                    strokeWeight: 0.5,
                                 }}
                             />
                         ))}
@@ -203,9 +212,23 @@ function MapComponent() {
                                 <div className="p-2 font-sans text-gray-800">
                                     <h2 className="text-lg text-center mb-2 text-blue-600 font-bold">{selectedArea.phiAreaName}</h2>
                                     <p className="my-1"><span className="font-bold">MOH Area:</span> <span className="font-bold text-gray-600">{selectedArea.mohAreaName}</span></p>
-                                    <p className="my-1"><span className="font-bold">Pending Sample Count:</span> <span className="font-bold text-gray-600">{selectedArea.pendingSampleCount}</span></p>
-                                    <p className="my-1"><span className="font-bold">Accepted Sample Count:</span> <span className="font-bold text-gray-600">{selectedArea.acceptedSampleCount}</span></p>
-                                    <p className="my-1"><span className="font-bold">Rejected Sample Count:</span> <span className="font-bold text-gray-600">{selectedArea.rejectedSampleCount}</span></p>
+                                    <p className="my-1"><span className="font-bold">Contamination Details:</span></p>
+                                    <ul className="list-disc pl-5">
+                                        {selectedArea.contaminationDetails.length > 0 ? (
+                                            selectedArea.contaminationDetails.map((detail, index) => (
+                                                <li key={index}>
+                                                    {detail.contaminated ? <span className="text-red-600 font-bold">Contaminated</span> :
+                                                        <span className="text-green-500 font-bold">Not Contaminated</span>}
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li className="text-gray-500 font-bold">No contamination data available</li>
+                                        )}
+                                    </ul>
+                                    <p className="my-1">
+                                        <span className="font-bold">
+                                            Report for {selectedMonth}/{selectedYear}:</span> {selectedArea.reportAvailableForMonth ? <span className="text-blue-600 font-bold">Available</span> :
+                                                                                                                                      <span className="text-blue-600 font-bold">Not Available</span>}</p>
                                 </div>
                             </InfoWindow>
                         )}
@@ -216,4 +239,4 @@ function MapComponent() {
     );
 };
 
-export default MapComponent;
+export default MapComponentMOH;

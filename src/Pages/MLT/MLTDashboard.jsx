@@ -4,7 +4,7 @@ import { getSurgicalCatagories, getSurgicalInventoryItems } from '../../Service/
 import { useAuth } from "../../Context/useAuth";
 import { Pie, Bar, getElementAtEvent } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
-import MapComponent from '../../Components/MapComponent';
+import MapComponent from '../../Components/MapComponentMLT';
 
 function MLTDashboard() {
     const [generalCatagories, setGeneralCatagories] = useState([]);
@@ -144,7 +144,7 @@ function MLTDashboard() {
                             onClick={onSliceClick}
                         />
                     </div>
-                    {generalInventoryItems.length == 0 && <div className="md:w-1/2 p-2">
+                    {generalInventoryItems.length > 0 && <div className="md:w-1/2 p-2">
                         <h2 className="text-xl font-bold mb-2">General Inventory Items</h2>
                         <table className="min-w-full bg-white">
                             <thead>

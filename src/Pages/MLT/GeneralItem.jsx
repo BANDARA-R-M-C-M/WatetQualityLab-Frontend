@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from "flowbite-react";
 import { getGeneralItemDetails } from '../../Service/GeneralInventoryService';
+import { useAuth } from '../../Context/useAuth';
 
 function GeneralItem() {
 
     const [generalItem, setGeneralItem] = useState({});
 
     const { itemId } = useParams();
+    const { token } = useAuth();
 
     useEffect(() => {
         const fetchItemDetails = async () => {
