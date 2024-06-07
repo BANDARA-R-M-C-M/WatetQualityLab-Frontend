@@ -55,11 +55,13 @@ function MediaQuality() {
     const handleAddRecord = async (event) => {
         event.preventDefault();
 
-        if (await addMediaQualityControlRecord(dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, labId, token)) {
-            alert('Record Added Successfully')
-        } else {
-            alert('Failed to Add Record')
-        }
+        // if (
+            await addMediaQualityControlRecord(dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, labId, token)
+        // ) {
+        //     alert('Record Added Successfully')
+        // } else {
+        //     alert('Failed to Add Record')
+        // }
 
         setOpenModal(false);
     };
@@ -67,23 +69,25 @@ function MediaQuality() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateMediaQualityControlRecord(updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, token)) {
-            alert('Record Updated Successfully')
-        } else {
-            alert('Failed to Update Record')
-        }
+        // if (
+            await updateMediaQualityControlRecord(updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, token)
+        // ) {
+        //     alert('Record Updated Successfully')
+        // } else {
+        //     alert('Failed to Update Record')
+        // }
 
         setOpenEditModal(false);
     };
 
     const handleDelete = async (deleteId) => {
-        try {
+        // try {
             await deleteMediaQualityControlRecord(deleteId, token);
-            alert('Record deleted successfully');
-        } catch (error) {
-            console.error('Error deleting category:', error);
-            alert('Failed to delete Record');
-        }
+        //     alert('Record deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting category:', error);
+        //     alert('Failed to delete Record');
+        // }
 
         setOpenDeleteModal(false);
     };
@@ -279,12 +283,12 @@ function MediaQuality() {
                         <div className="mb-4">
                             <label htmlFor="mediaId" className="block text-sm font-medium text-gray-700">Media ID</label>
                             <input type="text" name="mediaId" id="mediaId" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={mediaId} onChange={(e) => setMediaId(e.target.value)} />
+                                value={mediaId} onChange={(e) => setMediaId(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="dateTime" className="block text-sm font-medium text-gray-700">Date & Time</label>
                             <input type="datetime-local" name="dateTime" id="dateTime" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} />
+                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="sterility" className="block text-sm font-medium text-gray-700">Sterility</label>
@@ -320,12 +324,12 @@ function MediaQuality() {
                         <div className="mb-4">
                             <label htmlFor="mediaId" className="block text-sm font-medium text-gray-700">Media ID</label>
                             <input type="text" name="mediaId" id="mediaId" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={mediaId} onChange={(e) => setMediaId(e.target.value)} />
+                                value={mediaId} onChange={(e) => setMediaId(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="dateTime" className="block text-sm font-medium text-gray-700">Date & Time</label>
                             <input type="datetime-local" name="dateTime" id="dateTime" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} />
+                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="sterility" className="block text-sm font-medium text-gray-700">Sterility</label>

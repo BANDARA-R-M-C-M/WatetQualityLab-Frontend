@@ -50,11 +50,13 @@ function SurgicalInventory() {
     const handleAddCatagory = async (event) => {
         event.preventDefault();
 
-        if (await addSurgicalCategory(categoryName, labId, token)) {
-            alert('Category Added Successfully')
-        } else {
-            alert('Failed to Add Category')
-        }
+        // if (
+            await addSurgicalCategory(categoryName, labId, token)
+        // ) {
+        //     alert('Category Added Successfully')
+        // } else {
+        //     alert('Failed to Add Category')
+        // }
 
         setCategoryName('');
 
@@ -64,11 +66,13 @@ function SurgicalInventory() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateSurgicalCategory(updatedCategoryId, categoryName, token)) {
-            alert('Category Updated Successfully')
-        } else {
-            alert('Failed to Update Category')
-        }
+        // if (
+            await updateSurgicalCategory(updatedCategoryId, categoryName, token)
+        // ) {
+        //     alert('Category Updated Successfully')
+        // } else {
+        //     alert('Failed to Update Category')
+        // }
 
         setUpdatedCategoryId('');
         setCategoryName('');
@@ -77,13 +81,13 @@ function SurgicalInventory() {
     };
 
     const handleDelete = async (deletedCategoryId) => {
-        try {
+        // try {
             await deleteSurgicalCategory(deletedCategoryId, token);
-            alert('Category deleted successfully');
-        } catch (error) {
-            console.error('Error deleting category:', error);
-            alert('Failed to delete category');
-        }
+        //     alert('Category deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting category:', error);
+        //     alert('Failed to delete category');
+        // }
 
         setOpenDeleteModal(false);
     };
@@ -218,7 +222,7 @@ function SurgicalInventory() {
                         <div className="mb-4">
                             <label htmlFor="categoryName" className="block text-sm font-medium text-gray-700">Category Name</label>
                             <input type="text" name="categoryName" id="categoryName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
+                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} required />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -234,7 +238,7 @@ function SurgicalInventory() {
                         <div className="mb-4">
                             <label htmlFor="categoryName" className="block text-sm font-medium text-gray-700">Category Name</label>
                             <input type="text" name="categoryName" id="categoryName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
+                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} required />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>

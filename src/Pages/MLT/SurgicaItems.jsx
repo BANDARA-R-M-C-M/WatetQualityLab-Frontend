@@ -79,11 +79,13 @@ function SurgicalItems() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId, token)) {
-            alert('Item Added Successfully')
-        } else {
-            alert('Failed to Add Item')
-        }
+        // if (
+            await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId, token)
+        // ) {
+        //     alert('Item Added Successfully')
+        // } else {
+        //     alert('Failed to Add Item')
+        // }
 
         setItemName('');
         setIssuedDate('');
@@ -97,11 +99,13 @@ function SurgicalItems() {
 
     const handleIssue = async (event) => {
         event.preventDefault();
-        if (await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks, token)) {
-            alert('Item Issued Successfully')
-        } else {
-            alert('Failed to Issue Item')
-        }
+        // if (
+            await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks, token)
+        // ) {
+        //     alert('Item Issued Successfully')
+        // } else {
+        //     alert('Failed to Issue Item')
+        // }
         setIssuingQuantity('');
         setIssuingRemarks('');
 
@@ -111,11 +115,13 @@ function SurgicalItems() {
     const handleAdd = async (event) => {
         event.preventDefault();
 
-        if (await addQuantity(updatedId, quantity, token)) {
-            alert('Item Added Successfully')
-        } else {
-            alert('Failed to Add Item')
-        }
+        // if (
+            await addQuantity(updatedId, quantity, token)
+        // ) {
+        //     alert('Item Added Successfully')
+        // } else {
+        //     alert('Failed to Add Item')
+        // }
 
         setUpdatedId('');
         setQuantity('');
@@ -126,11 +132,13 @@ function SurgicalItems() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID, token)) {
-            alert('Item Updated Successfully')
-        } else {
-            alert('Failed to Update Item')
-        }
+        // if (
+            await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID, token)
+        // ) {
+        //     alert('Item Updated Successfully')
+        // } else {
+        //     alert('Failed to Update Item')
+        // }
 
         setUpdatedId('');
         setItemName('');
@@ -143,13 +151,13 @@ function SurgicalItems() {
     };
 
     const handleDelete = async (deletedId) => {
-        try {
+        // try {
             await deleteSurgicalInventoryItem(deletedId, token);
-            alert('Item deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete item');
-        }
+        //     alert('Item deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete item');
+        // }
 
         setOpenDeleteModal(false);
     };
@@ -376,27 +384,27 @@ function SurgicalItems() {
                         <div className="mb-4">
                             <label htmlFor="itemName" className="block text-sm font-medium text-gray-700">Item Name</label>
                             <input type="text" name="itemName" id="itemName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={itemName} onChange={(e) => setItemName(e.target.value)} />
+                                value={itemName} onChange={(e) => setItemName(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedDate" className="block text-sm font-medium text-gray-700">Issued Date</label>
                             <input type="date" name="issuedDate" id="issuedDate" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} />
+                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedBy" className="block text-sm font-medium text-gray-700">Issued By</label>
                             <input type="text" name="issuedBy" id="issuedBy" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} />
+                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
                             <input type="number" name="quantity" id="quantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                                value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="remarks" className="block text-sm font-medium text-gray-700">Remarks</label>
                             <input type="text" name="remarks" id="remarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+                                value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -412,7 +420,7 @@ function SurgicalItems() {
                         <div className="mb-4">
                             <label htmlFor="issuingQuantity" className="block text-sm font-medium text-gray-700">Issuing Quantity</label>
                             <input type="text" name="issuingQuantity" id="issuingQuantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuingQuantity} onChange={(e) => setIssuingQuantity(e.target.value)} />
+                                value={issuingQuantity} onChange={(e) => setIssuingQuantity(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuingRemarks" className="block text-sm font-medium text-gray-700">Issuing Remarks</label>
@@ -456,27 +464,27 @@ function SurgicalItems() {
                         <div className="mb-4">
                             <label htmlFor="itemName" className="block text-sm font-medium text-gray-700">Item Name</label>
                             <input type="text" name="itemName" id="itemName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={itemName} onChange={(e) => setItemName(e.target.value)} />
+                                value={itemName} onChange={(e) => setItemName(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedDate" className="block text-sm font-medium text-gray-700">Issued Date</label>
                             <input type="date" name="issuedDate" id="issuedDate" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} />
+                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedBy" className="block text-sm font-medium text-gray-700">Issued By</label>
                             <input type="text" name="issuedBy" id="issuedBy" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} />
+                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
                             <input type="number" name="quantity" id="quantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                                value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="remarks" className="block text-sm font-medium text-gray-700">Remarks</label>
                             <input type="text" name="remarks" id="remarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+                                value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="SurgicalCategoryID" className="block text-sm font-medium text-gray-700">Surgical Category</label>

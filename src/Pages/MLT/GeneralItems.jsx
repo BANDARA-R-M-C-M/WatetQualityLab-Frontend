@@ -72,11 +72,13 @@ function GeneralItems() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await addGeneralInventoryItem(itemName, issuedDate, issuedBy, remarks, categoryId, labId, token)) {
-            alert('Item Added Successfully')
-        } else {
-            alert('Failed to Add Item')
-        }
+        // if (
+            await addGeneralInventoryItem(itemName, issuedDate, issuedBy, remarks, categoryId, labId, token)
+        // ) {
+        //     alert('Item Added Successfully')
+        // } else {
+        //     alert('Failed to Add Item')
+        // }
 
         setItemName('');
         setIssuedDate('');
@@ -90,11 +92,13 @@ function GeneralItems() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateGeneralInventoryItem(updatedId, itemName, issuedDate, issuedBy, remarks, generalCategoryID, token)) {
-            alert('Item Updated Successfully')
-        } else {
-            alert('Failed to Update Item')
-        }
+        // if (
+            await updateGeneralInventoryItem(updatedId, itemName, issuedDate, issuedBy, remarks, generalCategoryID, token)
+        // ) {
+        //     alert('Item Updated Successfully')
+        // } else {
+        //     alert('Failed to Update Item')
+        // }
 
         setUpdatedId('');
         setItemName('');
@@ -106,13 +110,13 @@ function GeneralItems() {
     };
 
     const handleDelete = async (deletedId) => {
-        try {
+        // try {
             await deleteGeneralInventoryItem(deletedId, token);
-            alert('Item deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete item');
-        }
+        //     alert('Item deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete item');
+        // }
 
         setOpenDeleteModal(false);
     };
@@ -308,22 +312,22 @@ function GeneralItems() {
                         <div className="mb-4">
                             <label htmlFor="itemName" className="block text-sm font-medium text-gray-700">Item Name</label>
                             <input type="text" name="itemName" id="itemName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={itemName} onChange={(e) => setItemName(e.target.value)} />
+                                value={itemName} onChange={(e) => setItemName(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedDate" className="block text-sm font-medium text-gray-700">Issued Date</label>
                             <input type="date" name="issuedDate" id="issuedDate" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} />
+                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedBy" className="block text-sm font-medium text-gray-700">Issued By</label>
                             <input type="text" name="issuedBy" id="issuedBy" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} />
+                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="remarks" className="block text-sm font-medium text-gray-700">Remarks</label>
                             <input type="text" name="remarks" id="remarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+                                value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -346,22 +350,22 @@ function GeneralItems() {
                         <div className="mb-4">
                             <label htmlFor="itemName" className="block text-sm font-medium text-gray-700">Item Name</label>
                             <input type="text" name="itemName" id="itemName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={itemName} onChange={(e) => setItemName(e.target.value)} />
+                                value={itemName} onChange={(e) => setItemName(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedDate" className="block text-sm font-medium text-gray-700">Issued Date</label>
                             <input type="date" name="issuedDate" id="issuedDate" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} />
+                                value={issuedDate} onChange={(e) => setIssuedDate(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuedBy" className="block text-sm font-medium text-gray-700">Issued By</label>
                             <input type="text" name="issuedBy" id="issuedBy" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} />
+                                value={issuedBy} onChange={(e) => setIssuedBy(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="remarks" className="block text-sm font-medium text-gray-700">Remarks</label>
                             <input type="text" name="remarks" id="remarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+                                value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="generalCategoryID" className="block text-sm font-medium text-gray-700">General Category</label>

@@ -62,11 +62,13 @@ function Samples() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await submitSample(yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, user.userId, phiAreaId, phiAreaName, token)) {
-            alert('Sample added successfully');
-        } else {
-            alert('Failed to add sample');
-        }
+        // if (
+        await submitSample(yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, user.userId, phiAreaId, phiAreaName, token)
+        // ) {
+        //     alert('Sample added successfully');
+        // } else {
+        //     alert('Failed to add sample');
+        // }
 
         setYourRefNo('');
         setDateOfCollection('');
@@ -80,11 +82,13 @@ function Samples() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateWCSample(updatedId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, token)) {
-            alert('Sample updated successfully');
-        } else {
-            alert('Failed to update sample');
-        }
+        // if (
+        await updateWCSample(updatedId, yourRefNo, dateOfCollection, catagoryOfSource, collectingSource, stateOfChlorination, token)
+        // ) {
+        //     alert('Sample updated successfully');
+        // } else {
+        //     alert('Failed to update sample');
+        // }
 
         setYourRefNo('');
         setDateOfCollection('');
@@ -96,13 +100,13 @@ function Samples() {
     };
 
     const handleDelete = async (deletedId) => {
-        try {
+        // try {
             await deleteWCSample(deletedId, token);
-            alert('Sample deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete sample');
-        }
+        //     alert('Sample deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete sample');
+        // }
 
         setOpenDeleteModal(false);
     };
@@ -130,63 +134,63 @@ function Samples() {
                                 )}
                             </div>
                             <div className="flex items-center p-2 rounded-md">
-                            <Dropdown label="Sort">
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('YourRefNo');
-                                        setSearchParameter('YourRefNo');
-                                        setPlaceholderText('Your Ref No...');
-                                    }}
-                                >
-                                    Your Ref No
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('DateOfCollection');
-                                        setSearchParameter('DateOfCollection');
-                                        setSearchParameterType('DateOnly');
-                                        setPlaceholderText('Date of Collection...');
-                                    }}
-                                >
-                                    Date of Collection
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('phiAreaName');
-                                        setSearchParameter('phiAreaName');
-                                        setPlaceholderText('PHI Area Name...');
-                                    }}
-                                >
-                                    PHI Area Name
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('CatagoryOfSource');
-                                        setSearchParameter('CatagoryOfSource');
-                                        setPlaceholderText('Category of Source...');
-                                    }}
-                                >
-                                    Category of Source
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('CollectingSource');
-                                        setSearchParameter('CollectingSource');
-                                        setPlaceholderText('Collecting Source...');
-                                    }}
-                                >
-                                    Collecting Source
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('StateOfChlorination');
-                                        setSearchParameter('StateOfChlorination');
-                                        setPlaceholderText('State Of Chlorination...');
-                                    }}
-                                >
-                                    State Of Chlorination
-                                </Dropdown.Item>
-                            </Dropdown>
+                                <Dropdown label="Sort">
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('YourRefNo');
+                                            setSearchParameter('YourRefNo');
+                                            setPlaceholderText('Your Ref No...');
+                                        }}
+                                    >
+                                        Your Ref No
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('DateOfCollection');
+                                            setSearchParameter('DateOfCollection');
+                                            setSearchParameterType('DateOnly');
+                                            setPlaceholderText('Date of Collection...');
+                                        }}
+                                    >
+                                        Date of Collection
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('phiAreaName');
+                                            setSearchParameter('phiAreaName');
+                                            setPlaceholderText('PHI Area Name...');
+                                        }}
+                                    >
+                                        PHI Area Name
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('CatagoryOfSource');
+                                            setSearchParameter('CatagoryOfSource');
+                                            setPlaceholderText('Category of Source...');
+                                        }}
+                                    >
+                                        Category of Source
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('CollectingSource');
+                                            setSearchParameter('CollectingSource');
+                                            setPlaceholderText('Collecting Source...');
+                                        }}
+                                    >
+                                        Collecting Source
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('StateOfChlorination');
+                                            setSearchParameter('StateOfChlorination');
+                                            setPlaceholderText('State Of Chlorination...');
+                                        }}
+                                    >
+                                        State Of Chlorination
+                                    </Dropdown.Item>
+                                </Dropdown>
                             </div>
                             <div className="flex items-center rounded-md">
                                 <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">

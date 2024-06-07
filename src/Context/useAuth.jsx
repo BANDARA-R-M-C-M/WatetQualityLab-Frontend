@@ -38,9 +38,7 @@ export const UserProvider = ({ children }) => {
 
         setToken(res?.data.token);
         setUser(userObj);
-        toast.success("Login Success!");
-
-        console.log("Register Success!");
+        
         navigate("/admin/dashboard");
       }
     } catch (error) {

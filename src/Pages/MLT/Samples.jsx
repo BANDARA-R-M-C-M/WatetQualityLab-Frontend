@@ -12,7 +12,7 @@ function Samples() {
     const [samples, setSamples] = useState([]);
     const [myRefNo, setMyRefNo] = useState('');
     const [presumptiveColiformCount, setPresumptiveColiformCount] = useState('');
-    const [issuedDate, setIssuedDate] = useState('');
+    // const [issuedDate, setIssuedDate] = useState('');
     const [ecoliCount, setEcoliCount] = useState('');
     const [appearanceOfSample, setAppearanceOfSample] = useState('');
     const [remarks, setRemarks] = useState('');
@@ -28,14 +28,14 @@ function Samples() {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
-    const [stateOfChlorination, setStateOfChlorination] = useState('');
-    const [collectingSource, setCollectingSource] = useState('');
-    const [DateOfCollection, setDateOfCollection] = useState('');
+    // const [stateOfChlorination, setStateOfChlorination] = useState('');
+    // const [collectingSource, setCollectingSource] = useState('');
+    // const [DateOfCollection, setDateOfCollection] = useState('');
     const [analyzedDate, setAnalyzedDate] = useState('');
     const [isContaminated, setIsContaminated] = useState(null);
-    const [labName, setLabName] = useState('');
-    const [labLocation, setLabLocation] = useState('');
-    const [labTelephone, setLabTelephone] = useState('');
+    // const [labName, setLabName] = useState('');
+    // const [labLocation, setLabLocation] = useState('');
+    // const [labTelephone, setLabTelephone] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [previewModalOpen, setPreviewModalOpen] = useState(false);
     const [previewUrl, setPreviewUrl] = useState('');
@@ -76,11 +76,13 @@ function Samples() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (await submitReport(myRefNo, presumptiveColiformCount, analyzedDate, ecoliCount, appearanceOfSample, remarks, isContaminated, user.userId, sampleId, labId, token)) {
-            alert('Report created successfully');
-        } else {
-            alert('Failed to create report');
-        }
+        // if (
+        await submitReport(myRefNo, presumptiveColiformCount, analyzedDate, ecoliCount, appearanceOfSample, remarks, isContaminated, user.userId, sampleId, labId, token)
+        // ) {
+        //     alert('Report created successfully');
+        // } else {
+        //     alert('Failed to create report');
+        // }
 
         setMyRefNo('');
         setPresumptiveColiformCount('');
@@ -102,7 +104,7 @@ function Samples() {
             console.error('Error remove sample:', error);
         }
     };
-    
+
     return (
         <div className="bg-white rounded-md w-full">
             <div className="flex items-center justify-between pb-6">

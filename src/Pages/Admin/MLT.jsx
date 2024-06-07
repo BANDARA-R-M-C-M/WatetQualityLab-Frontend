@@ -65,14 +65,19 @@ function MLT() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
+        // try {
             await registerUser(id, userName, password, email, phoneNumber, role, token);
-            alert('MLT added successfully');
-        } catch (error) {
-            console.error('Error adding MLT:', error);
-            alert('Failed to add MLT');
-        }
+        //     alert('MLT added successfully');
+        // } catch (error) {
+        //     console.error('Error adding MLT:', error);
+        //     alert('Failed to add MLT');
+        // }
 
+        setId('');
+        setUserName('');
+        setPassword('');
+        setEmail('');
+        setPhoneNumber('');
 
         setOpenNewModal(false);
     }
@@ -80,23 +85,25 @@ function MLT() {
     const handleAssign = async (e) => {
         e.preventDefault();
 
-        if (await assignMLTtoLabs(assignId, labId, token)) {
-            alert('MLT assigned successfully');
-        } else {
-            alert('Failed to assign MLT');
-        }
+        // if (
+            await assignMLTtoLabs(assignId, labId, token)
+        // ) {
+        //     alert('MLT assigned successfully');
+        // } else {
+        //     alert('Failed to assign MLT');
+        // }
 
         setOpenAssignModal(false);
     }
 
     const handleDelete = async (deletedId) => {
-        try {
+        // try {
             await deleteUser(deletedId, token);
-            alert('MLT deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete MLT');
-        }
+        //     alert('MLT deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete MLT');
+        // }
 
         setOpenDeleteModal(false);
     }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Pagination,  Dropdown } from "flowbite-react";
+import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { FaPlus } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
@@ -48,24 +48,30 @@ function Laboratories() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            await addLab(labName, labLocation, labTelephone, token);
-            alert('Lab added successfully');
-        } catch (error) {
-            console.error('Error adding Lab:', error);
-            alert('Failed to add Lab');
-        }
+        // try {
+        await addLab(labName, labLocation, labTelephone, token);
+        // alert('Lab added successfully');
+        // } catch (error) {
+        //     console.error('Error adding Lab:', error);
+        //     alert('Failed to add Lab');
+        // }
+
+        setLabName('');
+        setLabLocation('');
+        setLabTelephone('');
 
         setOpenNewModal(false);
     }
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (await updateLabs(updatedId, labName, labLocation, labTelephone, token)) {
-            alert('Lab updated successfully');
-        } else {
-            alert('Failed to update lab');
-        }
+        // if (
+        await updateLabs(updatedId, labName, labLocation, labTelephone, token)
+        // ) {
+        //     alert('Lab updated successfully');
+        // } else {
+        //     alert('Failed to update lab');
+        // }
 
         setLabName('');
         setLabLocation('');
@@ -75,13 +81,13 @@ function Laboratories() {
     }
 
     const handleDelete = async (deletedId) => {
-        try {
-            await deleteLab(deletedId, token);
-            alert('Lab deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete Lab');
-        }
+        // try {
+        await deleteLab(deletedId, token);
+        //     alert('Lab deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete Lab');
+        // }
 
         setOpenDeleteModal(false);
     }

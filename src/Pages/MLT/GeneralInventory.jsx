@@ -51,11 +51,13 @@ function GeneralInventory() {
     const handleAddCatagory = async (event) => {
         event.preventDefault();
 
-        if (await addGeneralCategory(categoryName, labId, token)) {
-            alert('Category Added Successfully')
-        } else {
-            alert('Failed to Add Category')
-        }
+        // if (
+            await addGeneralCategory(categoryName, labId, token)
+        // ) {
+        //     alert('Category Added Successfully')
+        // } else {
+        //     alert('Failed to Add Category')
+        // }
 
         setCategoryName('');
 
@@ -65,11 +67,13 @@ function GeneralInventory() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateGeneralCategory(updatedCategoryId, categoryName, token)) {
-            alert('Category Updated Successfully')
-        } else {
-            alert('Failed to Update Category')
-        }
+        // if (
+            await updateGeneralCategory(updatedCategoryId, categoryName, token)
+        // ) {
+        //     alert('Category Updated Successfully')
+        // } else {
+        //     alert('Failed to Update Category')
+        // }
 
         setUpdatedCategoryId('');
         setCategoryName('');
@@ -78,13 +82,13 @@ function GeneralInventory() {
     };
 
     const handleDelete = async (deletedCategoryId) => {
-        try {
+        // try {
             await deleteGeneralCategory(deletedCategoryId, token);
-            alert('Category deleted successfully');
-        } catch (error) {
-            console.error('Error deleting category:', error);
-            alert('Failed to delete category');
-        }
+        //     alert('Category deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting category:', error);
+        //     alert('Failed to delete category');
+        // }
 
         setOpenDeleteModal(false);
     };
@@ -219,7 +223,7 @@ function GeneralInventory() {
                         <div className="mb-4">
                             <label htmlFor="categoryName" className="block text-sm font-medium text-gray-700">Category Name</label>
                             <input type="text" name="categoryName" id="categoryName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
+                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} required />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -235,7 +239,7 @@ function GeneralInventory() {
                         <div className="mb-4">
                             <label htmlFor="categoryName" className="block text-sm font-medium text-gray-700">Category Name</label>
                             <input type="text" name="categoryName" id="categoryName" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
+                                value={categoryName} onChange={(e) => setCategoryName(e.target.value)} required />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>

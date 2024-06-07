@@ -65,13 +65,19 @@ function MOHSupervisor() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            await registerUser(id, userName, password, email, phoneNumber, role, token);
-            alert('MOH Supervisor added successfully');
-        } catch (error) {
-            console.error('Error adding MOH Supervisor:', error);
-            alert('Failed to add MOH Supervisor');
-        }
+        // try {
+        await registerUser(id, userName, password, email, phoneNumber, role, token);
+        //     alert('MOH Supervisor added successfully');
+        // } catch (error) {
+        //     console.error('Error adding MOH Supervisor:', error);
+        //     alert('Failed to add MOH Supervisor');
+        // }
+
+        setId('');
+        setUserName('');
+        setPassword('');
+        setEmail('');
+        setPhoneNumber('');
 
         setOpenNewModal(false);
     }
@@ -79,23 +85,27 @@ function MOHSupervisor() {
     const handleAssign = async (e) => {
         e.preventDefault();
 
-        if (await assignMOHSupervisortoMOHAreas(assignId, mohAreaId, token)) {
-            alert('MOH Supervisor assigned successfully');
-        } else {
-            alert('Failed to assign MOH Supervisor');
-        }
+        // if (
+        await assignMOHSupervisortoMOHAreas(assignId, mohAreaId, token)
+        // ) {
+        //     alert('MOH Supervisor assigned successfully');
+        // } else {
+        //     alert('Failed to assign MOH Supervisor');
+        // }
+
+        setMohAreaId('');
 
         setOpenAssignModal(false);
     }
 
     const handleDelete = async (deletedId) => {
-        try {
-            await deleteUser(deletedId, token);
-            alert('MOH Supervisor deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete MOH Supervisor');
-        }
+        // try {
+        await deleteUser(deletedId, token);
+        //     alert('MOH Supervisor deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete MOH Supervisor');
+        // }
 
         setOpenDeleteModal(false);
     }

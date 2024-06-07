@@ -1,5 +1,6 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
+import { toast } from "react-toastify";
 
 export const getPHIDetails = async (phiId, token) => {
     try {
@@ -94,8 +95,27 @@ export const submitSample = async (yourRefNo, dateOfCollection, catagoryOfSource
             phiAreaName: phiAreaName,
             phiAreaID: phiAreaID
         });
+
+        toast.success('Sample submitted successfully!');
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 };
@@ -112,8 +132,27 @@ export const updateWCSample = async (sampleId, yourRefNo, dateOfCollection, cata
             catagoryOfSource: catagoryOfSource,
             collectingSource: collectingSource
         });
+
+        toast.success('Sample updated successfully!');
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 };
@@ -125,8 +164,12 @@ export const deleteWCSample = async (sampleId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Sample deleted successfully!');
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 };

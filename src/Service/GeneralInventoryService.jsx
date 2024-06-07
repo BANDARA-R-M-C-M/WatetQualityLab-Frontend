@@ -1,5 +1,6 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
+import { toast } from "react-toastify";
 
 export const getGeneralInventoryQR = async (itemId, token) => {
     try {
@@ -95,8 +96,27 @@ export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, re
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("General Inventory Item added successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -111,8 +131,27 @@ export const addGeneralCategory = async (generalCategoryName, labId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("General Category added successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -130,8 +169,27 @@ export const updateGeneralInventoryItem = async (itemId, itemName, issuedDate, i
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("General Inventory Item updated successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -145,8 +203,23 @@ export const updateGeneralCategory = async (categoryId, generalCategoryName, tok
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("General Category updated successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -158,8 +231,12 @@ export const deleteGeneralInventoryItem = async (itemId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("General Inventory Item deleted successfully");
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }
@@ -171,8 +248,12 @@ export const deleteGeneralCategory = async (categoryId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("General Category deleted successfully");
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }

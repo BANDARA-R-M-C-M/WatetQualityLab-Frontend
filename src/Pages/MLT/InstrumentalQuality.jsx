@@ -57,11 +57,22 @@ function InstrumentalQuality() {
     const handleAddRecord = async (event) => {
         event.preventDefault();
 
-        if (await addInstrumentalQualityControlRecord(dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, labId, token)) {
-            alert('Record Added Successfully')
-        } else {
-            alert('Failed to Add Record')
-        }
+        // if (
+        await addInstrumentalQualityControlRecord(dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, labId, token)
+        // ) {
+        //     alert('Record Added Successfully')
+        // } else {
+        //     alert('Failed to Add Record')
+        // }
+
+        setDateTime('');
+        setInstrumentId('');
+        setTemperatureFluctuation('');
+        setPressureGradient('');
+        setTimer('');
+        setSterility('');
+        setStability('');
+        setRemarks('');
 
         setOpenModal(false);
     };
@@ -69,11 +80,13 @@ function InstrumentalQuality() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        if (await updateInstrumentalQualityControlRecord(updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, token)) {
-            alert('Record Updated Successfully')
-        } else {
-            alert('Failed to Update Record')
-        }
+        // if (
+        await updateInstrumentalQualityControlRecord(updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, token)
+        // ) {
+        //     alert('Record Updated Successfully')
+        // } else {
+        //     alert('Failed to Update Record')
+        // }
 
         setUpdateId('');
         setDateTime('');
@@ -89,13 +102,13 @@ function InstrumentalQuality() {
     };
 
     const handleDelete = async (deleteId) => {
-        try {
-            await deleteInstrumentalQualityControlRecord(deleteId, token);
-            alert('Record deleted successfully');
-        } catch (error) {
-            console.error('Error deleting category:', error);
-            alert('Failed to delete Record');
-        }
+        // try {
+        await deleteInstrumentalQualityControlRecord(deleteId, token);
+        //     alert('Record deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting category:', error);
+        //     alert('Failed to delete Record');
+        // }
 
         setOpenDeleteModal(false);
     };
@@ -105,89 +118,89 @@ function InstrumentalQuality() {
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-200 items-center p-1 rounded-md">
-                            <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
-                            <input
-                                className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
-                                type="text"
-                                placeholder={placeholderText}
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            {searchTerm && (
-                                <MdClose
-                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
-                                    onClick={() => setSearchTerm('')}
+                        <div className="flex items-center justify-between">
+                            <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                <input
+                                    className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                    type="text"
+                                    placeholder={placeholderText}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
-                            )}
+                                {searchTerm && (
+                                    <MdClose
+                                        className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                        onClick={() => setSearchTerm('')}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex items-center p-2 rounded-md">
+                                <Dropdown label="Sort">
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('InstrumentId');
+                                            setSearchParameter('InstrumentId');
+                                            setPlaceholderText('Instrument Id...');
+                                        }}
+                                    >
+                                        Instrument Id
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('DateTime');
+                                            setSearchParameter('DateTime');
+                                            setSearchParameterType('DateTime');
+                                            setPlaceholderText('Date Time...');
+                                        }}
+                                    >
+                                        Date Time
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('TemperatureFluctuation');
+                                            setSearchParameter('TemperatureFluctuation');
+                                            setPlaceholderText('Temperature Fluctuation...');
+                                        }}
+                                    >
+                                        Temperature Fluctuation
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('Timer');
+                                            setSearchParameter('Timer');
+                                            setPlaceholderText('Timer...');
+                                        }}
+                                    >
+                                        Timer
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('Sterility');
+                                            setSearchParameter('Sterility');
+                                            setPlaceholderText('Sterility...');
+                                        }}
+                                    >
+                                        Sterility
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('Stability');
+                                            setSearchParameter('Stability');
+                                            setPlaceholderText('Stability...');
+                                        }}
+                                    >
+                                        Sterility
+                                    </Dropdown.Item>
+                                </Dropdown>
+                            </div>
+                            <div className="flex items-center rounded-md">
+                                <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                    {isAscending ? <AiOutlineSortAscending size={28} />
+                                        : <AiOutlineSortDescending size={28} />}
+                                </Button>
+                            </div>
                         </div>
-                        <div className="flex items-center p-2 rounded-md">
-                            <Dropdown label="Sort">
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('InstrumentId');
-                                        setSearchParameter('InstrumentId');
-                                        setPlaceholderText('Instrument Id...');
-                                    }}
-                                >
-                                    Instrument Id
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('DateTime');
-                                        setSearchParameter('DateTime');
-                                        setSearchParameterType('DateTime');
-                                        setPlaceholderText('Date Time...');
-                                    }}
-                                >
-                                    Date Time
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('TemperatureFluctuation');
-                                        setSearchParameter('TemperatureFluctuation');
-                                        setPlaceholderText('Temperature Fluctuation...');
-                                    }}
-                                >
-                                    Temperature Fluctuation
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('Timer');
-                                        setSearchParameter('Timer');
-                                        setPlaceholderText('Timer...');
-                                    }}
-                                >
-                                    Timer
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('Sterility');
-                                        setSearchParameter('Sterility');
-                                        setPlaceholderText('Sterility...');
-                                    }}
-                                >
-                                    Sterility
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('Stability');
-                                        setSearchParameter('Stability');
-                                        setPlaceholderText('Stability...');
-                                    }}
-                                >
-                                    Sterility
-                                </Dropdown.Item>
-                            </Dropdown>
-                        </div>
-                        <div className="flex items-center rounded-md">
-                            <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
-                                {isAscending ? <AiOutlineSortAscending size={28} />
-                                    : <AiOutlineSortDescending size={28} />}
-                            </Button>
-                        </div>
-                    </div>
                         <Button className="mr-1"
                             onClick={() => {
                                 setOpenModal(true);
@@ -314,12 +327,12 @@ function InstrumentalQuality() {
                         <div className="mb-4">
                             <label htmlFor="instrument" className="block text-sm font-medium text-gray-700">Instrument ID</label>
                             <input type="text" name="instrument" id="instrument" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={instrumentId} onChange={(e) => setInstrumentId(e.target.value)} />
+                                value={instrumentId} onChange={(e) => setInstrumentId(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="dateTime" className="block text-sm font-medium text-gray-700">Date & Time</label>
                             <input type="datetime-local" name="dateTime" id="dateTime" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} />
+                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="temperatureFluctuation" className="block text-sm font-medium text-gray-700">Temperature Fluctuation</label>
@@ -365,12 +378,12 @@ function InstrumentalQuality() {
                         <div className="mb-4">
                             <label htmlFor="instrument" className="block text-sm font-medium text-gray-700">Instrument ID</label>
                             <input type="text" name="instrument" id="instrument" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={instrumentId} onChange={(e) => setInstrumentId(e.target.value)} />
+                                value={instrumentId} onChange={(e) => setInstrumentId(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="dateTime" className="block text-sm font-medium text-gray-700">Date & Time</label>
                             <input type="datetime-local" name="dateTime" id="dateTime" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} />
+                                value={dateTime} onChange={(e) => setDateTime(e.target.value)} required />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="temperatureFluctuation" className="block text-sm font-medium text-gray-700">Temperature Fluctuation</label>

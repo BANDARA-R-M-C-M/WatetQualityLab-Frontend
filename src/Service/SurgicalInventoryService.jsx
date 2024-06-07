@@ -1,5 +1,6 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
+import { toast } from "react-toastify";
 
 export const getSurgicalInventoryQR = async (itemId, token) => {
     try {
@@ -98,9 +99,28 @@ export const addSurgicalInventoryItem = async (itemName, issuedDate, issuedBy, q
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Surgical Inventory Item added successfully!');
+
         return true;
     }
     catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -115,9 +135,28 @@ export const addSurgicalCategory = async (surgicalCategoryName, labId, token) =>
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Surgical Category added successfully!');
+
         return true;
     }
     catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -134,9 +173,28 @@ export const issueItem = async (itemId, quantity, issuedByLab, remarks, token) =
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Item issued successfully!');
+
         return true;
     }
     catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -150,9 +208,24 @@ export const addQuantity = async (itemId, quantity, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Quantity added successfully!');
+
         return true;
     }
     catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -171,9 +244,28 @@ export const updateSurgicalInventoryItem = async (itemId, itemName, issuedDate, 
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Surgical Inventory Item updated successfully!');
+
         return true;
     }
     catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -187,9 +279,24 @@ export const updateSurgicalCategory = async (categoryId, surgicalCategoryName, t
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Surgical Category updated successfully!');
+
         return true;
     }
     catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -199,11 +306,15 @@ export const deleteSurgicalInventoryItem = async (itemId, token) => {
         await axios.delete(`${base_url}/SurgicalInventory/DeleteSurgicalInventoryItem/${itemId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
-              }
+            }
         });
+
+        toast.success('Surgical Inventory Item deleted successfully!');
+
         return true;
     }
     catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }
@@ -213,11 +324,15 @@ export const deleteSurgicalCategory = async (categoryId, token) => {
         await axios.delete(`${base_url}/SurgicalInventory/DeleteSurgicalCategory/${categoryId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
-              }
+            }
         });
+
+        toast.success('Surgical Category deleted successfully!');
+
         return true;
     }
     catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }

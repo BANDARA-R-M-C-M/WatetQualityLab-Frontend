@@ -6,6 +6,7 @@ import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
+import { toast } from 'react-toastify';
 
 function PendingSamples() {
     const [samples, setSamples] = useState([]);
@@ -42,23 +43,31 @@ function PendingSamples() {
     }, [pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handleAccept = async (sampleId) => {
-        try {
-            await updateStatus(sampleId, 'Accepted', comment, token);
-            const updatedSamples = samples.filter(sample => sample.sampleId !== sampleId);
-            setSamples(updatedSamples);
-        } catch (error) {
-            console.error('Error accepting sample:', error);
-        }
+        // try {
+        await updateStatus(sampleId, 'Accepted', comment, token);
+        const updatedSamples = samples.filter(sample => sample.sampleId !== sampleId);
+        setSamples(updatedSamples);
+        // } catch (error) {
+        //     console.error('Error accepting sample:', error);
+        // }
+        toast.success('Sample accepted successfully');
     };
 
-    const handleReject = async () => {
-        try {
-            await updateStatus(rejectedId, 'Rejected', comment, token);
+    const handleReject = async (e) => {
+        e.preventDefault();
+
+        // try {
+        if (await updateStatus(rejectedId, 'Rejected', comment, token)) {
             const updatedSamples = samples.filter(sample => sample.sampleId !== rejectedId);
             setSamples(updatedSamples);
+
+            setComment('');
+
             setOpenModal(false);
-        } catch (error) {
-            console.error('Error rejecting sample:', error);
+            // } catch (error) {
+            //     console.error('Error rejecting sample:', error);
+            // }
+            toast.success('Sample rejected successfully');
         }
     };
 
@@ -244,7 +253,6 @@ function PendingSamples() {
                                     name="rejectedReason" id="rejectedReason" type="text" placeholder="Reason for Rejection"
                                     value={comment} onChange={(e) => setComment(e.target.value)} required />
                             </div>
-
                             <Button type='submit' color='failure'>Reject</Button>
                         </form>
                     </Modal.Body>

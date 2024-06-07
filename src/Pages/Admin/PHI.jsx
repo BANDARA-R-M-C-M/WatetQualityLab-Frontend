@@ -9,7 +9,7 @@ import { registerUser, getPHIs, getPHIAreas, assignPHItoPHIAreas, deleteUser } f
 import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
 
-function PHI(){
+function PHI() {
 
     const [phis, setPHIs] = useState([]);
     const [phiAreas, setPhiAreas] = useState([]);
@@ -65,47 +65,57 @@ function PHI(){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            await registerUser(id, userName, password, email, phoneNumber, role, token);
-            alert('PHI added successfully');
-        } catch (error) {
-            console.error('Error adding PhI:', error);
-            alert('Failed to add PHI');
-        }
+        // try {
+        await registerUser(id, userName, password, email, phoneNumber, role, token);
+        //     alert('PHI added successfully');
+        // } catch (error) {
+        //     console.error('Error adding PhI:', error);
+        //     alert('Failed to add PHI');
+        // }
+
+        setId('');
+        setUserName('');
+        setPassword('');
+        setEmail('');
+        setPhoneNumber('');
 
         setOpenNewModal(false);
     }
 
     const handleAssign = async (e) => {
         e.preventDefault();
-        
-        if(await assignPHItoPHIAreas(assignId, phiAreaId, token)){
-            alert('PHI assigned successfully');
-        } else {
-            alert('Failed to assign PHI');
-        }
+
+        // if(
+        await assignPHItoPHIAreas(assignId, phiAreaId, token)
+        // ){
+        //     alert('PHI assigned successfully');
+        // } else {
+        //     alert('Failed to assign PHI');
+        // }
+
+        setPhiAreaId('');
 
         setOpenAssignModal(false);
     }
 
     const handleDelete = async (deletedId) => {
-        try {
-            await deleteUser(deletedId, token);
-            alert('PHI deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete PHI');
-        }
+        // try {
+        await deleteUser(deletedId, token);
+        //     alert('PHI deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete PHI');
+        // }
 
         setOpenDeleteModal(false);
     }
 
-    return(
+    return (
         <>
             <div className="bg-white rounded-md w-full">
                 <div>
                     <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center justify-between">
                                 <div className="flex bg-gray-200 items-center p-1 rounded-md">
                                     <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
@@ -181,7 +191,7 @@ function PHI(){
                             </div>
                         </div>
                         <Button
-                            onClick={() => {setOpenNewModal(true)}}
+                            onClick={() => { setOpenNewModal(true) }}
                         >
                             <FaPlus className="mr-2 h-5 w-5" />
                             Add PHI
@@ -235,7 +245,7 @@ function PHI(){
                                         </td>
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button
-                                                onClick={() => {setOpenAssignModal(true), setAssignId(phi.id)}}
+                                                onClick={() => { setOpenAssignModal(true), setAssignId(phi.id) }}
                                             >
                                                 <MdEdit className="mr-2 h-5 w-5" />
                                                 Assign
@@ -243,7 +253,7 @@ function PHI(){
                                         </td>
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button size="xs" color="failure"
-                                                onClick={() => {setOpenDeleteModal(true), setDeletedId(phi.id)}}
+                                                onClick={() => { setOpenDeleteModal(true), setDeletedId(phi.id) }}
                                             >
                                                 <MdDelete size={25} />
                                             </Button>
@@ -259,7 +269,7 @@ function PHI(){
                         </div>
                     )}
                 </div>
-            </div>         
+            </div>
 
             <Modal show={openAssignModal} onClose={() => setOpenAssignModal(false)}>
                 <Modal.Header>Assign PHI to PHI Area</Modal.Header>

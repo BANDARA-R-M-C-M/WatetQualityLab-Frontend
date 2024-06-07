@@ -1,5 +1,6 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
+import { toast } from "react-toastify";
 
 export const fetchLocations = async (location) => {
     try {
@@ -8,7 +9,7 @@ export const fetchLocations = async (location) => {
                 query: location
             }
         });
-        
+
         const cityNames = response.data.predictions.map(prediction => prediction.structured_formatting.main_text);
 
         return cityNames;
@@ -32,15 +33,34 @@ export const registerUser = async (id, userName, password, email, phoneNumber, r
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("User registered successfully");
+
         return response;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
 
 export const addLab = async (labName, labLocation, labTelephone, token) => {
     try {
-        await axios.post(`${base_url}/Area/AddLab`, {
+        const response = await axios.post(`${base_url}/Area/AddLab`, {
             labName: labName,
             labLocation: labLocation,
             labTelephone: labTelephone
@@ -49,8 +69,27 @@ export const addLab = async (labName, labLocation, labTelephone, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        return true;
+
+        toast.success("Lab added successfully");
+
+        return response;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -65,8 +104,27 @@ export const addPHIArea = async (phiAreaName, mohAreaId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("PHI Area added successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -81,8 +139,27 @@ export const addMOHArea = async (mohAreaName, labId, token) => {
                 Authorization: `Bearer ${token}`
             },
         });
+
+        toast.success("MOH Area added successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -230,9 +307,28 @@ export const updateLabs = async (labId, labName, labLocation, labTelephone, toke
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("Lab updated successfully");
+
         return true;
     }
     catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -247,8 +343,27 @@ export const updatePHIAreas = async (phiAreaId, phiAreaName, mohAreaId, token) =
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("PHI Area updated successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -263,8 +378,27 @@ export const updateMOHAreas = async (mohAreaId, mohAreaName, labId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("MOH Area updated successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -279,8 +413,27 @@ export const assignMLTtoLabs = async (mltId, labId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("MLT assigned to lab successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -295,8 +448,27 @@ export const assignPHItoPHIAreas = async (phiId, phiAreaId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("PHI assigned to PHI Area successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -311,8 +483,27 @@ export const assignMOHSupervisortoMOHAreas = async (mohSupervisorId, mohAreaId, 
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("MOH Supervisor assigned to MOH Area successfully");
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -324,8 +515,12 @@ export const deleteUser = async (id, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("User deleted successfully");
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }
@@ -338,8 +533,12 @@ export const deleteLab = async (id, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("Lab deleted successfully");
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }
@@ -351,8 +550,12 @@ export const deletePHIArea = async (id, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("PHI Area deleted successfully");
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }
@@ -364,8 +567,12 @@ export const deleteMOHArea = async (id, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success("MOH Area deleted successfully");
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
+import { toast } from 'react-toastify';
 
 export const getPendingSamples = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
   try {
@@ -182,8 +183,27 @@ export const submitReport = async (myRefNo, PresumptiveColiformCount, analyzedDa
         Authorization: `Bearer ${token}`
       }
     });
+
+    toast.success('Report submitted successfully.');
+
     return true;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 400 && error.response.data.errors) {
+        const errorMessages = error.response.data.errors;
+        for (const key in errorMessages) {
+          if (errorMessages.hasOwnProperty(key)) {
+            toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+          }
+        }
+      } else if (error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 }
@@ -216,6 +236,18 @@ export const updateStatus = async (sampleId, Status, Comment, token) => {
     });
     return true;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 400 && error.response.data.errors) {
+        const errorMessages = error.response.data.errors;
+        for (const key in errorMessages) {
+          if (errorMessages.hasOwnProperty(key)) {
+            toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+          }
+        }
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 };
@@ -234,8 +266,23 @@ export const updateWCReport = async (ReportRefId, myRefNo, AppearanceOfSample, P
         Authorization: `Bearer ${token}`
       }
     });
+
+    toast.success('Report updated successfully.');
+
     return true;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 400 && error.response.data.errors) {
+        const errorMessages = error.response.data.errors;
+        for (const key in errorMessages) {
+          if (errorMessages.hasOwnProperty(key)) {
+            toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+          }
+        }
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 };
@@ -247,8 +294,12 @@ export const deleteWCReport = async (reportId, token) => {
         Authorization: `Bearer ${token}`
       }
     });
+
+    toast.success('Report deleted successfully.');
+
     return true;
   } catch (error) {
+    toast.error('An error occurred. Please try again.');
     console.log(error);
   }
 };

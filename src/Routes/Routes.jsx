@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
         {path: "admin", 
           element: <ProtectedRoute children={<Adminsidebar />}/>,
             children: [
-              // {path: "dashboard", element: <AdminDashboard/>},
+              {path: "dashboard", element: <AdminDashboard/>},
               {path: "mlts", element: <MLT/>},
               {path: "phis", element: <PHI/>},
               {path: "moh-supervisors", element: <MOHSupervisor/>},

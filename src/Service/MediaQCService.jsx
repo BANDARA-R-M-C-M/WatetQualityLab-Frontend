@@ -1,5 +1,6 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
+import { toast } from "react-toastify";
 
 export const getMediaQualityRecords = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token) => {
     try {
@@ -40,8 +41,27 @@ export const addMediaQualityControlRecord = async (dateTime, mediaId, sterility,
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Media Quality Control Record added successfully.');
+
         return true;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -61,8 +81,27 @@ export const updateMediaQualityControlRecord = async (updateId, dateTime, mediaI
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Media Quality Control Record updated successfully.');
+
         return true
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400 && error.response.data.errors) {
+                const errorMessages = error.response.data.errors;
+                for (const key in errorMessages) {
+                    if (errorMessages.hasOwnProperty(key)) {
+                        toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+                    }
+                }
+            } else if (error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -74,8 +113,12 @@ export const deleteMediaQualityControlRecord = async (recordId, token) => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        toast.success('Media Quality Control Record deleted successfully.');
+
         return true;
     } catch (error) {
+        toast.error('An error occurred. Please try again.');
         console.log(error);
     }
 }

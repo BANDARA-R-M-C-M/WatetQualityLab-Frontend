@@ -73,13 +73,13 @@ function MOHAreas() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            await addMOHArea(mohAreaName, labId, token);
-            alert('MOH Area added successfully');
-        } catch (error) {
-            console.error('Error adding PHI Area:', error);
-            alert('Failed to add MOH Area');
-        }
+        // try {
+        await addMOHArea(mohAreaName, labId, token);
+        //     alert('MOH Area added successfully');
+        // } catch (error) {
+        //     console.error('Error adding PHI Area:', error);
+        //     alert('Failed to add MOH Area');
+        // }
 
         setMohAreaName('');
         setLabId('');
@@ -89,11 +89,13 @@ function MOHAreas() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (await updateMOHAreas(updatedId, mohAreaName, labId, token)) {
-            alert('MOH Area updated successfully');
-        } else {
-            alert('Failed to update MOH Area');
-        }
+        // if (
+        await updateMOHAreas(updatedId, mohAreaName, labId, token)
+        // ) {
+        //     alert('MOH Area updated successfully');
+        // } else {
+        //     alert('Failed to update MOH Area');
+        // }
 
         setMohAreaName('');
         setLabId('');
@@ -102,13 +104,13 @@ function MOHAreas() {
     }
 
     const handleDelete = async (deletedId) => {
-        try {
-            await deleteMOHArea(deletedId, token);
-            alert('MOH Area deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete MOH Area');
-        }
+        // try {
+        await deleteMOHArea(deletedId, token);
+        // alert('MOH Area deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete MOH Area');
+        // }
 
         setOpenDeleteModal(false);
     }

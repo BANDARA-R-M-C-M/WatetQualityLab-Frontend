@@ -73,13 +73,13 @@ function PHIAreas() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            await addPHIArea(phiAreaName, mohAreaId, token);
-            alert('PHI Area added successfully');
-        } catch (error) {
-            console.error('Error adding PHI Area:', error);
-            alert('Failed to add PHI Area');
-        }
+        // try {
+        await addPHIArea(phiAreaName, mohAreaId, token);
+        //     alert('PHI Area added successfully');
+        // } catch (error) {
+        //     console.error('Error adding PHI Area:', error);
+        //     alert('Failed to add PHI Area');
+        // }
 
         setPhiAreaName('');
         setMohAreaId('');
@@ -89,11 +89,13 @@ function PHIAreas() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (await updatePHIAreas(updatedId, phiAreaName, mohAreaId, token)) {
-            alert('PHI Area updated successfully');
-        } else {
-            alert('Failed to update PHI Area');
-        }
+        // if (
+        await updatePHIAreas(updatedId, phiAreaName, mohAreaId, token)
+        // ) {
+        //     alert('PHI Area updated successfully');
+        // } else {
+        //     alert('Failed to update PHI Area');
+        // }
 
         setPhiAreaName('');
         setMohAreaId('');
@@ -102,13 +104,13 @@ function PHIAreas() {
     }
 
     const handleDelete = async (deletedId) => {
-        try {
-            await deletePHIArea(deletedId, token);
-            alert('PHI Area deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete PHI Area');
-        }
+        // try {
+        await deletePHIArea(deletedId, token);
+        //     alert('PHI Area deleted successfully');
+        // } catch (error) {
+        //     console.error('Error deleting sample:', error);
+        //     alert('Failed to delete PHI Area');
+        // }
 
         setOpenDeleteModal(false);
     }
