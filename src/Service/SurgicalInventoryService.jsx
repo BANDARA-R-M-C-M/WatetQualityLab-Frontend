@@ -199,10 +199,14 @@ export const issueItem = async (itemId, quantity, issuedByLab, remarks, token) =
     }
 }
 
-export const addQuantity = async (itemId, quantity, token) => {
+export const addQuantity = async (/*itemId, quantity, token*/itemId, quantity, issuedByLab, remarks, token) => {
     try {
         await axios.patch(`${base_url}/SurgicalInventory/AddQuantity/${itemId}`, {
-            quantity: quantity
+            // quantity: quantity
+            itemId: itemId,
+            quantity: quantity,
+            issuedBy: issuedByLab,
+            remarks: remarks
         }, {
             headers: {
                 Authorization: `Bearer ${token}`

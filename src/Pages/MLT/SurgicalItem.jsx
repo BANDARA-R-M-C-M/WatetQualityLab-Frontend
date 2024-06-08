@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../Context/useAuth';
 import { Button, Card, Modal } from "flowbite-react";
-import { getSurgicalItemDetails, issueItem } from '../../Service/SurgicalInventoryService';
+import { getSurgicalItemDetails, issueItem, addQuantity } from '../../Service/SurgicalInventoryService';
 
 function SurgicalItem() {
 
     const [surgicalItem, setSurgicalItem] = useState({});
     const [issuingQuantity, setIssuingQuantity] = useState('');
+    const [quantity, setQuantity] = useState('');
     const [issuingRemarks, setIssuingRemarks] = useState('');
     const [openIssueModal, setOpenIssueModal] = useState(false);
+    const [openAddModal, setOpenAddModal] = useState(false);
 
     const { itemId } = useParams();
     const { user, token } = useAuth();
@@ -30,15 +32,34 @@ function SurgicalItem() {
 
     const handleIssue = async (event) => {
         event.preventDefault();
-        if (await issueItem(itemId, issuingQuantity, user.userId, issuingRemarks, token)) {
-            alert('Item Issued Successfully')
-        } else {
-            alert('Failed to Issue Item')
-        }
+        // if (
+        await issueItem(itemId, issuingQuantity, user.userId, issuingRemarks, token)
+        // ) {
+        //     alert('Item Issued Successfully')
+        // } else {
+        //     alert('Failed to Issue Item')
+        // }
         setIssuingQuantity('');
         setIssuingRemarks('');
 
         setOpenIssueModal(false);
+    };
+
+    const handleAdd = async (event) => {
+        event.preventDefault();
+
+        // if (
+        await addQuantity(itemId, quantity, user.userId, issuingRemarks, token)
+        // ) {
+        //     alert('Item Added Successfully')
+        // } else {
+        //     alert('Failed to Add Item')
+        // }
+
+        setQuantity('');
+        setIssuingRemarks('');
+
+        setOpenAddModal(false);
     };
 
     return (
@@ -89,6 +110,11 @@ function SurgicalItem() {
                         onClick={() => { setOpenIssueModal(true) }}>
                         <Button type="submit" size="xl">Issue</Button>
                     </div>
+
+                    <div className="flex items-center justify-center pt-4"
+                        onClick={() => { setOpenAddModal(true) }}>
+                        <Button type="submit" size="xl">Add</Button>
+                    </div>
                 </div>
             </Card>
 
@@ -103,6 +129,27 @@ function SurgicalItem() {
                         </div>
                         <div className="mb-4">
                             <label htmlFor="issuingRemarks" className="block text-sm font-medium text-gray-700">Issuing Remarks</label>
+                            <input type="text" name="issuingRemarks" id="issuingRemarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                value={issuingRemarks} onChange={(e) => setIssuingRemarks(e.target.value)} />
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <Button type="submit" size="xl">Submit</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={openAddModal} onClose={() => setOpenAddModal(false)}>
+                <Modal.Header>Add Quantity</Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleAdd}>
+                        <div className="mb-4">
+                            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
+                            <input type="number" name="quantity" id="quantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="issuingRemarks" className="block text-sm font-medium text-gray-700">Adding Remarks</label>
                             <input type="text" name="issuingRemarks" id="issuingRemarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                                 value={issuingRemarks} onChange={(e) => setIssuingRemarks(e.target.value)} />
                         </div>

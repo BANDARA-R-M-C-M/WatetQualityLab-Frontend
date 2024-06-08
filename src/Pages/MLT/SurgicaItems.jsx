@@ -80,7 +80,7 @@ function SurgicalItems() {
         event.preventDefault();
 
         // if (
-            await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId, token)
+        await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId, token)
         // ) {
         //     alert('Item Added Successfully')
         // } else {
@@ -100,7 +100,7 @@ function SurgicalItems() {
     const handleIssue = async (event) => {
         event.preventDefault();
         // if (
-            await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks, token)
+        await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks, token)
         // ) {
         //     alert('Item Issued Successfully')
         // } else {
@@ -116,7 +116,7 @@ function SurgicalItems() {
         event.preventDefault();
 
         // if (
-            await addQuantity(updatedId, quantity, token)
+        await addQuantity(updatedId, quantity, user.userId, issuingRemarks, token)
         // ) {
         //     alert('Item Added Successfully')
         // } else {
@@ -125,6 +125,7 @@ function SurgicalItems() {
 
         setUpdatedId('');
         setQuantity('');
+        setIssuingRemarks('');
 
         setOpenAddModal(false);
     };
@@ -133,7 +134,7 @@ function SurgicalItems() {
         event.preventDefault();
 
         // if (
-            await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID, token)
+        await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID, token)
         // ) {
         //     alert('Item Updated Successfully')
         // } else {
@@ -152,7 +153,7 @@ function SurgicalItems() {
 
     const handleDelete = async (deletedId) => {
         // try {
-            await deleteSurgicalInventoryItem(deletedId, token);
+        await deleteSurgicalInventoryItem(deletedId, token);
         //     alert('Item deleted successfully');
         // } catch (error) {
         //     console.error('Error deleting sample:', error);
@@ -449,6 +450,11 @@ function SurgicalItems() {
                             <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
                             <input type="number" name="quantity" id="quantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                                 value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                        </div>
+                        <div className="mb-4">  
+                            <label htmlFor="issuingRemarks" className="block text-sm font-medium text-gray-700">Adding Remarks</label>
+                            <input type="text" name="issuingRemarks" id="issuingRemarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                                value={issuingRemarks} onChange={(e) => setIssuingRemarks(e.target.value)} />
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
