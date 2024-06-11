@@ -41,8 +41,8 @@ function Mltsidebar() {
                 <div className="flex h-16 shrink-0 items-center">
                   <img
                     className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
+                    src=""
+                    alt=""
                   />
                 </div>
                 <nav className="flex flex-1 flex-col">
@@ -77,6 +77,8 @@ function Mltsidebar() {
                       {showReports && (<div className='flex flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
                         <Link to='/mlt/reports' className={location.pathname === '/mlt/reports' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Reports</Link>
                         <Link to='/mlt/sample-count-report' className={location.pathname === '/mlt/sample-count-report' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Sample Count</Link>
+                        <Link to='/mlt/general-inventory-report' className={location.pathname === '/mlt/general-inventory-report' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>General Inventory Report</Link>
+                        <Link to='/mlt/items-issuing-report' className={location.pathname === '/mlt/items-issuing-report' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Items Issuing Report</Link>
                       </div>)}
                     </li>
                   </ul>
@@ -94,8 +96,8 @@ function Mltsidebar() {
           <div className="flex h-16 shrink-0 items-center">
             <img
               className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-              alt="Your Company"
+              src=""
+              alt=""
             />
           </div>
           <nav className="flex flex-1 flex-col">
@@ -124,13 +126,15 @@ function Mltsidebar() {
                 </div>)}
 
                 <div onClick={() => { setShowReports(!showReports) }} className={'flex items-center justify-between text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>
-                        Reports
-                        <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
-                      </div>
-                      {showReports && (<div className='flex flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
-                        <Link to='/mlt/reports' className={location.pathname === '/mlt/reports' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Reports</Link>
-                        <Link to='/mlt/sample-count-report' className={location.pathname === '/mlt/sample-count-report' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Sample Count</Link>
-                      </div>)}
+                  Reports
+                  <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
+                </div>
+                {showReports && (<div className='flex flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
+                  <Link to='/mlt/reports' className={location.pathname === '/mlt/reports' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Reports</Link>
+                  <Link to='/mlt/sample-count-report' className={location.pathname === '/mlt/sample-count-report' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Sample Count</Link>
+                  <Link to='/mlt/general-inventory-report' className={location.pathname === '/mlt/general-inventory-report' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>General Inventory Report</Link>
+                  <Link to='/mlt/items-issuing-report' className={location.pathname === '/mlt/items-issuing-report' ? 'bg-gray-800 text-white rounded-md p-2' : 'text-gray-400 hover:text-white hover:bg-gray-800 rounded-md p-2'}>Items Issuing Report</Link>
+                </div>)}
               </li>
             </ul>
           </nav>
@@ -163,10 +167,10 @@ function Mltsidebar() {
               </div> */}
 
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+              {/* <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                 <span className="sr-only">View notifications</span>
                 <BellIcon className="h-6 w-6" aria-hidden="true" />
-              </button>
+              </button> */}
 
               {/* Separator */}
               <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
@@ -175,11 +179,11 @@ function Mltsidebar() {
               <Menu as="div" className="relative">
                 <Menu.Button className="-m-1.5 flex items-center p-1.5">
                   <span className="sr-only">Open user menu</span>
-                  <img
+                  {/* <img
                     className="h-8 w-8 rounded-full bg-gray-50"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src=""
                     alt=""
-                  />
+                  /> */}
                   <span className="hidden lg:flex lg:items-center">
                     <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
                       {userName}

@@ -84,6 +84,51 @@ export const getSurgicalCatagories = async (mltId, searchTerm, searchParameter, 
     }
 }
 
+export const getItemsIssuingDetails = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, year, month, token) => {
+    try {
+        const response = await axios.get(`${base_url}/SurgicalInventory/GetIssuedItemDetails`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                UserId: mltId,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending,
+                Year: year,
+                Month: month
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+export const getItemIssuingReport = async (mltId, year, month, token) => {
+    try {
+        const response = await axios.get(`${base_url}/SurgicalInventory/GetItemIssuingReport`, {
+            responseType: 'blob',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                MltId: mltId,
+                Year: year,
+                Month: month
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const addSurgicalInventoryItem = async (itemName, issuedDate, issuedBy, quantity, remarks, surgicalCategoryID, labId, token) => {
     try {
         await axios.post(`${base_url}/SurgicalInventory/AddSurgicalInventoryItem`, {

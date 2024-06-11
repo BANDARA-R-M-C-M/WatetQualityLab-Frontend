@@ -46,7 +46,7 @@ function Samples() {
     useEffect(() => {
         const fetchSamples = async () => {
             try {
-                const response = await getAcceptedSamples(user.userId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
+                const response = await getAcceptedSamples(user.userId, debouncedSearch, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setSamples(response.data.items);
                     setTotalPages(response.data.totalPages);

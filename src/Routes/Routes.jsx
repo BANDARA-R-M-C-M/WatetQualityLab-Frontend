@@ -34,6 +34,8 @@ import ReportM from '../Pages/MOHSupervisor/Reports.jsx';
 // import HistoryM from '../Pages/MOHSupervisor/History.jsx';
 import Mohsidebar from "../Components/Mohsidebar.jsx";
 import Profile from "../Pages/Profile.jsx";
+import GeneralInventoryReport from "../Pages/MLT/GeneralInventoryReport.jsx";
+import ItemIssuingReport from "../Pages/MLT/ItemIssuingReport.jsx";
 
 export const router = createBrowserRouter([
       {
@@ -69,7 +71,9 @@ export const router = createBrowserRouter([
                 {path: "quality-instrumental", element: <InstrumentalQuality/>},
                 {path: "quality-media", element: <MediaQuality/>},
                 {path: "reports", element: <Reports/>},
-                {path: "sample-count-report", element: <SampleCount/>}
+                {path: "sample-count-report", element: <SampleCount/>},
+                {path: "general-inventory-report", element: <GeneralInventoryReport/>},
+                {path: "items-issuing-report", element: <ItemIssuingReport/>},
               ]
         },
         {path: "phi",

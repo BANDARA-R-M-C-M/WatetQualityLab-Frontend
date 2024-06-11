@@ -1,5 +1,6 @@
 import axios from "axios";
 import base_url from "../Util/base_url";
+import { toast } from "react-toastify";
 
 export const loginAPI = async (username, password, token) => {
   try {
@@ -9,7 +10,18 @@ export const loginAPI = async (username, password, token) => {
     });
     return data;
   } catch (error) {
-    console.log(error);
+    if (error.response.status === 400 && error.response.data.errors) {
+      const errorMessages = error.response.data.errors;
+      for (const key in errorMessages) {
+        if (errorMessages.hasOwnProperty(key)) {
+          toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+        }
+      }
+    } else if (error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
   }
 };
 
@@ -24,9 +36,23 @@ export const registerAPI = async (email, username, password, token) => {
         Authorization: `Bearer ${token}`
       }
     });
+
+    toast.success('User registered successfully.');
+
     return data;
   } catch (error) {
-    console.log(error);
+    if (error.response.status === 400 && error.response.data.errors) {
+      const errorMessages = error.response.data.errors;
+      for (const key in errorMessages) {
+        if (errorMessages.hasOwnProperty(key)) {
+          toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+        }
+      }
+    } else if (error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
   }
 };
 
@@ -44,7 +70,7 @@ export const getUserDetails = async (token) => {
 };
 
 export const updateUserDetails = async (userId, username, email, phoneNumber, imageUrl, token) => {
-  try{
+  try {
     await axios.put(`${base_url}/User/updateUser/${userId}`, {
       username: username,
       email: email,
@@ -55,9 +81,22 @@ export const updateUserDetails = async (userId, username, email, phoneNumber, im
         Authorization: `Bearer ${token}`
       }
     });
-    return true;
 
+    toast.success('User details updated successfully.');
+
+    return true;
   } catch (error) {
-    console.log(error);
+    if (error.response.status === 400 && error.response.data.errors) {
+      const errorMessages = error.response.data.errors;
+      for (const key in errorMessages) {
+        if (errorMessages.hasOwnProperty(key)) {
+          toast.error(`Error in ${key}: ${errorMessages[key].join(' ')}`);
+        }
+      }
+    } else if (error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
   }
 }

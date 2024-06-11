@@ -82,6 +82,49 @@ export const getGeneralCatagories = async (mltId, searchTerm, searchParameter, s
     }
 }
 
+export const getInventoryDurationDetails = async (mltId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, year, token) => {
+    try {
+        const response = await axios.get(`${base_url}/GeneralInventory/GetInventoryDurationDetails`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                UserId: mltId,
+                SearchTerm: searchTerm,
+                SearchParameter: searchParameter,
+                SearchParameterType: searchParameterType,
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                SortBy: sortBy,
+                IsAscending: isAscending,
+                Year: year
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+export const getInventoryDurationReport = async (mltId, year, token) => {
+    try {
+        const response = await axios.get(`${base_url}/GeneralInventory/GetInventoryDurationReport`, {
+            responseType: 'blob',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                MltId: mltId,
+                Year: year
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const addGeneralInventoryItem = async (itemName, issuedDate, issuedBy, remarks, generalCategoryID, labId, token) => {
     try {
         await axios.post(`${base_url}/GeneralInventory/AddGeneralInventoryItem`, {

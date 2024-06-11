@@ -15,7 +15,9 @@ function App() {
             >
                 <UserProvider>
                     <Outlet />
-                    <ToastContainer />
+                    <ToastContainer 
+                        autoClose={1500}
+                    />
                 </UserProvider>
             </LoadScript>
         </>
