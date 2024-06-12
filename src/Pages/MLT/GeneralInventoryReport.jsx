@@ -57,6 +57,7 @@ function GeneralInventoryReport() {
     return (
         <>
             <div>
+                <h1 className="text-center text-4xl font-bold mb-7">General Inventory Items Duration Report</h1>
                 <div className="flex flex-col md:flex-row items-center justify-between">
                     <div className="flex items-center justify-between">
                         <div className="flex bg-gray-200 items-center p-1 rounded-md">

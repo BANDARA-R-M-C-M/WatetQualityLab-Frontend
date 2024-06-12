@@ -13,6 +13,7 @@ function GeneralItems() {
 
     const [items, setItems] = useState([]);
     const [generalCatagories, setGeneralCatagories] = useState([]);
+    const [generalCategoryName, setGeneralCategoryName] = useState('');
     const [labId, setLabId] = useState('');
     const [generalCategoryID, setGeneralCategoryID] = useState('');
     const [itemName, setItemName] = useState('');
@@ -46,6 +47,7 @@ function GeneralItems() {
                 const response = await getGeneralInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setItems(response.data.items);
+                    setGeneralCategoryName(response.data.items[0].generalCategoryName);
                     setLabId(user.areaId);
                     setTotalPages(response.data.totalPages);
                 }
@@ -72,13 +74,7 @@ function GeneralItems() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // if (
-            await addGeneralInventoryItem(itemName, issuedDate, issuedBy, remarks, categoryId, labId, token)
-        // ) {
-        //     alert('Item Added Successfully')
-        // } else {
-        //     alert('Failed to Add Item')
-        // }
+        await addGeneralInventoryItem(itemName, issuedDate, issuedBy, remarks, categoryId, labId, token);
 
         setItemName('');
         setIssuedDate('');
@@ -92,13 +88,7 @@ function GeneralItems() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        // if (
-            await updateGeneralInventoryItem(updatedId, itemName, issuedDate, issuedBy, remarks, generalCategoryID, token)
-        // ) {
-        //     alert('Item Updated Successfully')
-        // } else {
-        //     alert('Failed to Update Item')
-        // }
+        await updateGeneralInventoryItem(updatedId, itemName, issuedDate, issuedBy, remarks, generalCategoryID, token);
 
         setUpdatedId('');
         setItemName('');
@@ -110,13 +100,7 @@ function GeneralItems() {
     };
 
     const handleDelete = async (deletedId) => {
-        // try {
-            await deleteGeneralInventoryItem(deletedId, token);
-        //     alert('Item deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting sample:', error);
-        //     alert('Failed to delete item');
-        // }
+        await deleteGeneralInventoryItem(deletedId, token);
 
         setOpenDeleteModal(false);
     };
@@ -124,6 +108,7 @@ function GeneralItems() {
     return (
         <>
             <div className="bg-white rounded-md w-full">
+                <h1 className="text-center text-4xl font-bold mb-7">{generalCategoryName}</h1>
                 <div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between">

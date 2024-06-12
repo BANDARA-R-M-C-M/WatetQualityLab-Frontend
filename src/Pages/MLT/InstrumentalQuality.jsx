@@ -57,13 +57,7 @@ function InstrumentalQuality() {
     const handleAddRecord = async (event) => {
         event.preventDefault();
 
-        // if (
-        await addInstrumentalQualityControlRecord(dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, labId, token)
-        // ) {
-        //     alert('Record Added Successfully')
-        // } else {
-        //     alert('Failed to Add Record')
-        // }
+        await addInstrumentalQualityControlRecord(dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, labId, token);
 
         setDateTime('');
         setInstrumentId('');
@@ -80,13 +74,7 @@ function InstrumentalQuality() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        // if (
-        await updateInstrumentalQualityControlRecord(updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, token)
-        // ) {
-        //     alert('Record Updated Successfully')
-        // } else {
-        //     alert('Failed to Update Record')
-        // }
+        await updateInstrumentalQualityControlRecord(updateId, dateTime, instrumentId, temperatureFluctuation, pressureGradient, timer, sterility, stability, remarks, user.userId, token);
 
         setUpdateId('');
         setDateTime('');
@@ -102,13 +90,7 @@ function InstrumentalQuality() {
     };
 
     const handleDelete = async (deleteId) => {
-        // try {
         await deleteInstrumentalQualityControlRecord(deleteId, token);
-        //     alert('Record deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting category:', error);
-        //     alert('Failed to delete Record');
-        // }
 
         setOpenDeleteModal(false);
     };
@@ -116,6 +98,7 @@ function InstrumentalQuality() {
     return (
         <>
             <div className="bg-white rounded-md w-full">
+                <h1 className="text-center text-4xl font-bold mb-7">Instrumental Quality Control Records</h1>
                 <div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between">
@@ -216,9 +199,6 @@ function InstrumentalQuality() {
                         <table className="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Instrumental Quality ID
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Instrument ID
                                     </th>
@@ -252,9 +232,6 @@ function InstrumentalQuality() {
                             <tbody>
                                 {instrumentalQualityRecords.map((QualityRecord, index) => (
                                     <tr key={index}>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{QualityRecord.instrumentalQualityControlID}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{QualityRecord.instrumentId}</p>
                                         </td>

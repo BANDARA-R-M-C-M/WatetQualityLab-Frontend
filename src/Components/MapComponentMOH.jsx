@@ -185,6 +185,8 @@ function MapComponentMOH() {
                                 latLngBounds: sriLankaBounds,
                                 strictBounds: false,
                             },
+                            minZoom: 8,
+                            maxZoom: 11,
                         }}
                     >
                         {geoData.map((area) => (

@@ -43,20 +43,15 @@ function PendingSamples() {
     }, [pageNumber, sortBy, isAscending, debouncedSearch]);
 
     const handleAccept = async (sampleId) => {
-        // try {
         await updateStatus(sampleId, 'Accepted', comment, token);
         const updatedSamples = samples.filter(sample => sample.sampleId !== sampleId);
         setSamples(updatedSamples);
-        // } catch (error) {
-        //     console.error('Error accepting sample:', error);
-        // }
         toast.success('Sample accepted successfully');
     };
 
     const handleReject = async (e) => {
         e.preventDefault();
 
-        // try {
         if (await updateStatus(rejectedId, 'Rejected', comment, token)) {
             const updatedSamples = samples.filter(sample => sample.sampleId !== rejectedId);
             setSamples(updatedSamples);
@@ -64,9 +59,6 @@ function PendingSamples() {
             setComment('');
 
             setOpenModal(false);
-            // } catch (error) {
-            //     console.error('Error rejecting sample:', error);
-            // }
             toast.success('Sample rejected successfully');
         }
     };
@@ -74,6 +66,7 @@ function PendingSamples() {
     return (
         <>
             <div className="bg-white rounded-md w-full">
+                <h1 className="text-center text-4xl font-bold mb-7">New Samples</h1>
                 <div className="flex items-center justify-between pb-6">
                     <div className="flex items-center justify-between">
                         <div className="flex bg-gray-200 items-center p-1 rounded-md">
@@ -155,9 +148,6 @@ function PendingSamples() {
                         <table className="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Sample Id
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Your Ref No
                                     </th>
@@ -176,9 +166,6 @@ function PendingSamples() {
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         State of Chlorination
                                     </th>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Acceptance
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -188,9 +175,6 @@ function PendingSamples() {
                             <tbody>
                                 {samples.map((sample, index) => (
                                     <tr key={index}>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{sample.sampleId}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{sample.yourRefNo}</p>
                                         </td>
@@ -209,12 +193,6 @@ function PendingSamples() {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{sample.stateOfChlorination}</p>
                                         </td>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                                <span aria-hidden className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                                                <span className="relative">{sample.acceptance}</span>
-                                            </span>
-                                        </td> */}
                                         <td className="pl-7 py-5 border-b border-gray-200 bg-white text-sm ">
                                             <Button onClick={() => handleAccept(sample.sampleId)}
                                                 color="success">Accept</Button>

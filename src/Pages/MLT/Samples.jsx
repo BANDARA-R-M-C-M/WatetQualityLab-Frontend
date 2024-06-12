@@ -129,6 +129,7 @@ function Samples() {
     return (
         <>
             <div className="bg-white rounded-md w-full">
+                <h1 className="text-center text-4xl font-bold mb-7">Pending Samples</h1>
                 <div className="flex items-center justify-between pb-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between">

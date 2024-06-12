@@ -55,13 +55,7 @@ function MediaQuality() {
     const handleAddRecord = async (event) => {
         event.preventDefault();
 
-        // if (
-            await addMediaQualityControlRecord(dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, labId, token)
-        // ) {
-        //     alert('Record Added Successfully')
-        // } else {
-        //     alert('Failed to Add Record')
-        // }
+        await addMediaQualityControlRecord(dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, labId, token);
 
         setOpenModal(false);
     };
@@ -69,25 +63,13 @@ function MediaQuality() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        // if (
-            await updateMediaQualityControlRecord(updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, token)
-        // ) {
-        //     alert('Record Updated Successfully')
-        // } else {
-        //     alert('Failed to Update Record')
-        // }
+        await updateMediaQualityControlRecord(updateId, dateTime, mediaId, sterility, stability, sensitivity, remarks, user.userId, token);
 
         setOpenEditModal(false);
     };
 
     const handleDelete = async (deleteId) => {
-        // try {
-            await deleteMediaQualityControlRecord(deleteId, token);
-        //     alert('Record deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting category:', error);
-        //     alert('Failed to delete Record');
-        // }
+        await deleteMediaQualityControlRecord(deleteId, token);
 
         setOpenDeleteModal(false);
     };
@@ -95,82 +77,83 @@ function MediaQuality() {
     return (
         <>
             <div className="bg-white rounded-md w-full">
+            <h1 className="text-center text-4xl font-bold mb-7">Media Quality Control Records</h1>
                 <div>
                     <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between">
-                        <div className="flex bg-gray-200 items-center p-1 rounded-md">
-                            <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
-                            <input
-                                className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
-                                type="text"
-                                placeholder={placeholderText}
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            {searchTerm && (
-                                <MdClose
-                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
-                                    onClick={() => setSearchTerm('')}
+                        <div className="flex items-center justify-between">
+                            <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                                <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                                <input
+                                    className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                    type="text"
+                                    placeholder={placeholderText}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
-                            )}
+                                {searchTerm && (
+                                    <MdClose
+                                        className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                        onClick={() => setSearchTerm('')}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex items-center p-2 rounded-md">
+                                <Dropdown label="Sort">
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('MediaId');
+                                            setSearchParameter('MediaId');
+                                            setPlaceholderText('Media Id...');
+                                        }}
+                                    >
+                                        Media Id
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('DateTime');
+                                            setSearchParameter('DateTime');
+                                            setSearchParameterType('DateTime');
+                                            setPlaceholderText('Date Time...');
+                                        }}
+                                    >
+                                        Date Time
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('Sterility');
+                                            setSearchParameter('Sterility');
+                                            setPlaceholderText('Sterility...');
+                                        }}
+                                    >
+                                        Sterility
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('Stability');
+                                            setSearchParameter('Stability');
+                                            setPlaceholderText('Stability...');
+                                        }}
+                                    >
+                                        Stability
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setSortBy('Sensitivity');
+                                            setSearchParameter('Sensitivity');
+                                            setPlaceholderText('Sensitivity...');
+                                        }}
+                                    >
+                                        Sensitivity
+                                    </Dropdown.Item>
+                                </Dropdown>
+                            </div>
+                            <div className="flex items-center rounded-md">
+                                <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                    {isAscending ? <AiOutlineSortAscending size={28} />
+                                        : <AiOutlineSortDescending size={28} />}
+                                </Button>
+                            </div>
                         </div>
-                        <div className="flex items-center p-2 rounded-md">
-                        <Dropdown label="Sort">
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('MediaId');
-                                        setSearchParameter('MediaId');
-                                        setPlaceholderText('Media Id...');
-                                    }}
-                                >
-                                    Media Id
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('DateTime');
-                                        setSearchParameter('DateTime');
-                                        setSearchParameterType('DateTime');
-                                        setPlaceholderText('Date Time...');
-                                    }}
-                                >
-                                    Date Time
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('Sterility');
-                                        setSearchParameter('Sterility');
-                                        setPlaceholderText('Sterility...');
-                                    }}
-                                >
-                                    Sterility
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('Stability');
-                                        setSearchParameter('Stability');
-                                        setPlaceholderText('Stability...');
-                                    }}
-                                >
-                                    Stability
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        setSortBy('Sensitivity');
-                                        setSearchParameter('Sensitivity');
-                                        setPlaceholderText('Sensitivity...');
-                                    }}
-                                >
-                                    Sensitivity
-                                </Dropdown.Item>
-                            </Dropdown>
-                        </div>
-                        <div className="flex items-center rounded-md">
-                            <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
-                                {isAscending ? <AiOutlineSortAscending size={28} />
-                                    : <AiOutlineSortDescending size={28} />}
-                            </Button>
-                        </div>
-                    </div>
                         <Button className="mr-1"
                             onClick={() => {
                                 setOpenModal(true);
@@ -186,9 +169,6 @@ function MediaQuality() {
                         <table className="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Media Quality ID
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Media ID
                                     </th>
@@ -216,9 +196,6 @@ function MediaQuality() {
                             <tbody>
                                 {MediaQualityRecords.map((QualityRecord, index) => (
                                     <tr key={index}>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{QualityRecord.mediaQualityControlID}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{QualityRecord.mediaId}</p>
                                         </td>

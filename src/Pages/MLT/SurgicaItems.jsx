@@ -14,6 +14,7 @@ function SurgicalItems() {
 
     const [items, setItems] = useState([]);
     const [SurgicalCatagories, setSurgicalCatagories] = useState([]);
+    const [surgicalCategoryName, setSurgicalCategoryName] = useState('');
     const [labId, setLabId] = useState('');
     const [SurgicalCategoryID, setSurgicalCategoryID] = useState('');
     const [itemName, setItemName] = useState('');
@@ -53,6 +54,7 @@ function SurgicalItems() {
                 const response = await getSurgicalInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setItems(response.data.items);
+                    setSurgicalCategoryName(response.data.items[0].surgicalCategoryName);
                     setLabId(user.areaId);
                     setTotalPages(response.data.totalPages);
                 }
@@ -79,13 +81,7 @@ function SurgicalItems() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // if (
-        await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId, token)
-        // ) {
-        //     alert('Item Added Successfully')
-        // } else {
-        //     alert('Failed to Add Item')
-        // }
+        await addSurgicalInventoryItem(itemName, issuedDate, issuedBy, quantity, remarks, categoryId, labId, token);
 
         setItemName('');
         setIssuedDate('');
@@ -99,13 +95,9 @@ function SurgicalItems() {
 
     const handleIssue = async (event) => {
         event.preventDefault();
-        // if (
-        await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks, token)
-        // ) {
-        //     alert('Item Issued Successfully')
-        // } else {
-        //     alert('Failed to Issue Item')
-        // }
+
+        await issueItem(issuingId, issuingQuantity, user.userId, issuingRemarks, token);
+
         setIssuingQuantity('');
         setIssuingRemarks('');
 
@@ -115,13 +107,7 @@ function SurgicalItems() {
     const handleAdd = async (event) => {
         event.preventDefault();
 
-        // if (
-        await addQuantity(updatedId, quantity, user.userId, issuingRemarks, token)
-        // ) {
-        //     alert('Item Added Successfully')
-        // } else {
-        //     alert('Failed to Add Item')
-        // }
+        await addQuantity(updatedId, quantity, user.userId, issuingRemarks, token);
 
         setUpdatedId('');
         setQuantity('');
@@ -133,13 +119,7 @@ function SurgicalItems() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        // if (
-        await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID, token)
-        // ) {
-        //     alert('Item Updated Successfully')
-        // } else {
-        //     alert('Failed to Update Item')
-        // }
+        await updateSurgicalInventoryItem(updatedId, itemName, issuedDate, issuedBy, quantity, remarks, SurgicalCategoryID, token);
 
         setUpdatedId('');
         setItemName('');
@@ -152,13 +132,7 @@ function SurgicalItems() {
     };
 
     const handleDelete = async (deletedId) => {
-        // try {
         await deleteSurgicalInventoryItem(deletedId, token);
-        //     alert('Item deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting sample:', error);
-        //     alert('Failed to delete item');
-        // }
 
         setOpenDeleteModal(false);
     };
@@ -166,6 +140,7 @@ function SurgicalItems() {
     return (
         <>
             <div className="bg-white rounded-md w-full">
+                <h1 className="text-center text-4xl font-bold mb-7">{surgicalCategoryName}</h1>
                 <div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-between">
@@ -451,7 +426,7 @@ function SurgicalItems() {
                             <input type="number" name="quantity" id="quantity" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                                 value={quantity} onChange={(e) => setQuantity(e.target.value)} />
                         </div>
-                        <div className="mb-4">  
+                        <div className="mb-4">
                             <label htmlFor="issuingRemarks" className="block text-sm font-medium text-gray-700">Adding Remarks</label>
                             <input type="text" name="issuingRemarks" id="issuingRemarks" className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                                 value={issuingRemarks} onChange={(e) => setIssuingRemarks(e.target.value)} />

@@ -50,14 +50,7 @@ function SurgicalInventory() {
     const handleAddCatagory = async (event) => {
         event.preventDefault();
 
-        // if (
-            await addSurgicalCategory(categoryName, labId, token)
-        // ) {
-        //     alert('Category Added Successfully')
-        // } else {
-        //     alert('Failed to Add Category')
-        // }
-
+        await addSurgicalCategory(categoryName, labId, token);
         setCategoryName('');
 
         setOpenModal(false);
@@ -66,13 +59,7 @@ function SurgicalInventory() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        // if (
-            await updateSurgicalCategory(updatedCategoryId, categoryName, token)
-        // ) {
-        //     alert('Category Updated Successfully')
-        // } else {
-        //     alert('Failed to Update Category')
-        // }
+        await updateSurgicalCategory(updatedCategoryId, categoryName, token);
 
         setUpdatedCategoryId('');
         setCategoryName('');
@@ -81,13 +68,7 @@ function SurgicalInventory() {
     };
 
     const handleDelete = async (deletedCategoryId) => {
-        // try {
-            await deleteSurgicalCategory(deletedCategoryId, token);
-        //     alert('Category deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting category:', error);
-        //     alert('Failed to delete category');
-        // }
+        await deleteSurgicalCategory(deletedCategoryId, token);
 
         setOpenDeleteModal(false);
     };
@@ -95,6 +76,7 @@ function SurgicalInventory() {
     return (
         <>
             <div className="bg-white rounded-md w-full">
+                <h1 className="text-center text-4xl font-bold mb-7">Surgical Inventory Categories</h1>
                 <div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">

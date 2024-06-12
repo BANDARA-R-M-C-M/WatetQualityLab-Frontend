@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { getUserDetails, updateUserDetails } from '../Service/AuthServices';
 import { Modal, Button, TextInput, Label } from "flowbite-react";
 import { useAuth } from '../Context/useAuth';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import { storage } from '../Util/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FaPlusCircle } from 'react-icons/fa';
 import { MdEdit } from "react-icons/md";
+import { toast } from 'react-toastify';
 
 function Profile() {
     const [userDetails, setUserDetails] = useState({});
@@ -15,6 +18,15 @@ function Profile() {
 
     const { token } = useAuth();
 
+    const validationSchema = yup.object({
+        userName: yup.string().required('Name is required')
+            .max(30, 'Name should not exceed 30 characters'),
+        email: yup.string().required('Email is required')
+            .email('Invalid email address'),
+        phoneNumber: yup.string().required('Telephone is required')
+            .matches(/^\d{10}$/, 'Invalid phone number format')
+    });
+
     useEffect(() => {
         const fetchUserDetails = async () => {
             const response = await getUserDetails(token);
@@ -22,38 +34,37 @@ function Profile() {
             setImageUrl(response.data.imageUrl || 'https://via.placeholder.com/150');
         };
         fetchUserDetails();
-    }, [token]);
+    }, [openEditModal]);
 
-    const handleUpdate = async (event) => {
-        event.preventDefault();
+    const formikEdit = useFormik({
+        initialValues: {
+            userName: '',
+            email: '',
+            phoneNumber: '',
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            let updatedImageUrl = imageUrl;
 
-        let updatedImageUrl = imageUrl;
+            if (image) {
+                const storageRef = ref(storage, 'images/' + Date.now() + '_' + image.name);
+                await uploadBytes(storageRef, image);
+                updatedImageUrl = await getDownloadURL(storageRef);
+                setImageUrl(updatedImageUrl);
+            }
+            await updateUserDetails(
+                userDetails.userId,
+                values.userName,
+                values.email,
+                values.phoneNumber,
+                updatedImageUrl,
+                token
+            );
 
-        if (image) {
-            const storageRef = ref(storage, 'images/' + Date.now() + '_' + image.name);
-            await uploadBytes(storageRef, image);
-            updatedImageUrl = await getDownloadURL(storageRef);
-        }
-
-        const success = await updateUserDetails(
-            userDetails.userId,
-            userDetails.username,
-            userDetails.email,
-            userDetails.phoneNumber,
-            updatedImageUrl,
-            token
-        );
-
-        if (success) {
-            alert('User details updated successfully');
-            setImageUrl(updatedImageUrl); // Update local state with the new image URL
-            setUserDetails({ ...userDetails, imageUrl: updatedImageUrl });
-        } else {
-            alert('User details not updated');
-        }
-
-        setOpenEditModal(false);
-    };
+            formikEdit.resetForm();
+            setOpenEditModal(false);
+        },
+    });
 
     const handleImageChange = (e) => {
         if (e.target.files[0]) {
@@ -71,7 +82,14 @@ function Profile() {
                     <div className="flex flex-col justify-center text-left flex-grow">
                         <div className="flex justify-between items-center">
                             <h2 className="text-3xl font-semibold">User Profile</h2>
-                            <MdEdit size={25} className="cursor-pointer text-gray-600" onClick={() => setOpenEditModal(true)} />
+                            <MdEdit size={25} className="cursor-pointer text-gray-600" onClick={() => {
+                                setOpenEditModal(true);
+                                formikEdit.setValues({
+                                    userName: userDetails.username,
+                                    email: userDetails.email,
+                                    phoneNumber: userDetails.phoneNumber
+                                });
+                            }} />
                         </div>
                         <div className="flex mt-4">
                             <div className="grid grid-rows-3 gap-4 w-full">
@@ -93,61 +111,65 @@ function Profile() {
                 </div>
             </div>
 
-            {openEditModal && (
-                <Modal show={openEditModal} onClose={() => setOpenEditModal(false)}>
-                    <Modal.Header>Update Profile</Modal.Header>
-                    <Modal.Body>
-                        <form onSubmit={handleUpdate} className="flex flex-col gap-4">
-                            <div className="flex justify-center mb-4">
-                                <div className="relative w-40 h-40">
-                                    <img className="w-40 h-40 rounded-full border-4 border-white" src={imageUrl} alt="Profile" />
-                                    <FaPlusCircle
-                                        className="absolute bottom-0 right-0 text-blue-500 text-3xl cursor-pointer"
-                                        onClick={() => document.getElementById('fileInput').click()}
-                                    />
-                                </div>
-                                <input
-                                    type="file"
-                                    id="fileInput"
-                                    className="hidden"
-                                    onChange={handleImageChange}
+            <Modal show={openEditModal} onClose={() => setOpenEditModal(false)}>
+                <Modal.Header>Update Profile</Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={formikEdit.handleSubmit} className="flex flex-col gap-4">
+                        <div className="flex justify-center mb-4">
+                            <div className="relative w-40 h-40">
+                                <img className="w-40 h-40 rounded-full border-4 border-white" src={imageUrl} alt="Profile" />
+                                <FaPlusCircle
+                                    className="absolute bottom-0 right-0 text-blue-500 text-3xl cursor-pointer"
+                                    onClick={() => document.getElementById('fileInput').click()}
                                 />
                             </div>
-                            <div>
-                                <Label htmlFor="username" value="Username" />
-                                <TextInput
-                                    id="username"
-                                    type="text"
-                                    value={userDetails.username || ''}
-                                    onChange={(e) => setUserDetails({ ...userDetails, username: e.target.value })}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <Label htmlFor="email" value="Email" />
-                                <TextInput
-                                    id="email"
-                                    type="email"
-                                    value={userDetails.email || ''}
-                                    onChange={(e) => setUserDetails({ ...userDetails, email: e.target.value })}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <Label htmlFor="phoneNumber" value="Phone Number" />
-                                <TextInput
-                                    id="phoneNumber"
-                                    type="tel"
-                                    value={userDetails.phoneNumber || ''}
-                                    onChange={(e) => setUserDetails({ ...userDetails, phoneNumber: e.target.value })}
-                                    required
-                                />
-                            </div>
-                            <Button type="submit">Update</Button>
-                        </form>
-                    </Modal.Body>
-                </Modal>
-            )}
+                            <input
+                                type="file"
+                                id="fileInput"
+                                className="hidden"
+                                onChange={handleImageChange}
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="username" value="Username" />
+                            <input
+                                id="userName"
+                                type="text"
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikEdit.touched.userName && formikEdit.errors.userName ? 'border-red-500' : ''}`}
+                                {...formikEdit.getFieldProps('userName')}
+                            />
+                            {formikEdit.touched.userName && formikEdit.errors.userName ? (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.userName}</p>
+                            ) : null}
+                        </div>
+                        <div>
+                            <Label htmlFor="email" value="Email" />
+                            <input
+                                id="email"
+                                type="email"
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikEdit.touched.email && formikEdit.errors.email ? 'border-red-500' : ''}`}
+                                {...formikEdit.getFieldProps('email')}
+                            />
+                            {formikEdit.touched.email && formikEdit.errors.email ? (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.email}</p>
+                            ) : null}
+                        </div>
+                        <div>
+                            <Label htmlFor="phoneNumber" value="Phone Number" />
+                            <input
+                                id="phoneNumber"
+                                type="tel"
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikEdit.touched.phoneNumber && formikEdit.errors.phoneNumber ? 'border-red-500' : ''}`}
+                                {...formikEdit.getFieldProps('phoneNumber')}
+                            />
+                            {formikEdit.touched.phoneNumber && formikEdit.errors.phoneNumber ? (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.phoneNumber}</p>
+                            ) : null}
+                        </div>
+                        <Button type="submit">Update</Button>
+                    </form>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }

@@ -5,9 +5,10 @@ import { useAuth } from "../Context/useAuth";
 const ProtetedRoute = ({ children }) => {
     const location = useLocation();
     const { isLoggedIn, logout, user } = useAuth();
+
     if (!isLoggedIn()) {
         sessionStorage.setItem("redirectPath", location.pathname);
-        return <Navigate to="/" state={{ from: location }} replace />;
+        return <Navigate to="/home" state={{ from: location }} replace />;
     }
 
     switch (location.pathname.split("/")[1]) {

@@ -1,12 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
-import {
-  PlusIcon,
-  Bars3Icon,
-  BellIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useAuth } from "../Context/useAuth";
 
@@ -36,15 +31,7 @@ function Mltsidebar() {
                   <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
                 </button>
               </div>
-              {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
-                <div className="flex h-16 shrink-0 items-center">
-                  <img
-                    className="h-8 w-auto"
-                    src=""
-                    alt=""
-                  />
-                </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li className='flex flex-1 flex-col gap-y-1 rounded-lg p-2 text-sm leading-7 font-semibold text-gray-400'>
@@ -89,14 +76,12 @@ function Mltsidebar() {
         </Dialog>
       </Transition.Root>
 
-      {/* Static sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-        {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
           <div className="flex h-16 shrink-0 items-center">
             <img
-              className="h-8 w-auto"
-              src=""
+              className="h-8 w-8 mr-2"
+              src="../../src/assets/image.png"
               alt=""
             />
           </div>
@@ -148,44 +133,18 @@ function Mltsidebar() {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
 
-          {/* Separator */}
           <div className="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
 
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
 
-            <div className="relative flex flex-1 items-center">Welcome! {userName}</div>
-
-            {/* <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <button
-                    type="button"
-                    className="relative inline-flex items-center gap-x-1.5 rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                    <PlusIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-                    Add New
-                  </button>
-                </div>
-              </div> */}
+            <div className="relative flex flex-1 items-center text-3xl">Welcome! {userName}</div>
 
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              {/* <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-                <span className="sr-only">View notifications</span>
-                <BellIcon className="h-6 w-6" aria-hidden="true" />
-              </button> */}
-
-              {/* Separator */}
-              <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
-
-              {/* Profile dropdown */}
               <Menu as="div" className="relative">
                 <Menu.Button className="-m-1.5 flex items-center p-1.5">
                   <span className="sr-only">Open user menu</span>
-                  {/* <img
-                    className="h-8 w-8 rounded-full bg-gray-50"
-                    src=""
-                    alt=""
-                  /> */}
                   <span className="hidden lg:flex lg:items-center">
-                    <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
+                    <span className="ml-4 text-lg font-semibold leading-6 text-gray-900" aria-hidden="true">
                       {userName}
                     </span>
                     <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />

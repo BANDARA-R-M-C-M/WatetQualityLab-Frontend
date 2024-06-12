@@ -51,13 +51,7 @@ function GeneralInventory() {
     const handleAddCatagory = async (event) => {
         event.preventDefault();
 
-        // if (
-            await addGeneralCategory(categoryName, labId, token)
-        // ) {
-        //     alert('Category Added Successfully')
-        // } else {
-        //     alert('Failed to Add Category')
-        // }
+        await addGeneralCategory(categoryName, labId, token);
 
         setCategoryName('');
 
@@ -67,13 +61,7 @@ function GeneralInventory() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        // if (
-            await updateGeneralCategory(updatedCategoryId, categoryName, token)
-        // ) {
-        //     alert('Category Updated Successfully')
-        // } else {
-        //     alert('Failed to Update Category')
-        // }
+        await updateGeneralCategory(updatedCategoryId, categoryName, token);
 
         setUpdatedCategoryId('');
         setCategoryName('');
@@ -82,20 +70,14 @@ function GeneralInventory() {
     };
 
     const handleDelete = async (deletedCategoryId) => {
-        // try {
-            await deleteGeneralCategory(deletedCategoryId, token);
-        //     alert('Category deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting category:', error);
-        //     alert('Failed to delete category');
-        // }
-
+        await deleteGeneralCategory(deletedCategoryId, token);
         setOpenDeleteModal(false);
     };
 
     return (
         <>
             <div className="bg-white rounded-md w-full">
+                <h1 className="text-center text-4xl font-bold mb-7">General Inventory Categories</h1>
                 <div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">

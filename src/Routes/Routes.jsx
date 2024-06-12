@@ -13,7 +13,7 @@ import MLTDashboard from '../Pages/MLT/MLTDashboard.jsx';
 import PendingSamples from '../Pages/MLT/PendingSamples.jsx';
 import MLT from "../Pages/Admin/MLT"
 import PHI from "../Pages/Admin/PHI";
-import Login from '../View/Login.jsx';
+import Login from '../Pages/Login.jsx';
 import MOHSupervisor from '../Pages/Admin/MOHSupervisor.jsx';
 import Laboratories from '../Pages/Admin/Laboratories.jsx';
 import PHIAreas from '../Pages/Admin/PHIAreas.jsx';
@@ -30,19 +30,19 @@ import SamplesP from '../Pages/PHI/Samples.jsx';
 import HistoryP from '../Pages/PHI/History.jsx';
 import MOHDashboard from '../Pages/MOHSupervisor/MOHDashboard.jsx';
 import ReportM from '../Pages/MOHSupervisor/Reports.jsx';
-// import SamplesM from '../Pages/MOHSupervisor/Samples.jsx';
-// import HistoryM from '../Pages/MOHSupervisor/History.jsx';
 import Mohsidebar from "../Components/Mohsidebar.jsx";
 import Profile from "../Pages/Profile.jsx";
 import GeneralInventoryReport from "../Pages/MLT/GeneralInventoryReport.jsx";
 import ItemIssuingReport from "../Pages/MLT/ItemIssuingReport.jsx";
+import LandingPage from "../Pages/LandingPage/LandingPage.jsx";
 
 export const router = createBrowserRouter([
       {
       path: '/',
       element: <App />,
       children: [
-        {path: "/", element: <Login/>},
+        {path: "/", element: <LandingPage/>},
+        {path: "/login", element: <Login/>},
         {path: "/profile", element: <Profile/>},
         {path: "admin", 
           element: <ProtectedRoute children={<Adminsidebar />}/>,
@@ -88,9 +88,7 @@ export const router = createBrowserRouter([
             element: <ProtectedRoute children={<Mohsidebar />}/>,
               children: [
                 {path: "home", element: <MOHDashboard/>},
-                {path: "reports", element: <ReportM/>},
-                // {path: "samples", element: <SamplesM/>},
-                // {path: "history", element: <HistoryM/>}
+                {path: "reports", element: <ReportM/>}
               ]
         }
       ],

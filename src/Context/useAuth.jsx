@@ -38,8 +38,6 @@ export const UserProvider = ({ children }) => {
 
         setToken(res?.data.token);
         setUser(userObj);
-        
-        navigate("/admin/dashboard");
       }
     } catch (error) {
       toast.warning("Server error occurred");
