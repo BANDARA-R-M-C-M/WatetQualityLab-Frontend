@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
@@ -8,13 +8,13 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getPHIAreas, fetchLocations, addPHIArea, getMOHAreas, updatePHIAreas, deletePHIArea } from "../../Service/AdminService";
 import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 function PHIAreas() {
 
     const [phiAreas, setPHIAreas] = useState([]);
     const [mohAreas, setMohAreas] = useState([]);
-    const [phiAreaName, setPhiAreaName] = useState('');
-    const [mohAreaId, setMohAreaId] = useState('');
     const [cities, setCities] = useState([]);
     const [placeholderText, setPlaceholderText] = useState('PHI Area Name...');
     const [searchTerm, setSearchTerm] = useState('');
@@ -34,17 +34,48 @@ function PHIAreas() {
     const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
+    const validationSchema = yup.object({
+        phiAreaName: yup.string().required('PHI Area Name is required'),
+        mohAreaId: yup.string().required('MOH Area is required'),
+    });
+
+    const formikNew = useFormik({
+        initialValues: {
+            phiAreaName: '',
+            mohAreaId: '',
+        },
+        validationSchema,
+        onSubmit: async (values) => {
+            await addPHIArea(values.phiAreaName, values.mohAreaId, token);
+            setOpenNewModal(false);
+            formikNew.resetForm();
+        },
+    });
+
+    const formikEdit = useFormik({
+        initialValues: {
+            phiAreaName: '',
+            mohAreaId: '',
+        },
+        validationSchema,
+        onSubmit: async (values) => {
+            await updatePHIAreas(updatedId, values.phiAreaName, values.mohAreaId, token);
+            setOpenEditModal(false);
+            formikEdit.resetForm();
+        },
+    });
+
     useEffect(() => {
         const loadLocations = async () => {
             try {
-                const cities = await fetchLocations(phiAreaName);
+                const cities = await fetchLocations(formikNew.values.phiAreaName);
                 setCities(cities);
             } catch (error) {
                 console.error('Error loading cities:', error);
             }
         };
         loadLocations();
-    }, [phiAreaName]);
+    }, [formikNew.values.phiAreaName]);
 
     useEffect(() => {
         const fetchPHIAreas = async () => {
@@ -71,47 +102,8 @@ function PHIAreas() {
         fetchMOHAreas();
     }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // try {
-        await addPHIArea(phiAreaName, mohAreaId, token);
-        //     alert('PHI Area added successfully');
-        // } catch (error) {
-        //     console.error('Error adding PHI Area:', error);
-        //     alert('Failed to add PHI Area');
-        // }
-
-        setPhiAreaName('');
-        setMohAreaId('');
-
-        setOpenNewModal(false);
-    }
-
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        // if (
-        await updatePHIAreas(updatedId, phiAreaName, mohAreaId, token)
-        // ) {
-        //     alert('PHI Area updated successfully');
-        // } else {
-        //     alert('Failed to update PHI Area');
-        // }
-
-        setPhiAreaName('');
-        setMohAreaId('');
-
-        setOpenEditModal(false);
-    }
-
     const handleDelete = async (deletedId) => {
-        // try {
         await deletePHIArea(deletedId, token);
-        //     alert('PHI Area deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting sample:', error);
-        //     alert('Failed to delete PHI Area');
-        // }
-
         setOpenDeleteModal(false);
     }
 
@@ -182,17 +174,12 @@ function PHIAreas() {
                         <table className="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        PHI Area ID
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         PHI Area Name
                                     </th>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Assigned MOH Area
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Assigned MOH Area Name                                    </th>
+                                        Assigned MOH Area Name
+                                    </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -202,15 +189,9 @@ function PHIAreas() {
                             <tbody>
                                 {phiAreas.map((phiArea, index) => (
                                     <tr key={index}>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{phiArea.phiAreaId}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{phiArea.phiAreaName}</p>
                                         </td>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{phiArea.mohAreaId}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{phiArea.mohAreaName}</p>
                                         </td>
@@ -219,8 +200,10 @@ function PHIAreas() {
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(phiArea.phiAreaId);
-                                                    setPhiAreaName(phiArea.phiAreaName);
-                                                    setMohAreaId(phiArea.mohAreaId);
+                                                    formikEdit.setValues({
+                                                        phiAreaName: phiArea.phiAreaName,
+                                                        mohAreaId: phiArea.mohAreaId,
+                                                    });
                                                 }}
                                             >
                                                 <MdEdit size={25} />
@@ -248,30 +231,29 @@ function PHIAreas() {
 
             <Modal show={openNewModal} onClose={() => {
                 setOpenNewModal(false);
-                setPhiAreaName('');
-                setMohAreaId('');
+                formikNew.resetForm();
             }}>
-                <Modal.Header>Add Lab</Modal.Header>
+                <Modal.Header>Add PHI Area</Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={formikNew.handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="phiAreaName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Phi Area Name
+                                PHI Area Name
                             </label>
                             <input type="text"
-                                name="phiAreaName"
                                 id="phiAreaName"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={phiAreaName}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.phiAreaName && formikNew.errors.phiAreaName ? 'border-red-500' : ''}`}
                                 list="citySuggestions"
-                                onChange={(e) => setPhiAreaName(e.target.value)}
-                                required
+                                {...formikNew.getFieldProps('phiAreaName')}
                             />
                             <datalist id="citySuggestions">
                                 {cities.map((city, index) => (
                                     <option key={index} value={city} />
                                 ))}
                             </datalist>
+                            {formikNew.errors.phiAreaName && formikNew.touched.phiAreaName && (
+                                <p className="text-red-500 text-xs italic">{formikNew.errors.phiAreaName}</p>
+                            )}
                         </div>
                         <div className="mb-4">
                             <label htmlFor="mohAreaId" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -279,11 +261,8 @@ function PHIAreas() {
                             </label>
                             <select
                                 id="mohAreaId"
-                                name="mohAreaId"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={mohAreaId}
-                                onChange={(e) => setMohAreaId(e.target.value)}
-                                required
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.mohAreaId && formikNew.errors.mohAreaId ? 'border-red-500' : ''}`}
+                                {...formikNew.getFieldProps('mohAreaId')}
                             >
                                 <option value="">Select MOH Area</option>
                                 {mohAreas.map((mohArea) => (
@@ -292,6 +271,9 @@ function PHIAreas() {
                                     </option>
                                 ))}
                             </select>
+                            {formikNew.errors.mohAreaId && formikNew.touched.mohAreaId && (
+                                <p className="text-red-500 text-xs italic">{formikNew.errors.mohAreaId}</p>
+                            )}
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -302,18 +284,24 @@ function PHIAreas() {
 
             <Modal show={openEditModal} onClose={() => {
                 setOpenEditModal(false);
-                setPhiAreaName('');
-                setMohAreaId('');
+                formikEdit.resetForm();
             }}>
-                <Modal.Header>Edit Sample</Modal.Header>
+                <Modal.Header>Edit PHI Area</Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={handleUpdate}>
+                    <form onSubmit={formikEdit.handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="phiAreaName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Phi Area Name
+                                PHI Area Name
                             </label>
-                            <input type="text" name="phiAreaName" id="phiAreaName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={phiAreaName} onChange={(e) => setPhiAreaName(e.target.value)} required />
+                            <input
+                                type="text"
+                                id="phiAreaName"
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.phiAreaName && formikNew.errors.phiAreaName ? 'border-red-500' : ''}`}
+                                {...formikEdit.getFieldProps('phiAreaName')}
+                            />
+                            {formikEdit.errors.phiAreaName && formikEdit.touched.phiAreaName && (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.phiAreaName}</p>
+                            )}
                         </div>
                         <div className="mb-4">
                             <label htmlFor="mohAreaId" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -321,11 +309,8 @@ function PHIAreas() {
                             </label>
                             <select
                                 id="mohAreaId"
-                                name="mohAreaId"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={mohAreaId}
-                                onChange={(e) => setMohAreaId(e.target.value)}
-                                required
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.mohAreaId && formikNew.errors.mohAreaId ? 'border-red-500' : ''}`}
+                                {...formikEdit.getFieldProps('mohAreaId')}
                             >
                                 <option value="">Select MOH Area</option>
                                 {mohAreas.map((mohArea) => (
@@ -334,6 +319,9 @@ function PHIAreas() {
                                     </option>
                                 ))}
                             </select>
+                            {formikEdit.errors.mohAreaId && formikEdit.touched.mohAreaId && (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.mohAreaId}</p>
+                            )}
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -365,4 +353,4 @@ function PHIAreas() {
     );
 }
 
-export default PHIAreas
+export default PHIAreas;

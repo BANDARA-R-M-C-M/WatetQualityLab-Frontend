@@ -8,13 +8,12 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { getMOHAreas, fetchLocations, addMOHArea, getLabs, updateMOHAreas, deleteMOHArea } from "../../Service/AdminService";
 import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 function MOHAreas() {
-
     const [mohAreas, setMohAreas] = useState([]);
     const [labs, setLabs] = useState([]);
-    const [mohAreaName, setMohAreaName] = useState('');
-    const [labId, setLabId] = useState('');
     const [cities, setCities] = useState([]);
     const [placeholderText, setPlaceholderText] = useState('MOH Area Name...');
     const [searchTerm, setSearchTerm] = useState('');
@@ -34,17 +33,49 @@ function MOHAreas() {
     const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
+    const validationSchema = Yup.object().shape({
+        mohAreaName: Yup.string().required('MOH Area Name is required'),
+        labId: Yup.string().required('Lab is required')
+    });
+
+    const formikNew = useFormik({
+        initialValues: {
+            mohAreaName: '',
+            labId: ''
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            await addMOHArea(values.mohAreaName, values.labId, token);
+            setOpenNewModal(false);
+            formikNew.resetForm();
+        },
+    });
+
+    const formikEdit = useFormik({
+        initialValues: {
+            mohAreaName: '',
+            labId: ''
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            await updateMOHAreas(updatedId, values.mohAreaName, values.labId, token);
+            setOpenEditModal(false);
+            formikEdit.resetForm();
+        },
+        enableReinitialize: true
+    });
+
     useEffect(() => {
         const loadLocations = async () => {
             try {
-                const cities = await fetchLocations(mohAreaName);
+                const cities = await fetchLocations(formikNew.values.mohAreaName);
                 setCities(cities);
             } catch (error) {
                 console.error('Error loading cities:', error);
             }
         };
         loadLocations();
-    }, [mohAreaName]);
+    }, [formikNew.values.mohAreaName]);
 
     useEffect(() => {
         const fetchMOHAreas = async () => {
@@ -71,47 +102,8 @@ function MOHAreas() {
         fetchLabs();
     }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // try {
-        await addMOHArea(mohAreaName, labId, token);
-        //     alert('MOH Area added successfully');
-        // } catch (error) {
-        //     console.error('Error adding PHI Area:', error);
-        //     alert('Failed to add MOH Area');
-        // }
-
-        setMohAreaName('');
-        setLabId('');
-
-        setOpenNewModal(false);
-    }
-
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        // if (
-        await updateMOHAreas(updatedId, mohAreaName, labId, token)
-        // ) {
-        //     alert('MOH Area updated successfully');
-        // } else {
-        //     alert('Failed to update MOH Area');
-        // }
-
-        setMohAreaName('');
-        setLabId('');
-
-        setOpenEditModal(false);
-    }
-
     const handleDelete = async (deletedId) => {
-        // try {
         await deleteMOHArea(deletedId, token);
-        // alert('MOH Area deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting sample:', error);
-        //     alert('Failed to delete MOH Area');
-        // }
-
         setOpenDeleteModal(false);
     }
 
@@ -182,15 +174,9 @@ function MOHAreas() {
                         <table className="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        MOH Area ID
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         MOH Area Name
                                     </th>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Assigned Lab
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Assigned Lab Name
                                     </th>
@@ -203,15 +189,9 @@ function MOHAreas() {
                             <tbody>
                                 {mohAreas.map((mohArea, index) => (
                                     <tr key={index}>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{mohArea.mohAreaId}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{mohArea.mohAreaName}</p>
                                         </td>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{mohArea.labId}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{mohArea.labName}</p>
                                         </td>
@@ -220,8 +200,10 @@ function MOHAreas() {
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(mohArea.mohAreaId);
-                                                    setMohAreaName(mohArea.mohAreaName);
-                                                    setLabId(mohArea.labId);
+                                                    formikEdit.setValues({
+                                                        mohAreaName: mohArea.mohAreaName,
+                                                        labId: mohArea.labId
+                                                    });
                                                 }}
                                             >
                                                 <MdEdit size={25} />
@@ -252,43 +234,39 @@ function MOHAreas() {
 
             <Modal show={openNewModal} onClose={() => {
                 setOpenNewModal(false);
-                setMohAreaName('');
-                setLabId('');
+                formikNew.resetForm();
             }}>
                 <Modal.Header>Add MOH Area</Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={formikNew.handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="mohAreaName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 MOH Area Name
                             </label>
                             <input
                                 type="text"
-                                name="mohAreaName"
                                 id="mohAreaName"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={mohAreaName}
-                                onChange={(e) => setMohAreaName(e.target.value)}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.mohAreaName && formikNew.errors.mohAreaName ? 'border-red-500' : ''}`}
+                                {...formikNew.getFieldProps('mohAreaName')}
                                 list="citySuggestions"
-                                required
                             />
                             <datalist id="citySuggestions">
                                 {cities.map((city, index) => (
                                     <option key={index} value={city} />
                                 ))}
                             </datalist>
+                            {formikNew.touched.mohAreaName && formikNew.errors.mohAreaName ? (
+                                <div className="text-red-500 text-xs">{formikNew.errors.mohAreaName}</div>
+                            ) : null}
                         </div>
                         <div className="mb-4">
                             <label htmlFor="labId" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                MOH Area
+                                Lab
                             </label>
                             <select
                                 id="labId"
-                                name="labId"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labId}
-                                onChange={(e) => setLabId(e.target.value)}
-                                required
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.labId && formikNew.errors.labId ? 'border-red-500' : ''}`}
+                                {...formikNew.getFieldProps('labId')}
                             >
                                 <option value="">Select Lab</option>
                                 {labs.map((lab) => (
@@ -297,6 +275,9 @@ function MOHAreas() {
                                     </option>
                                 ))}
                             </select>
+                            {formikNew.touched.labId && formikNew.errors.labId ? (
+                                <div className="text-red-500 text-xs">{formikNew.errors.labId}</div>
+                            ) : null}
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -307,30 +288,33 @@ function MOHAreas() {
 
             <Modal show={openEditModal} onClose={() => {
                 setOpenEditModal(false);
-                setMohAreaName('');
-                setLabId('');
+                formikEdit.resetForm();
             }}>
-                <Modal.Header>Edit Sample</Modal.Header>
+                <Modal.Header>Edit MOH Area</Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={handleUpdate}>
+                    <form onSubmit={formikEdit.handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="mohAreaName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 MOH Area Name
                             </label>
-                            <input type="text" name="mohAreaName" id="mohAreaName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={mohAreaName} onChange={(e) => setMohAreaName(e.target.value)} required />
+                            <input
+                                type="text"
+                                id="mohAreaName"
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.mohAreaName && formikNew.errors.mohAreaName ? 'border-red-500' : ''}`}
+                                {...formikEdit.getFieldProps('mohAreaName')}
+                            />
+                            {formikEdit.touched.mohAreaName && formikEdit.errors.mohAreaName ? (
+                                <div className="text-red-500 text-xs">{formikEdit.errors.mohAreaName}</div>
+                            ) : null}
                         </div>
                         <div className="mb-4">
                             <label htmlFor="labId" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                MOH Area
+                                Lab
                             </label>
                             <select
                                 id="labId"
-                                name="labId"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labId}
-                                onChange={(e) => setLabId(e.target.value)}
-                                required
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.labId && formikNew.errors.labId ? 'border-red-500' : ''}`}
+                                {...formikEdit.getFieldProps('labId')}
                             >
                                 <option value="">Select Lab</option>
                                 {labs.map((lab) => (
@@ -339,6 +323,9 @@ function MOHAreas() {
                                     </option>
                                 ))}
                             </select>
+                            {formikEdit.touched.labId && formikEdit.errors.labId ? (
+                                <div className="text-red-500 text-xs">{formikEdit.errors.labId}</div>
+                            ) : null}
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -370,4 +357,4 @@ function MOHAreas() {
     );
 }
 
-export default MOHAreas
+export default MOHAreas;

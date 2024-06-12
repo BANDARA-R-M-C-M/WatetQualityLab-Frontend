@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../Context/useAuth";
 import { useDebounce } from '../../Util/useDebounce';
-import { updateWCReport, getAddedReports, getReportPDF, deleteWCReport } from "../../Service/MLTService";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { updateWCReport, getComments, getAddedReports, getReportPDF, deleteWCReport } from "../../Service/MLTService";
 import { Button, Modal, Pagination, Dropdown } from "flowbite-react";
 import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
@@ -12,13 +14,14 @@ import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai"
 function WCReports() {
 
     const [reports, setReports] = useState([]);
-    const [myRefNo, setMyRefNo] = useState('');
-    const [presumptiveColiformCount, setPresumptiveColiformCount] = useState('');
-    const [ecoliCount, setEcoliCount] = useState('');
-    const [appearanceOfSample, setAppearanceOfSample] = useState('');
-    const [remarks, setRemarks] = useState('');
-    const [isContaminated, setIsContaminated] = useState(null);
+    // const [myRefNo, setMyRefNo] = useState('');
+    // const [presumptiveColiformCount, setPresumptiveColiformCount] = useState('');
+    // const [ecoliCount, setEcoliCount] = useState('');
+    // const [appearanceOfSample, setAppearanceOfSample] = useState('');
+    // const [remarks, setRemarks] = useState('');
+    // const [isContaminated, setIsContaminated] = useState(null);
     const [reportUrl, setReportUrl] = useState('');
+    const [comments, setComments] = useState([]);
     const [placeholderText, setPlaceholderText] = useState('My Ref No...');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchParameter, setSearchParameter] = useState('MyRefNo');
@@ -37,6 +40,15 @@ function WCReports() {
     const { user, token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
+    const validationSchema = Yup.object({
+        myRefNo: Yup.string().required('My Ref No is required'),
+        presumptiveColiformCount: Yup.number().required('Presumptive Coliform Count is required'),
+        ecoliCount: Yup.number().required('Ecoli Count is required'),
+        appearanceOfSample: Yup.string().required('Appearance Of Sample is required'),
+        remarks: Yup.string().required('Remarks are required'),
+        isContaminated: Yup.boolean().required('Contamination Status is required')
+    });
+
     useEffect(() => {
         const fetchReports = async () => {
             try {
@@ -53,6 +65,20 @@ function WCReports() {
         fetchReports();
     }, [openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const response = await getComments(token);
+                if (response) {
+                    setComments(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+        };
+        fetchComments();
+    }, []);
+
     const handlePreview = async (reportId) => {
         const response = await getReportPDF(reportId, token);
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
@@ -60,37 +86,39 @@ function WCReports() {
         setReportUrl(pdfUrl);
     };
 
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-
-        try {
-            await updateWCReport(updatedId, myRefNo, appearanceOfSample, presumptiveColiformCount, ecoliCount, remarks, isContaminated, token);
-            alert('Report updated successfully');
-        } catch (error) {
-            console.error('Error submitting report:', error);
-            alert('Failed to update report');
-        }
-
-        setMyRefNo('');
-        setPresumptiveColiformCount('');
-        setEcoliCount('');
-        setAppearanceOfSample('');
-        setRemarks('');
-
-        setOpenEditModal(false);
-    };
-
     const handleDelete = async (deletedId) => {
-        try {
-            await deleteWCReport(deletedId, token);
-            alert('Report deleted successfully');
-        } catch (error) {
-            console.error('Error deleting sample:', error);
-            alert('Failed to delete sample');
-        }
+        await deleteWCReport(deletedId, token);
 
         setOpenDeleteModal(false);
     };
+
+    const formik = useFormik({
+        initialValues: {
+            myRefNo: '',
+            presumptiveColiformCount: '',
+            ecoliCount: '',
+            analyzedDate: '',
+            appearanceOfSample: '',
+            remarks: '',
+            isContaminated: null,
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            await updateWCReport(
+                updatedId,
+                values.myRefNo,
+                values.appearanceOfSample,
+                values.presumptiveColiformCount,
+                values.ecoliCount,
+                values.remarks,
+                values.isContaminated,
+                token
+            );
+            openEditModal(false);
+            formik.resetForm();
+        },
+        enableReinitialize: true,
+    });
 
     return (
         <div className="bg-white rounded-md w-full">
@@ -206,12 +234,6 @@ function WCReports() {
                     <table className="min-w-full leading-normal">
                         <thead>
                             <tr>
-                                {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Sample Id
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Report Id
-                                </th> */}
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     My Ref No
                                 </th>
@@ -244,12 +266,6 @@ function WCReports() {
                         <tbody>
                             {reports.map((report, index) => (
                                 <tr key={index}>
-                                    {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{report.sampleId}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{report.reportRefId}</p>
-                                    </td> */}
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{report.myRefNo}</p>
                                     </td>
@@ -285,12 +301,15 @@ function WCReports() {
                                             onClick={() => {
                                                 setOpenEditModal(true);
                                                 setUpdatedId(report.reportRefId);
-                                                setMyRefNo(report.myRefNo);
-                                                setPresumptiveColiformCount(report.presumptiveColiformCount);
-                                                setEcoliCount(report.ecoliCount);
-                                                setAppearanceOfSample(report.appearanceOfSample);
-                                                setRemarks(report.remarks);
-                                                setIsContaminated(report.contaminated);
+                                                formik.setValues({
+                                                    myRefNo: report.myRefNo,
+                                                    presumptiveColiformCount: report.presumptiveColiformCount,
+                                                    ecoliCount: report.ecoliCount,
+                                                    analyzedDate: report.analyzedDate,
+                                                    appearanceOfSample: report.appearanceOfSample,
+                                                    remarks: report.remarks,
+                                                    isContaminated: report.contaminated
+                                                });
                                             }}>
                                             <MdEdit size={25} />
                                         </Button>
@@ -324,84 +343,141 @@ function WCReports() {
             </Modal>
 
             <Modal show={openEditModal} onClose={() => setOpenEditModal(false)}>
-                <Modal.Header>Edit Report</Modal.Header>
-                <form onSubmit={handleUpdate} >
-                    <div className="m-4">
-                        <label htmlFor="myRefNo" className="block text-gray-700 text-sm font-bold mb-2">
-                            My Ref No
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            name="myRefNo" id="myRefNo" type="text" placeholder="My Ref No"
-                            value={myRefNo} onChange={(e) => setMyRefNo(e.target.value)} required />
-                    </div>
-                    <div className="m-4">
-                        <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
-                            Presumptive Coliform Count
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            name="presumptiveColiformCount" id="presumptiveColiformCount" type="number" placeholder="Presumptive Coliform Count"
-                            value={presumptiveColiformCount} onChange={(e) => setPresumptiveColiformCount(e.target.value)} required />
-                    </div>
-                    <div className="m-4">
-                        <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
-                            Ecoli Count
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            name="ecoliCount" id="ecoliCount" type="number" placeholder="Ecoli Count"
-                            value={ecoliCount} onChange={(e) => setEcoliCount(e.target.value)} required />
-                    </div>
-                    <div className="m-4">
-                        <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
-                            Appearance Of Sample
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            name="appearanceOfSample" id="appearanceOfSample" type="text" placeholder="Appearance Of Sample"
-                            value={appearanceOfSample} onChange={(e) => setAppearanceOfSample(e.target.value)} required />
-                    </div>
-                    <div className="m-4">
-                        <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
-                            Remarks
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            name="remarks" id="remarks" type="text" placeholder="Remarks"
-                            value={remarks} onChange={(e) => setRemarks(e.target.value)} required />
-                    </div>
-                    <div className="m-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Contamination Status</label>
-                        <div className="flex items-center">
+                <Modal.Header>Report</Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={formik.handleSubmit}>
+                        <div className="mb-4">
+                            <label htmlFor="myRefNo" className="block text-gray-700 text-sm font-bold mb-2">
+                                My Ref No
+                            </label>
                             <input
-                                className="mr-2 leading-tight"
-                                type="radio"
-                                id="contaminatedTrue"
-                                name="isContaminated"
-                                value="true"
-                                checked={isContaminated === true}
-                                onChange={() => setIsContaminated(true)}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.myRefNo && formik.errors.myRefNo ? 'border-red-500' : ''}`}
+                                id="myRefNo"
+                                type="text"
+                                {...formik.getFieldProps('myRefNo')}
                             />
-                            <label htmlFor="contaminatedTrue" className="text-gray-700">True</label>
+                            {formik.touched.myRefNo && formik.errors.myRefNo ? (
+                                <p className="text-red-500 text-xs italic">{formik.errors.myRefNo}</p>
+                            ) : null}
                         </div>
-                        <div className="flex items-center">
+
+                        <div className="mb-4">
+                            <label htmlFor="presumptiveColiformCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                Presumptive Coliform Count
+                            </label>
                             <input
-                                className="mr-2 leading-tight"
-                                type="radio"
-                                id="contaminatedFalse"
-                                name="isContaminated"
-                                value="false"
-                                checked={isContaminated === false}
-                                onChange={() => setIsContaminated(false)}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.presumptiveColiformCount && formik.errors.presumptiveColiformCount ? 'border-red-500' : ''}`}
+                                id="presumptiveColiformCount"
+                                type="number"
+                                {...formik.getFieldProps('presumptiveColiformCount')}
                             />
-                            <label htmlFor="contaminatedFalse" className="text-gray-700">False</label>
+                            {formik.touched.presumptiveColiformCount && formik.errors.presumptiveColiformCount ? (
+                                <p className="text-red-500 text-xs italic">{formik.errors.presumptiveColiformCount}</p>
+                            ) : null}
                         </div>
-                    </div>
-                    <div className="flex mb-4 justify-evenly">
-                        <Button type="submit" size="xl">Submit</Button>
-                    </div>
-                </form>
+
+                        <div className="mb-4">
+                            <label htmlFor="ecoliCount" className="block text-gray-700 text-sm font-bold mb-2">
+                                Ecoli Count
+                            </label>
+                            <input
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.ecoliCount && formik.errors.ecoliCount ? 'border-red-500' : ''}`}
+                                id="ecoliCount"
+                                type="number"
+                                {...formik.getFieldProps('ecoliCount')}
+                            />
+                            {formik.touched.ecoliCount && formik.errors.ecoliCount ? (
+                                <p className="text-red-500 text-xs italic">{formik.errors.ecoliCount}</p>
+                            ) : null}
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="analyzedDate" className="block text-gray-700 text-sm font-bold mb-2">
+                                Analyzed Date
+                            </label>
+                            <input
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.analyzedDate && formik.errors.analyzedDate ? 'border-red-500' : ''}`}
+                                id="analyzedDate"
+                                type="date"
+                                min={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-01`}
+                                max={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`}
+                                {...formik.getFieldProps('analyzedDate')}
+                            />
+                            {formik.touched.analyzedDate && formik.errors.analyzedDate ? (
+                                <p className="text-red-500 text-xs italic">{formik.errors.analyzedDate}</p>
+                            ) : null}
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="appearanceOfSample" className="block text-gray-700 text-sm font-bold mb-2">
+                                Appearance Of Sample
+                            </label>
+                            <input
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.appearanceOfSample && formik.errors.appearanceOfSample ? 'border-red-500' : ''}`}
+                                id="appearanceOfSample"
+                                type="text"
+                                {...formik.getFieldProps('appearanceOfSample')}
+                            />
+                            {formik.touched.appearanceOfSample && formik.errors.appearanceOfSample ? (
+                                <p className="text-red-500 text-xs italic">{formik.errors.appearanceOfSample}</p>
+                            ) : null}
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="remarks" className="block text-gray-700 text-sm font-bold mb-2">
+                                Remarks
+                            </label>
+                            <select
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.remarks && formik.errors.remarks ? 'border-red-500' : ''}`}
+                                id="remarks"
+                                {...formik.getFieldProps('remarks')}
+                            >
+                                <option value="" disabled>Select a comment</option>
+                                {comments.map((comment, index) => (
+                                    <option key={index} value={comment.feedback}>{comment.feedback}</option>
+                                ))}
+                            </select>
+                            {formik.touched.remarks && formik.errors.remarks ? (
+                                <p className="text-red-500 text-xs italic">{formik.errors.remarks}</p>
+                            ) : null}
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2">Contamination Status</label>
+                            <div className="flex items-center">
+                                <input
+                                    className="mr-2 leading-tight"
+                                    type="radio"
+                                    id="contaminatedTrue"
+                                    name="isContaminated"
+                                    value="true"
+                                    checked={formik.values.isContaminated === true}
+                                    onChange={() => formik.setFieldValue('isContaminated', true)}
+                                />
+                                <label htmlFor="contaminatedTrue" className="text-gray-700">True</label>
+                            </div>
+                            <div className="flex items-center">
+                                <input
+                                    className="mr-2 leading-tight"
+                                    type="radio"
+                                    id="contaminatedFalse"
+                                    name="isContaminated"
+                                    value="false"
+                                    checked={formik.values.isContaminated === false}
+                                    onChange={() => formik.setFieldValue('isContaminated', false)}
+                                />
+                                <label htmlFor="contaminatedFalse" className="text-gray-700">False</label>
+                            </div>
+                            {formik.touched.isContaminated && formik.errors.isContaminated ? (
+                                <p className="text-red-500 text-xs italic">{formik.errors.isContaminated}</p>
+                            ) : null}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                            <Button type="submit">Submit</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
             </Modal>
 
             <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup>

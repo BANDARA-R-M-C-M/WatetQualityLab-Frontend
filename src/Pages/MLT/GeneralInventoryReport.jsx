@@ -6,6 +6,7 @@ import { Button, Dropdown, Modal, Pagination, Table } from 'flowbite-react';
 import { MdClose } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { TbReportAnalytics } from "react-icons/tb";
+import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 
 function GeneralInventoryReport() {
 
@@ -19,7 +20,7 @@ function GeneralInventoryReport() {
     const [searchParameter, setSearchParameter] = useState('ItemName');
     const [searchParameterType, setSearchParameterType] = useState('string');
     const [sortBy, setSortBy] = useState('ItemName');
-    const [isAscending, setIsAscending] = useState(false);
+    const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
@@ -118,6 +119,12 @@ function GeneralInventoryReport() {
                                     Remarks
                                 </Dropdown.Item>
                             </Dropdown>
+                        </div>
+                        <div className="flex items-center rounded-md">
+                            <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
+                                {isAscending ? <AiOutlineSortAscending size={28} />
+                                    : <AiOutlineSortDescending size={28} />}
+                            </Button>
                         </div>
                     </div>
                     <div className='flex items-center justify-between'>

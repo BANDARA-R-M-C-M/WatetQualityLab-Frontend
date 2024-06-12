@@ -8,14 +8,11 @@ import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai"
 import { addLab, getLabs, updateLabs, deleteLab } from "../../Service/AdminService";
 import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 function Laboratories() {
-
     const [labs, setLabs] = useState([]);
-    const [labName, setLabName] = useState('');
-    const [labLocation, setLabLocation] = useState('');
-    const [labTelephone, setLabTelephone] = useState('');
-    const [placeholderText, setPlaceholderText] = useState('Lab Name...');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchParameter, setSearchParameter] = useState('LabName');
     const [searchParameterType, setSearchParameterType] = useState('string');
@@ -33,6 +30,12 @@ function Laboratories() {
     const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
 
+    const validationSchema = yup.object().shape({
+        labName: yup.string().required('Lab Name is required'),
+        labLocation: yup.string().required('Lab Location is required'),
+        labTelephone: yup.string().required('Lab Telephone is required'),
+    });
+
     useEffect(() => {
         const fetchLabs = async () => {
             const response = await getLabs(searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
@@ -46,121 +49,72 @@ function Laboratories() {
         fetchLabs();
     }, [openNewModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // try {
-        await addLab(labName, labLocation, labTelephone, token);
-        // alert('Lab added successfully');
-        // } catch (error) {
-        //     console.error('Error adding Lab:', error);
-        //     alert('Failed to add Lab');
-        // }
+    const formikNew = useFormik({
+        initialValues: {
+            labName: '',
+            labLocation: '',
+            labTelephone: ''
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            await addLab(values.labName, values.labLocation, values.labTelephone, token);
+            formikNew.resetForm();
+            setOpenNewModal(false);
+        }
+    });
 
-        setLabName('');
-        setLabLocation('');
-        setLabTelephone('');
+    const formikEdit = useFormik({
+        initialValues: {
+            labName: '',
+            labLocation: '',
+            labTelephone: ''
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            await updateLabs(updatedId, values.labName, values.labLocation, values.labTelephone, token);
+            formikEdit.resetForm();
+            setOpenEditModal(false);
+        },
+        enableReinitialize: true,
+    });
 
-        setOpenNewModal(false);
-    }
-
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        // if (
-        await updateLabs(updatedId, labName, labLocation, labTelephone, token)
-        // ) {
-        //     alert('Lab updated successfully');
-        // } else {
-        //     alert('Failed to update lab');
-        // }
-
-        setLabName('');
-        setLabLocation('');
-        setLabTelephone('');
-
-        setOpenEditModal(false);
-    }
-
-    const handleDelete = async (deletedId) => {
-        // try {
-        await deleteLab(deletedId, token);
-        //     alert('Lab deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting sample:', error);
-        //     alert('Failed to delete Lab');
-        // }
-
-        setOpenDeleteModal(false);
-    }
 
     return (
         <>
             <div className="bg-white rounded-md w-full">
-                <div>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center justify-between">
-                                <div className="flex bg-gray-200 items-center p-1 rounded-md">
-                                    <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
-                                    <input
-                                        className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
-                                        type="text"
-                                        placeholder={placeholderText}
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                    {searchTerm && (
-                                        <MdClose
-                                            className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
-                                            onClick={() => setSearchTerm('')}
-                                        />
-                                    )}
-                                </div>
-                                <div className="flex items-center p-2 rounded-md">
-                                    <Dropdown label="Sort">
-                                        <Dropdown.Item
-                                            onClick={() => {
-                                                setSortBy('LabName');
-                                                setSearchParameter('LabName');
-                                                setPlaceholderText(' Lab Name...');
-                                            }}
-                                        >
-                                            Lab Name
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                            onClick={() => {
-                                                setSortBy('LabLocation');
-                                                setSearchParameter('LabLocation');
-                                                setPlaceholderText('Lab Location...');
-                                            }}
-                                        >
-                                            Lab Location
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                            onClick={() => {
-                                                setSortBy('LabTelephone');
-                                                setSearchParameter('LabTelephone');
-                                                setPlaceholderText('Lab Telephone...');
-                                            }}
-                                        >
-                                            Lab Telephone
-                                        </Dropdown.Item>
-                                    </Dropdown>
-                                </div>
-                                <div className="flex items-center rounded-md">
-                                    <Button onClick={() => { setIsAscending(!isAscending) }} size="xs">
-                                        {isAscending ? <AiOutlineSortAscending size={28} />
-                                            : <AiOutlineSortDescending size={28} />}
-                                    </Button>
-                                </div>
-                            </div>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                        <div className="flex bg-gray-200 items-center p-1 rounded-md">
+                            <FaSearch className="mx-2 h-6 w-6 text-gray-400" />
+                            <input
+                                className="bg-gray-200 border-none ml-1 block focus:ring focus:ring-gray-200"
+                                type="text"
+                                placeholder="Lab Name..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            {searchTerm && (
+                                <MdClose
+                                    className="ml-2 h-6 w-6 text-gray-400 cursor-pointer"
+                                    onClick={() => setSearchTerm('')}
+                                />
+                            )}
                         </div>
-                        <Button
-                            onClick={() => { setOpenNewModal(true) }}
-                        >
-                            <FaPlus className="mr-2 h-5 w-5" />
-                            Add Lab
+                        <div className="flex items-center p-2 rounded-md">
+                            <Dropdown label="Sort">
+                                <Dropdown.Item onClick={() => setSortBy('LabName')}>Lab Name</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setSortBy('LabLocation')}>Lab Location</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setSortBy('LabTelephone')}>Lab Telephone</Dropdown.Item>
+                            </Dropdown>
+                        </div>
+                        <Button onClick={() => setIsAscending(!isAscending)} size="xs">
+                            {isAscending ? <AiOutlineSortAscending size={28} /> : <AiOutlineSortDescending size={28} />}
                         </Button>
                     </div>
+                    <Button onClick={() => setOpenNewModal(true)}>
+                        <FaPlus className="mr-2 h-5 w-5" />
+                        Add Lab
+                    </Button>
                 </div>
 
                 <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -168,11 +122,8 @@ function Laboratories() {
                         <table className="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Lab ID
-                                    </th> */}
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        LabName
+                                        Lab Name
                                     </th>
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Location
@@ -180,18 +131,13 @@ function Laboratories() {
                                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Phone Number
                                     </th>
-                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    </th>
-                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    </th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"></th>
+                                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {labs.map((lab, index) => (
                                     <tr key={index}>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{lab.labId}</p>
-                                        </td> */}
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{lab.labName}</p>
                                         </td>
@@ -206,18 +152,18 @@ function Laboratories() {
                                                 onClick={() => {
                                                     setOpenEditModal(true);
                                                     setUpdatedId(lab.labId);
-                                                    setLabName(lab.labName);
-                                                    setLabLocation(lab.labLocation);
-                                                    setLabTelephone(lab.labTelephone);
-                                                }}
-                                            >
+                                                    formikEdit.setValues({
+                                                        labName: lab.labName,
+                                                        labLocation: lab.labLocation,
+                                                        labTelephone: lab.labTelephone
+                                                    });
+                                                }}>
                                                 <MdEdit size={25} />
                                             </Button>
                                         </td>
                                         <td className="border-b border-gray-200 bg-white text-sm">
                                             <Button size="xs" color="failure"
-                                                onClick={() => { setOpenDeleteModal(true), setDeletedId(lab.labId) }}
-                                            >
+                                                onClick={() => { setOpenDeleteModal(true), setDeletedId(lab.labId) }}>
                                                 <MdDelete size={25} />
                                             </Button>
                                         </td>
@@ -234,35 +180,51 @@ function Laboratories() {
                 </div>
             </div>
 
-            <Modal show={openNewModal} onClose={() => {
-                setOpenNewModal(false);
-                setLabName('');
-                setLabLocation('');
-                setLabTelephone('');
-            }}>
+            <Modal show={openNewModal} onClose={() => { setOpenNewModal(false); formikNew.resetForm(); }} popup>
                 <Modal.Header>Add Lab</Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={formikNew.handleSubmit}>
                         <div className="mb-4">
-                            <label htmlFor="labName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="labName">
                                 Lab Name
                             </label>
-                            <input type="text" name="labName" id="labName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labName} onChange={(e) => setLabName(e.target.value)} required />
+                            <input
+                                id="labName"
+                                type="text"
+                                {...formikNew.getFieldProps('labName')}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.labName && formikNew.errors.labName ? 'border-red-500' : ''}`}
+                            />
+                            {formikNew.touched.labName && formikNew.errors.labName ? (
+                                <p className="text-red-500 text-xs italic">{formikNew.errors.labName}</p>
+                            ) : null}
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="labLocation" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="labLocation">
                                 Lab Location
                             </label>
-                            <input type="text" name="labLocation" id="labLocation" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labLocation} onChange={(e) => setLabLocation(e.target.value)} required />
+                            <input
+                                id="labLocation"
+                                type="text"
+                                {...formikNew.getFieldProps('labLocation')}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.labLocation && formikNew.errors.labLocation ? 'border-red-500' : ''}`}
+                            />
+                            {formikNew.touched.labLocation && formikNew.errors.labLocation ? (
+                                <p className="text-red-500 text-xs italic">{formikNew.errors.labLocation}</p>
+                            ) : null}
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="labTelephone" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="labTelephone">
                                 Lab Telephone
                             </label>
-                            <input type="text" name="labTelephone" id="labTelephone" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labTelephone} onChange={(e) => setLabTelephone(e.target.value)} required />
+                            <input
+                                id="labTelephone"
+                                type="text"
+                                {...formikNew.getFieldProps('labTelephone')}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.labTelephone && formikNew.errors.labTelephone ? 'border-red-500' : ''}`}
+                            />
+                            {formikNew.touched.labTelephone && formikNew.errors.labTelephone ? (
+                                <p className="text-red-500 text-xs italic">{formikNew.errors.labTelephone}</p>
+                            ) : null}
                         </div>
                         <div className="flex items-center justify-center">
                             <Button type="submit" size="xl">Submit</Button>
@@ -271,58 +233,68 @@ function Laboratories() {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openEditModal} onClose={() => {
-                setOpenEditModal(false);
-                setLabName('');
-                setLabLocation('');
-                setLabTelephone('')
-            }}>
-                <Modal.Header>Edit Sample</Modal.Header>
+            <Modal show={openEditModal} onClose={() => { setOpenEditModal(false); formikEdit.resetForm(); }} popup>
+                <Modal.Header>Edit Lab</Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={handleUpdate}>
+                    <form onSubmit={formikEdit.handleSubmit}>
                         <div className="mb-4">
-                            <label htmlFor="labName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="labName">
                                 Lab Name
                             </label>
-                            <input type="text" name="labName" id="labName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labName} onChange={(e) => setLabName(e.target.value)} required />
+                            <input
+                                id="labName"
+                                type="text"
+                                {...formikEdit.getFieldProps('labName')}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikEdit.touched.labName && formikEdit.errors.labName ? 'border-red-500' : ''}`}
+                            />
+                            {formikEdit.touched.labName && formikEdit.errors.labName ? (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.labName}</p>
+                            ) : null}
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="labLocation" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="labLocation">
                                 Lab Location
                             </label>
-                            <input type="text" name="labLocation" id="labLocation" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labLocation} onChange={(e) => setLabLocation(e.target.value)} required />
+                            <input
+                                id="labLocation"
+                                type="text"
+                                {...formikEdit.getFieldProps('labLocation')}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikEdit.touched.labLocation && formikEdit.errors.labLocation ? 'border-red-500' : ''}`}
+                            />
+                            {formikEdit.touched.labLocation && formikEdit.errors.labLocation ? (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.labLocation}</p>
+                            ) : null}
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="labTelephone" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="labTelephone">
                                 Lab Telephone
                             </label>
-                            <input type="text" name="labTelephone" id="labTelephone" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={labTelephone} onChange={(e) => setLabTelephone(e.target.value)} required />
+                            <input
+                                id="labTelephone"
+                                type="text"
+                                {...formikEdit.getFieldProps('labTelephone')}
+                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikEdit.touched.labTelephone && formikEdit.errors.labTelephone ? 'border-red-500' : ''}`}
+                            />
+                            {formikEdit.touched.labTelephone && formikEdit.errors.labTelephone ? (
+                                <p className="text-red-500 text-xs italic">{formikEdit.errors.labTelephone}</p>
+                            ) : null}
                         </div>
-                        <div className="flex items-center justify-between">
-                            <Button type="submit">Submit</Button>
+                        <div className="flex items-center justify-center">
+                            <Button type="submit" size="xl">Submit</Button>
                         </div>
                     </form>
                 </Modal.Body>
             </Modal>
 
             <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup>
-                <Modal.Header />
+                <Modal.Header>Delete Lab</Modal.Header>
                 <Modal.Body>
-                    <div className="text-center">
-                        <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                            Are you sure you want to delete this Lab?
-                        </h3>
+                    <div className="flex flex-col items-center gap-4">
+                        <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400" />
+                        <h3 className="text-lg font-normal text-gray-500">Are you sure you want to delete this Lab?</h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="failure" onClick={() => handleDelete(deletedId)}>
-                                Yes, I'm sure
-                            </Button>
-                            <Button color="gray" onClick={() => setOpenDeleteModal(false)}>
-                                No, cancel
-                            </Button>
+                            <Button color="failure" onClick={() => { deleteLab(deletedId, token), setOpenDeleteModal(false) }}>Yes, I'm sure</Button>
+                            <Button color="gray" onClick={() => setOpenDeleteModal(false)}>No, cancel</Button>
                         </div>
                     </div>
                 </Modal.Body>
@@ -331,4 +303,4 @@ function Laboratories() {
     );
 }
 
-export default Laboratories
+export default Laboratories;

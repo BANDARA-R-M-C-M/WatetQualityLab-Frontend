@@ -41,14 +41,16 @@ export const getAddedSamples = async (phiId, searchTerm, searchParameter, search
     }
 }
 
-export const getSampleCount = async (phiId, token) => {
+export const getSampleCount = async (phiId, year, month, token) => {
     try {
         const response = await axios.get(`${base_url}/WCSample/GetSampleCountDetails`, {
             headers: {
                 Authorization: `Bearer ${token}`
             },
             params: {
-                UserId: phiId
+                UserId: phiId,
+                Year: year,
+                Month: month
             }
         });
         return response;

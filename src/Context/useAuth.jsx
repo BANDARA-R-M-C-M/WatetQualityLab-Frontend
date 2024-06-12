@@ -75,7 +75,7 @@ export const UserProvider = ({ children }) => {
           sessionStorage.removeItem("redirectPath");
           navigate(`${redirectPath}`);
         } else if(userObj.userRole === "Admin"){
-          navigate("/admin/dashboard");
+          navigate("/admin/mlts");
         } else if(userObj.userRole === "Phi"){
           navigate("/phi/home");
         } else if(userObj.userRole === "Mlt"){

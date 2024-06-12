@@ -8,17 +8,13 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { registerUser, getMOHSupervisors, getMOHAreas, assignMOHSupervisortoMOHAreas, deleteUser } from "../../Service/AdminService";
 import { useAuth } from '../../Context/useAuth';
 import { useDebounce } from '../../Util/useDebounce';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 function MOHSupervisor() {
 
     const [mohSupervisors, setMohSupevisors] = useState([]);
     const [mohAreas, setMohAreas] = useState([]);
-    const [id, setId] = useState('');
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [role, setRole] = useState('Moh_Supervisor');
     const [mohAreaId, setMohAreaId] = useState('');
     const [placeholderText, setPlaceholderText] = useState('Identity Number...');
     const [searchTerm, setSearchTerm] = useState('');
@@ -37,6 +33,20 @@ function MOHSupervisor() {
 
     const { token } = useAuth();
     const debouncedSearch = useDebounce(searchTerm);
+
+    const validationSchema = yup.object({
+        id: yup.string().required('Identity Card Number is required')
+            .matches(/^\d{12}$|^\d{9}[vV]$/, 'Invalid Identity Card Number format'),
+        userName: yup.string().required('Name is required')
+            .max(30, 'Name should not exceed 30 characters'),
+        password: yup.string().required('Password is required')
+            .min(8, 'Password should be at least 8 characters')
+            .max(12, 'Password should not exceed 12 characters'),
+        email: yup.string().required('Email is required')
+            .email('Invalid email address'),
+        phoneNumber: yup.string().required('Telephone is required')
+            .matches(/^\d{10}$/, 'Invalid phone number format')
+    });
 
     useEffect(() => {
         const fetchMOHSupervisors = async () => {
@@ -63,50 +73,33 @@ function MOHSupervisor() {
         fetchMOHAreas();
     }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // try {
-        await registerUser(id, userName, password, email, phoneNumber, role, token);
-        //     alert('MOH Supervisor added successfully');
-        // } catch (error) {
-        //     console.error('Error adding MOH Supervisor:', error);
-        //     alert('Failed to add MOH Supervisor');
-        // }
-
-        setId('');
-        setUserName('');
-        setPassword('');
-        setEmail('');
-        setPhoneNumber('');
-
-        setOpenNewModal(false);
-    }
+    const formikNew = useFormik({
+        initialValues: {
+            id: '',
+            userName: '',
+            password: '',
+            email: '',
+            phoneNumber: '',
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            await registerUser(values.id, values.userName, values.password, values.email, values.phoneNumber, 'MOH_Supervisor', token);
+            formikNew.resetForm();
+            setOpenNewModal(false);
+        },
+    });
 
     const handleAssign = async (e) => {
         e.preventDefault();
 
-        // if (
-        await assignMOHSupervisortoMOHAreas(assignId, mohAreaId, token)
-        // ) {
-        //     alert('MOH Supervisor assigned successfully');
-        // } else {
-        //     alert('Failed to assign MOH Supervisor');
-        // }
-
+        await assignMOHSupervisortoMOHAreas(assignId, mohAreaId, token);
         setMohAreaId('');
 
         setOpenAssignModal(false);
     }
 
     const handleDelete = async (deletedId) => {
-        // try {
         await deleteUser(deletedId, token);
-        //     alert('MOH Supervisor deleted successfully');
-        // } catch (error) {
-        //     console.error('Error deleting sample:', error);
-        //     alert('Failed to delete MOH Supervisor');
-        // }
-
         setOpenDeleteModal(false);
     }
 
@@ -313,49 +306,83 @@ function MOHSupervisor() {
             <Modal show={openNewModal} onClose={() => setOpenNewModal(false)}>
                 <Modal.Header>Add MOH Supervisor</Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-4">
-                            <label htmlFor="id" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Identity Card Number
-                            </label>
-                            <input type="text" name="id" id="id" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={id} onChange={(e) => setId(e.target.value)} required />
-                        </div>
-
-                        <div className="mb-4">
-                            <label htmlFor="userName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Name
-                            </label>
-                            <input type="text" name="userName" id="userName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={userName} onChange={(e) => setUserName(e.target.value)} required />
-                        </div>
-
-                        <div className="mb-4">
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Password
-                            </label>
-                            <input type="password" name="password" id="password" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={password} onChange={(e) => setPassword(e.target.value)} required />
-                        </div>
-
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                E-Mail
-                            </label>
-                            <input type="email" name="email" id="email" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={email} onChange={(e) => setEmail(e.target.value)} required />
-                        </div>
-
-                        <div className="mb-4">
-                            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Telephone
-                            </label>
-                            <input type="tel" name="phoneNumber" id="phoneNumber" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
-                        </div>
-
-                        <div className="flex items-center justify-center">
-                            <Button type="submit" size="xl">Submit</Button>
+                    <form onSubmit={formikNew.handleSubmit}>
+                        <div className="space-y-6">
+                            <div>
+                                <label htmlFor="id" className="block mb-2 text-sm font-medium text-gray-700">
+                                    Identity Card Number
+                                </label>
+                                <input
+                                    id="id"
+                                    type="text"
+                                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.id && formikNew.errors.id ? 'border-red-500' : ''}`}
+                                    {...formikNew.getFieldProps('id')}
+                                />
+                                {formikNew.touched.id && formikNew.errors.id ? (
+                                    <p className="text-red-500 text-xs italic">{formikNew.errors.id}</p>
+                                ) : null}
+                            </div>
+                            <div>
+                                <label htmlFor="userName" className="block mb-2 text-sm font-medium text-gray-700">
+                                    Name
+                                </label>
+                                <input
+                                    id="userName"
+                                    type="text"
+                                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.userName && formikNew.errors.userName ? 'border-red-500' : ''}`}
+                                    {...formikNew.getFieldProps('userName')}
+                                />
+                                {formikNew.touched.userName && formikNew.errors.userName ? (
+                                    <p className="text-red-500 text-xs italic">{formikNew.errors.userName}</p>
+                                ) : null}
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700">
+                                    Password
+                                </label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.password && formikNew.errors.password ? 'border-red-500' : ''}`}
+                                    {...formikNew.getFieldProps('password')}
+                                />
+                                {formikNew.touched.password && formikNew.errors.password ? (
+                                    <p className="text-red-500 text-xs italic">{formikNew.errors.password}</p>
+                                ) : null}
+                            </div>
+                            <div>
+                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
+                                    E-Mail
+                                </label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.email && formikNew.errors.email ? 'border-red-500' : ''}`}
+                                    {...formikNew.getFieldProps('email')}
+                                />
+                                {formikNew.touched.email && formikNew.errors.email ? (
+                                    <p className="text-red-500 text-xs italic">{formikNew.errors.email}</p>
+                                ) : null}
+                            </div>
+                            <div>
+                                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-700">
+                                    Telephone
+                                </label>
+                                <input
+                                    id="phoneNumber"
+                                    type="tel"
+                                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formikNew.touched.phoneNumber && formikNew.errors.phoneNumber ? 'border-red-500' : ''}`}
+                                    {...formikNew.getFieldProps('phoneNumber')}
+                                />
+                                {formikNew.touched.phoneNumber && formikNew.errors.phoneNumber ? (
+                                    <p className="text-red-500 text-xs italic">{formikNew.errors.phoneNumber}</p>
+                                ) : null}
+                            </div>
+                            <div className="flex justify-end">
+                                <Button type="submit">
+                                    Add MLT
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </Modal.Body>
