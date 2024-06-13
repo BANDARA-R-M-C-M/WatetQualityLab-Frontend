@@ -21,6 +21,16 @@ export const getInstrumentalQualityRecords = async (mltId, searchTerm, searchPar
         });
         return response;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 404) {
+                const errorMessage = error.response.data;
+                toast.error(errorMessage);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }

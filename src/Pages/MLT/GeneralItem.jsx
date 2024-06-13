@@ -25,6 +25,13 @@ function GeneralItem() {
         fetchItemDetails();
     }, []);
 
+    function getDuration(duration) {
+        const years = Math.floor(duration / 365);
+        const months = Math.floor((duration - years * 365) / 30);
+        const days = (duration - years * 365 - months * 30) % 30;
+        return `${years} years ${months} months ${days} days`;
+    }
+
     return (
         <>
             <Card className="max-w-sm mx-auto">
@@ -35,10 +42,6 @@ function GeneralItem() {
                     <table>
                         <tbody>
                             <tr>
-                                <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Item ID:</td>
-                                <td className="py-5 border-b border-gray-200">{itemId}</td>
-                            </tr>
-                            <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Item Name:</td>
                                 <td className="py-5 border-b border-gray-200">{generalItem.itemName}</td>
                             </tr>
@@ -48,7 +51,7 @@ function GeneralItem() {
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Duration of Inventory:</td>
-                                <td className="py-5 border-b border-gray-200">{generalItem.durationOfInventory} Days</td>
+                                <td className="py-5 border-b border-gray-200">{getDuration(generalItem.durationOfInventory)} Days</td>
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Issued By:</td>

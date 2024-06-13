@@ -270,7 +270,10 @@ function MOHSupervisor() {
                 </div>
             </div>
 
-            <Modal show={openAssignModal} onClose={() => setOpenAssignModal(false)}>
+            <Modal show={openAssignModal} onClose={() => {
+                setOpenAssignModal(false);
+                formikNew.resetForm();
+            }}>
                 <Modal.Header>Assign MOH Supservisor to MOH Area</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleAssign}>
@@ -303,7 +306,10 @@ function MOHSupervisor() {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openNewModal} onClose={() => setOpenNewModal(false)}>
+            <Modal show={openNewModal} onClose={() => {
+                setOpenNewModal(false);
+                formikNew.resetForm();
+            }}>
                 <Modal.Header>Add MOH Supervisor</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={formikNew.handleSubmit}>
@@ -380,7 +386,7 @@ function MOHSupervisor() {
                             </div>
                             <div className="flex justify-end">
                                 <Button type="submit">
-                                    Add MLT
+                                    Add MOH Supervisor
                                 </Button>
                             </div>
                         </div>

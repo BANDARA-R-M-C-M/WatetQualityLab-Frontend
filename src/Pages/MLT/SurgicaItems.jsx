@@ -33,7 +33,7 @@ function SurgicalItems() {
     const [sortBy, setSortBy] = useState('ItemName');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
@@ -54,8 +54,9 @@ function SurgicalItems() {
                 const response = await getSurgicalInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setItems(response.data.items);
-                    setSurgicalCategoryName(response.data.items[0].surgicalCategoryName);
-                    setLabId(user.areaId);
+                    if (response.data.items.length > 0) {
+                        setSurgicalCategoryName(response.data.items[0].surgicalCategoryName);
+                    }
                     setTotalPages(response.data.totalPages);
                 }
             } catch (error) {
@@ -64,6 +65,10 @@ function SurgicalItems() {
         };
         fetchSurgicalItems();
     }, [openNewModal, openAddModal, openIssueModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
+
+    useEffect(() => {
+        setLabId(user.areaId);
+    }, []);
 
     useEffect(() => {
         getSurgicalCatagories(user.userId, null, null, null, 1, 100, null, null, token).then((response) => {
@@ -136,6 +141,13 @@ function SurgicalItems() {
 
         setOpenDeleteModal(false);
     };
+
+    function getDuration(duration) {
+        const years = Math.floor(duration / 365);
+        const months = Math.floor((duration - years * 365) / 30);
+        const days = (duration - years * 365 - months * 30) % 30;
+        return `${years} years ${months} months ${days} days`;
+    }
 
     return (
         <>
@@ -277,7 +289,7 @@ function SurgicalItems() {
                                             <p className="text-gray-900 whitespace-no-wrap">{item.issuedBy}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{item.durationOfInventory}</p>
+                                            <p className="text-gray-900 whitespace-no-wrap">{getDuration(item.durationOfInventory)}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.quantity}</p>

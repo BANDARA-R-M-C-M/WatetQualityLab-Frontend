@@ -21,6 +21,16 @@ export const getPendingSamples = async (mltId, searchTerm, searchParameter, sear
     });
     return response;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        const errorMessage = error.response.data;
+        toast.error(errorMessage);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 };
@@ -44,6 +54,16 @@ export const getAcceptedSamples = async (mltId, searchTerm, searchParameter, sea
     });
     return response;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        const errorMessage = error.response.data;
+        toast.error(errorMessage);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 };
@@ -80,6 +100,16 @@ export const getAddedReports = async (mltId, searchTerm, searchParameter, search
     });
     return response;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        const errorMessage = error.response.data;
+        toast.error(errorMessage);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 }
@@ -120,6 +150,16 @@ export const getSampleCount = async (mltId, searchTerm, searchParameter, searchP
     });
     return response;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        const errorMessage = error.response.data;
+        toast.error(errorMessage);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 }
@@ -138,6 +178,16 @@ export const getSampleCountReport = async (mltId, year, token) => {
     });
     return response;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        const errorMessage = error.response.data;
+        toast.error(errorMessage);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 }
@@ -161,6 +211,16 @@ export const getMonthlySampleDetails = async (mltId, searchTerm, searchParameter
     });
     return response;
   } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        const errorMessage = error.response.data;
+        toast.error(errorMessage);
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    } else {
+      toast.error('An error occurred. Please try again.');
+    }
     console.log(error);
   }
 }

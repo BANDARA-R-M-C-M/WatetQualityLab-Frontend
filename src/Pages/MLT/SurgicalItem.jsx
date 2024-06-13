@@ -32,13 +32,9 @@ function SurgicalItem() {
 
     const handleIssue = async (event) => {
         event.preventDefault();
-        // if (
-        await issueItem(itemId, issuingQuantity, user.userId, issuingRemarks, token)
-        // ) {
-        //     alert('Item Issued Successfully')
-        // } else {
-        //     alert('Failed to Issue Item')
-        // }
+
+        await issueItem(itemId, issuingQuantity, user.userId, issuingRemarks, token);
+
         setIssuingQuantity('');
         setIssuingRemarks('');
 
@@ -48,19 +44,20 @@ function SurgicalItem() {
     const handleAdd = async (event) => {
         event.preventDefault();
 
-        // if (
-        await addQuantity(itemId, quantity, user.userId, issuingRemarks, token)
-        // ) {
-        //     alert('Item Added Successfully')
-        // } else {
-        //     alert('Failed to Add Item')
-        // }
+        await addQuantity(itemId, quantity, user.userId, issuingRemarks, token);
 
         setQuantity('');
         setIssuingRemarks('');
 
         setOpenAddModal(false);
     };
+
+    function getDuration(duration) {
+        const years = Math.floor(duration / 365);
+        const months = Math.floor((duration - years * 365) / 30);
+        const days = (duration - years * 365 - months * 30) % 30;
+        return `${years} years ${months} months ${days} days`;
+    }
 
     return (
         <>
@@ -72,10 +69,6 @@ function SurgicalItem() {
                     <table>
                         <tbody>
                             <tr>
-                                <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Item ID:</td>
-                                <td className="py-5 border-b border-gray-200">{itemId}</td>
-                            </tr>
-                            <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Item Name:</td>
                                 <td className="py-5 border-b border-gray-200">{surgicalItem.itemName}</td>
                             </tr>
@@ -85,7 +78,7 @@ function SurgicalItem() {
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Duration of Inventory:</td>
-                                <td className="py-5 border-b border-gray-200">{surgicalItem.durationOfInventory} Days</td>
+                                <td className="py-5 border-b border-gray-200">{getDuration(surgicalItem.durationOfInventory)} Days</td>
                             </tr>
                             <tr>
                                 <td className="px-5 py-5 border-b border-gray-200 font-bold text-lg">Issued By:</td>

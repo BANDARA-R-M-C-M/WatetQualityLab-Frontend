@@ -31,9 +31,12 @@ function Laboratories() {
     const debouncedSearch = useDebounce(searchTerm);
 
     const validationSchema = yup.object().shape({
-        labName: yup.string().required('Lab Name is required'),
-        labLocation: yup.string().required('Lab Location is required'),
-        labTelephone: yup.string().required('Lab Telephone is required'),
+        labName: yup.string().required('Lab Name is required')
+            .max(40, 'Lab should not exceed 40 characters'),
+        labLocation: yup.string().required('Lab Location is required')
+            .max(50, 'Lab Location should not exceed 50 characters'),
+        labTelephone: yup.string().required('Lab Telephone is required')
+            .matches(/^\d{10}$/, 'Invalid phone number format'),
     });
 
     useEffect(() => {
@@ -180,7 +183,10 @@ function Laboratories() {
                 </div>
             </div>
 
-            <Modal show={openNewModal} onClose={() => { setOpenNewModal(false); formikNew.resetForm(); }} popup>
+            <Modal show={openNewModal} onClose={() => {
+                setOpenNewModal(false);
+                formikNew.resetForm();
+            }} popup>
                 <Modal.Header>Add Lab</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={formikNew.handleSubmit}>
@@ -233,7 +239,10 @@ function Laboratories() {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openEditModal} onClose={() => { setOpenEditModal(false); formikEdit.resetForm(); }} popup>
+            <Modal show={openEditModal} onClose={() => {
+                setOpenEditModal(false);
+                formikEdit.resetForm();
+            }} popup>
                 <Modal.Header>Edit Lab</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={formikEdit.handleSubmit}>

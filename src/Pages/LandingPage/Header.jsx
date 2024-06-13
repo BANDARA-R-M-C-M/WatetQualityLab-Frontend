@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Navbar } from "flowbite-react";
+import { Button } from "flowbite-react";
 
 function Header() {
     return (

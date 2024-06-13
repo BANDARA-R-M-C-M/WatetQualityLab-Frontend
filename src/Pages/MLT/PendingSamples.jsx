@@ -18,7 +18,7 @@ function PendingSamples() {
     const [sortBy, setSortBy] = useState('YourRefNo');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [rejectedId, setRejectedId] = useState('');
     const [openModal, setOpenModal] = useState(false);

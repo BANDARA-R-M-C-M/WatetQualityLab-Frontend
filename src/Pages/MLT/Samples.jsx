@@ -28,7 +28,7 @@ function Samples() {
     const [sortBy, setSortBy] = useState('DateOfCollection');
     const [isAscending, setIsAscending] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     // const [stateOfChlorination, setStateOfChlorination] = useState('');
     // const [collectingSource, setCollectingSource] = useState('');
@@ -308,7 +308,10 @@ function Samples() {
                     )}
                 </div>
 
-                <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                <Modal show={openModal} onClose={() => {
+                    setOpenModal(false);
+                    formik.resetForm();
+                }}>
                     <Modal.Header>Report</Modal.Header>
                     <Modal.Body>
                         <form onSubmit={formik.handleSubmit}>
@@ -365,8 +368,8 @@ function Samples() {
                                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.analyzedDate && formik.errors.analyzedDate ? 'border-red-500' : ''}`}
                                     id="analyzedDate"
                                     type="date"
-                                    min={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-01`}
-                                    max={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`}
+                                    // min={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-01`}
+                                    // max={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`}
                                     {...formik.getFieldProps('analyzedDate')}
                                 />
                                 {formik.touched.analyzedDate && formik.errors.analyzedDate ? (

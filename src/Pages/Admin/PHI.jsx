@@ -23,7 +23,7 @@ function PHI() {
     const [sortBy, setSortBy] = useState('ID');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [assignId, setAssignId] = useState('');
     const [deletedId, setDeletedId] = useState(null);
@@ -298,7 +298,10 @@ function PHI() {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openNewModal} onClose={() => setOpenNewModal(false)}>
+            <Modal show={openNewModal} onClose={() => {
+                setOpenNewModal(false);
+                formikNew.resetForm();
+            }}>
                 <Modal.Header>Add PHI</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={formikNew.handleSubmit}>
@@ -375,14 +378,13 @@ function PHI() {
                             </div>
                             <div className="flex justify-end">
                                 <Button type="submit">
-                                    Add MLT
+                                    Add PHI
                                 </Button>
                             </div>
                         </div>
                     </form>
                 </Modal.Body>
             </Modal>
-
 
             <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup>
                 <Modal.Header />

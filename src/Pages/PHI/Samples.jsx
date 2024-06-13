@@ -21,7 +21,7 @@ function Samples() {
     const [sortBy, setSortBy] = useState('YourRefNo');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [updatedId, setUpdatedId] = useState('');
     const [deletedId, setDeletedId] = useState('');
@@ -39,7 +39,7 @@ function Samples() {
         catagoryOfSource: yup.string().required('Category of Source is required'),
         collectingSource: yup.string().required('Collecting Source is required'),
         stateOfChlorination: yup.string().required('State of Chlorination is required')
-            .max(10, 'State of Chlorination must be less than 10 characters')
+            .max(25, 'State of Chlorination must be less than 25 characters')
     }); 
 
     useEffect(() => {

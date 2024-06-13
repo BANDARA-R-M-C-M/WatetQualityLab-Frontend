@@ -21,7 +21,7 @@ function GeneralInventory() {
     const [sortBy, setSortBy] = useState('GeneralCategoryName');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [updatedCategoryId, setUpdatedCategoryId] = useState('');
     const [deletedCategoryId, setDeletedCategoryId] = useState('');

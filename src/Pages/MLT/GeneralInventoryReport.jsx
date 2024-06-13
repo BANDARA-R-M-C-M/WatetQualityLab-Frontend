@@ -54,6 +54,13 @@ function GeneralInventoryReport() {
         setReportUrl(pdfUrl);
     };
 
+    function getDuration(duration) {
+        const years = Math.floor(duration / 365);
+        const months = Math.floor((duration - years * 365) / 30);
+        const days = (duration - years * 365 - months * 30) % 30;
+        return `${years} years ${months} months ${days} days`;
+    }
+
     return (
         <>
             <div>
@@ -172,7 +179,7 @@ function GeneralInventoryReport() {
                                     <Table.Cell>{item.generalCategoryName}</Table.Cell>
                                     <Table.Cell>{item.itemName}</Table.Cell>
                                     <Table.Cell>{item.issuedDate}</Table.Cell>
-                                    <Table.Cell>{item.duration}</Table.Cell>
+                                    <Table.Cell>{getDuration(item.duration)}</Table.Cell>
                                     <Table.Cell>{item.issuedBy}</Table.Cell>
                                     <Table.Cell>{item.remarks}</Table.Cell>
                                 </Table.Row>

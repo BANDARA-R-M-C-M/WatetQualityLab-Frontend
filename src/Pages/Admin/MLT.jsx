@@ -297,7 +297,10 @@ function MLT() {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openNewModal} onClose={() => setOpenNewModal(false)}>
+            <Modal show={openNewModal} onClose={() => {
+                setOpenNewModal(false);
+                formikNew.resetForm();
+            }}>
                 <Modal.Header>Add MLT</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={formikNew.handleSubmit}>
@@ -383,7 +386,10 @@ function MLT() {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup>
+            <Modal show={openDeleteModal} size="md" onClose={() => {
+                setOpenDeleteModal(false);
+                formikNew.resetForm();
+            }} popup>
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">

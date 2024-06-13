@@ -8,7 +8,6 @@ import { storage } from '../Util/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FaPlusCircle } from 'react-icons/fa';
 import { MdEdit } from "react-icons/md";
-import { toast } from 'react-toastify';
 
 function Profile() {
     const [userDetails, setUserDetails] = useState({});

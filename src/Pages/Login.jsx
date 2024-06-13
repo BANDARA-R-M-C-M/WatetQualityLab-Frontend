@@ -8,8 +8,8 @@ const validationSchema = yup.object().shape({
     username: yup.string().required("Username is required")
         .max(30, 'Name should not exceed 30 characters'),
     password: yup.string().required("Password is required")
-        // .min(8, 'Password should be at least 8 characters')
-        // .max(12, 'Password should not exceed 12 characters'),
+        .min(8, 'Password should be at least 8 characters')
+        .max(12, 'Password should not exceed 12 characters'),
 });
 
 const Login = () => {

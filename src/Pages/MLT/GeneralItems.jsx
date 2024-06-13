@@ -27,7 +27,7 @@ function GeneralItems() {
     const [searchParameterType, setSearchParameterType] = useState('string');
     const [sortBy, setSortBy] = useState('ItemName');
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [isAscending, setIsAscending] = useState(true);
     const [updatedId, setUpdatedId] = useState('');
@@ -47,8 +47,9 @@ function GeneralItems() {
                 const response = await getGeneralInventoryItems(user.userId, categoryId, searchTerm, searchParameter, searchParameterType, pageNumber, pageSize, sortBy, isAscending, token);
                 if (response) {
                     setItems(response.data.items);
-                    setGeneralCategoryName(response.data.items[0].generalCategoryName);
-                    setLabId(user.areaId);
+                    if (response.data.items.length > 0) {
+                        setGeneralCategoryName(response.data.items[0].generalCategoryName);
+                    }
                     setTotalPages(response.data.totalPages);
                 }
             } catch (error) {
@@ -57,6 +58,10 @@ function GeneralItems() {
         };
         fetchGeneralItems();
     }, [openNewModal, openEditModal, openDeleteModal, pageNumber, sortBy, isAscending, debouncedSearch]);
+
+    useEffect(() => {
+        setLabId(user.areaId);
+    }, []);
 
     useEffect(() => {
         getGeneralCatagories(user.userId, null, null, null, 1, 100, null, null, token).then((response) => {
@@ -104,6 +109,13 @@ function GeneralItems() {
 
         setOpenDeleteModal(false);
     };
+
+    function getDuration(duration) {
+        const years = Math.floor(duration / 365);
+        const months = Math.floor((duration - years * 365) / 30);
+        const days = (duration - years * 365 - months * 30) % 30;
+        return `${years} years ${months} months ${days} days`;
+    }
 
     return (
         <>
@@ -225,9 +237,9 @@ function GeneralItems() {
                             <tbody>
                                 {items.map((item, index) => (
                                     <tr key={index}>
-                                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.generalInventoryID}</p>
-                                        </td> */}
+                                        </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.itemName}</p>
                                         </td>
@@ -238,7 +250,7 @@ function GeneralItems() {
                                             <p className="text-gray-900 whitespace-no-wrap">{item.issuedBy}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{item.durationOfInventory}</p>
+                                            <p className="text-gray-900 whitespace-no-wrap">{getDuration(item.durationOfInventory)}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{item.remarks}</p>

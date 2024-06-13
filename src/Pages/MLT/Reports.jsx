@@ -254,6 +254,9 @@ function WCReports() {
                                     E coli Count
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Appearance of Sample
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Remarks
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -284,6 +287,9 @@ function WCReports() {
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{report.ecoliCount}</p>
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p className="text-gray-900 whitespace-no-wrap">{report.appearanceOfSample}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{report.remarks}</p>
@@ -343,7 +349,10 @@ function WCReports() {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openEditModal} onClose={() => setOpenEditModal(false)}>
+            <Modal show={openEditModal} onClose={() => {
+                setOpenEditModal(false);
+                formik.resetForm();
+            }}>
                 <Modal.Header>Report</Modal.Header>
                 <Modal.Body>
                     <form onSubmit={formik.handleSubmit}>

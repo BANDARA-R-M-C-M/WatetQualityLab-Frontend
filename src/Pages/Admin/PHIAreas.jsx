@@ -23,7 +23,7 @@ function PHIAreas() {
     const [sortBy, setSortBy] = useState('PHIAreaName');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [updatedId, setUpdatedId] = useState(null);
     const [deletedId, setDeletedId] = useState(null);

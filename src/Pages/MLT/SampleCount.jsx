@@ -20,7 +20,7 @@ function SampleCount() {
     const [sortBy, setSortBy] = useState('year');
     const [isAscending, setIsAscending] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
 

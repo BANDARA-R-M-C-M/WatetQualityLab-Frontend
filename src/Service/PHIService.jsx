@@ -37,6 +37,16 @@ export const getAddedSamples = async (phiId, searchTerm, searchParameter, search
         });
         return response;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 404) {
+                const errorMessage = error.response.data;
+                toast.error(errorMessage);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -55,6 +65,16 @@ export const getSampleCount = async (phiId, year, month, token) => {
         });
         return response;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 404) {
+                const errorMessage = error.response.data;
+                toast.error(errorMessage);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
@@ -78,6 +98,16 @@ export const getHistory = async (phiId, searchTerm, searchParameter, searchParam
         });
         return response;
     } catch (error) {
+        if (error.response) {
+            if (error.response.status === 404) {
+                const errorMessage = error.response.data;
+                toast.error(errorMessage);
+            } else {
+                toast.error('An error occurred. Please try again.');
+            }
+        } else {
+            toast.error('An error occurred. Please try again.');
+        }
         console.log(error);
     }
 }
