@@ -179,6 +179,13 @@ function MapComponentMLT() {
                     </div>
                 </div>
                 <div className="w-full h-[700px] p-2">
+                    <h1 className="mb-4 text-xl">{selectedYear} {monthNames[selectedMonth]}</h1>
+                    <div className="flex items-center mb-4">
+                        <div className="w-4 h-4 rounded-full bg-green-700"></div>
+                        <span className="ml-2 text-sm pr-4">Samples recieved</span>
+                        <div className="w-4 h-4 rounded-full bg-gray-500"></div>
+                        <span className="ml-2 text-sm">Samples not recieved</span>
+                    </div>
                     <GoogleMap
                         mapContainerStyle={{
                             width: '100%',

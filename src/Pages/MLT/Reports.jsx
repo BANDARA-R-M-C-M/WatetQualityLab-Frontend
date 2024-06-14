@@ -42,8 +42,8 @@ function WCReports() {
 
     const validationSchema = Yup.object({
         myRefNo: Yup.string().required('My Ref No is required'),
-        presumptiveColiformCount: Yup.number().required('Presumptive Coliform Count is required'),
-        ecoliCount: Yup.number().required('Ecoli Count is required'),
+        presumptiveColiformCount: Yup.string().required('Presumptive Coliform Count is required'),
+        ecoliCount: Yup.string().required('Ecoli Count is required'),
         appearanceOfSample: Yup.string().required('Appearance Of Sample is required'),
         remarks: Yup.string().required('Remarks are required'),
         isContaminated: Yup.boolean().required('Contamination Status is required')
@@ -378,7 +378,7 @@ function WCReports() {
                             <input
                                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.presumptiveColiformCount && formik.errors.presumptiveColiformCount ? 'border-red-500' : ''}`}
                                 id="presumptiveColiformCount"
-                                type="number"
+                                type="text"
                                 {...formik.getFieldProps('presumptiveColiformCount')}
                             />
                             {formik.touched.presumptiveColiformCount && formik.errors.presumptiveColiformCount ? (
@@ -393,7 +393,7 @@ function WCReports() {
                             <input
                                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.ecoliCount && formik.errors.ecoliCount ? 'border-red-500' : ''}`}
                                 id="ecoliCount"
-                                type="number"
+                                type="text"
                                 {...formik.getFieldProps('ecoliCount')}
                             />
                             {formik.touched.ecoliCount && formik.errors.ecoliCount ? (

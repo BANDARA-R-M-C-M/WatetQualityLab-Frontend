@@ -132,6 +132,13 @@ function MLTDashboard() {
         ],
     };
 
+    function getDuration(duration) {
+        const years = Math.floor(duration / 365);
+        const months = Math.floor((duration - years * 365) / 30);
+        const days = (duration - years * 365 - months * 30) % 30;
+        return `${years} years ${months} months ${days} days`;
+    }
+
     return (
         <>
             <MapComponent />
@@ -159,7 +166,7 @@ function MLTDashboard() {
                                     <tr key={item.generalInventoryID} className="bg-gray-100 border-b">
                                         <td className="py-2 px-4">{item.itemName}</td>
                                         <td className="py-2 px-4">{item.issuedDate}</td>
-                                        <td className="py-2 px-4">{item.durationOfInventory}</td>
+                                        <td className="py-2 px-4">{getDuration(item.durationOfInventory)}</td>
                                     </tr>
                                 ))}
                             </tbody>

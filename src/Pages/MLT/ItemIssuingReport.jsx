@@ -160,10 +160,12 @@ function ItemIssuingReport() {
                     </div>
                 </div>
                 <div className="overflow-x-auto mt-6">
+                <h1 className="mb-4 text-xl">{selectedYear} {monthNames[selectedMonth]}</h1>
                     <Table>
                         <Table.Head className="text-center">
                             <Table.HeadCell>Surgical Category</Table.HeadCell>
                             <Table.HeadCell>Item Name</Table.HeadCell>
+                            <Table.HeadCell>Item Issued By</Table.HeadCell>
                             <Table.HeadCell>Initial Quantity</Table.HeadCell>
                             <Table.HeadCell>Issued Quantity</Table.HeadCell>
                             <Table.HeadCell>Added Quantity</Table.HeadCell>
@@ -174,6 +176,7 @@ function ItemIssuingReport() {
                                 <Table.Row key={index} className="text-center">
                                     <Table.Cell>{item.surgicalCategory}</Table.Cell>
                                     <Table.Cell>{item.itemName}</Table.Cell>
+                                    <Table.Cell>{item.issuedBy}</Table.Cell>
                                     <Table.Cell>{item.initialQuantity}</Table.Cell>
                                     <Table.Cell>{item.issuedInMonth}</Table.Cell>
                                     <Table.Cell>{item.addedInMonth}</Table.Cell>

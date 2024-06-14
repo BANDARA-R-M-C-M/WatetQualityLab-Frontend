@@ -173,6 +173,15 @@ function MapComponentMOH() {
                     </div>
                 </div>
                 <div className="w-full h-[700px] p-2">
+                    <h1 className="mb-4 text-xl">{selectedYear} {monthNames[selectedMonth]}</h1>
+                    <div className="flex items-center mb-4">
+                            <div className="w-4 h-4 rounded-full bg-green-700"></div>
+                            <span className="ml-2 text-sm pr-4">Report available - Not contaminated</span>
+                            <div className="w-4 h-4 rounded-full bg-red-600"></div>
+                            <span className="ml-2 text-sm pr-4">Report available - Contaminated</span>
+                            <div className="w-4 h-4 rounded-full bg-gray-500"></div>
+                            <span className="ml-2 text-sm">Report not recieved</span>
+                        </div>
                     <GoogleMap
                         mapContainerStyle={{
                             width: '100%',
@@ -230,7 +239,7 @@ function MapComponentMOH() {
                                     <p className="my-1">
                                         <span className="font-bold">
                                             Report for {selectedMonth}/{selectedYear}:</span> {selectedArea.reportAvailableForMonth ? <span className="text-blue-600 font-bold">Available</span> :
-                                                                                                                                      <span className="text-blue-600 font-bold">Not Available</span>}</p>
+                                                <span className="text-blue-600 font-bold">Not Available</span>}</p>
                                 </div>
                             </InfoWindow>
                         )}

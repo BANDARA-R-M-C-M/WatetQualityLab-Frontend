@@ -8,7 +8,7 @@ function Header() {
             <header className="bg-white shadow">
                 <div className="container mx-auto px-4 py-6 flex justify-between items-center">
                     <div className="flex items-center">
-                        <img src="../../src/assets/image.png" alt="" className='w-8 h-10 mr-3'/>
+                        <img src="../../src/assets/main-logo.png" alt="" className='w-50 h-10 mr-3'/>
                         <h1 className="text-3xl font-bold text-gray-800">
                             Water Quality Testing Laboratory</h1>
                     </div>

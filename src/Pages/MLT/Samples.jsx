@@ -12,12 +12,6 @@ import { AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai"
 function Samples() {
 
     const [samples, setSamples] = useState([]);
-    // const [myRefNo, setMyRefNo] = useState('');
-    // const [presumptiveColiformCount, setPresumptiveColiformCount] = useState('');
-    // const [issuedDate, setIssuedDate] = useState('');
-    // const [ecoliCount, setEcoliCount] = useState('');
-    // const [appearanceOfSample, setAppearanceOfSample] = useState('');
-    // const [remarks, setRemarks] = useState('');
     const [comments, setComments] = useState([]);
     const [sampleId, setSampleId] = useState('');
     const [labId, setLabId] = useState('');
@@ -30,14 +24,6 @@ function Samples() {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
-    // const [stateOfChlorination, setStateOfChlorination] = useState('');
-    // const [collectingSource, setCollectingSource] = useState('');
-    // const [DateOfCollection, setDateOfCollection] = useState('');
-    // const [analyzedDate, setAnalyzedDate] = useState('');
-    // const [isContaminated, setIsContaminated] = useState(null);
-    // const [labName, setLabName] = useState('');
-    // const [labLocation, setLabLocation] = useState('');
-    // const [labTelephone, setLabTelephone] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [previewModalOpen, setPreviewModalOpen] = useState(false);
     const [previewUrl, setPreviewUrl] = useState('');
@@ -48,8 +34,8 @@ function Samples() {
     const validationSchema = Yup.object({
         myRefNo: Yup.string().required('My Ref No is required')
             .matches(/^\d{4}\/\d{2}\/\d{2}$/, 'My Ref No must follow the format "XXXX/XX/XX"'),
-        presumptiveColiformCount: Yup.number().required('Presumptive Coliform Count is required'),
-        ecoliCount: Yup.number().required('Ecoli Count is required'),
+        presumptiveColiformCount: Yup.string().required('Presumptive Coliform Count is required'),
+        ecoliCount: Yup.string().required('Ecoli Count is required'),
         analyzedDate: Yup.date().required('Analyzed Date is required'),
         appearanceOfSample: Yup.string().required('Appearance Of Sample is required'),
         remarks: Yup.string().required('Remarks are required'),
@@ -337,7 +323,7 @@ function Samples() {
                                 <input
                                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.presumptiveColiformCount && formik.errors.presumptiveColiformCount ? 'border-red-500' : ''}`}
                                     id="presumptiveColiformCount"
-                                    type="number"
+                                    type="text"
                                     {...formik.getFieldProps('presumptiveColiformCount')}
                                 />
                                 {formik.touched.presumptiveColiformCount && formik.errors.presumptiveColiformCount ? (
@@ -352,7 +338,7 @@ function Samples() {
                                 <input
                                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.ecoliCount && formik.errors.ecoliCount ? 'border-red-500' : ''}`}
                                     id="ecoliCount"
-                                    type="number"
+                                    type="text"
                                     {...formik.getFieldProps('ecoliCount')}
                                 />
                                 {formik.touched.ecoliCount && formik.errors.ecoliCount ? (
@@ -368,8 +354,8 @@ function Samples() {
                                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.analyzedDate && formik.errors.analyzedDate ? 'border-red-500' : ''}`}
                                     id="analyzedDate"
                                     type="date"
-                                    // min={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-01`}
-                                    // max={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`}
+                                    min={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-01`}
+                                    max={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`}
                                     {...formik.getFieldProps('analyzedDate')}
                                 />
                                 {formik.touched.analyzedDate && formik.errors.analyzedDate ? (

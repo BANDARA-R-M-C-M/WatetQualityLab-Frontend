@@ -32,11 +32,12 @@ function Laboratories() {
 
     const validationSchema = yup.object().shape({
         labName: yup.string().required('Lab Name is required')
-            .max(40, 'Lab should not exceed 40 characters'),
+            .max(40, 'Lab should not exceed 40 characters')
+            .matches(/^[a-zA-Z\s]+$/, 'Lab Name should contain only alphabets and spaces'),
         labLocation: yup.string().required('Lab Location is required')
             .max(50, 'Lab Location should not exceed 50 characters'),
         labTelephone: yup.string().required('Lab Telephone is required')
-            .matches(/^\d{10}$/, 'Invalid phone number format'),
+            .matches(/^\d{10}$/, 'Invalid phone number format')
     });
 
     useEffect(() => {

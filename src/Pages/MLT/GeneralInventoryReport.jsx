@@ -164,6 +164,7 @@ function GeneralInventoryReport() {
                     </div>
                 </div>
                 <div className="overflow-x-auto mt-6">
+                <h1 className="mb-4 text-xl">{selectedYear}</h1>
                     <Table>
                         <Table.Head className="text-center">
                             <Table.HeadCell>General Category</Table.HeadCell>
