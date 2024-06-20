@@ -409,7 +409,7 @@ function WCReports() {
                                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${formik.touched.analyzedDate && formik.errors.analyzedDate ? 'border-red-500' : ''}`}
                                 id="analyzedDate"
                                 type="date"
-                                min={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-01`}
+                                min={`${new Date().getFullYear()}-${(new Date().getMonth()).toString().padStart(2, '0')}-01`}
                                 max={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`}
                                 {...formik.getFieldProps('analyzedDate')}
                             />
